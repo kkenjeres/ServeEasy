@@ -150,7 +150,7 @@ const Table = () => {
   return (
     <div className='gap-2 grid grid-cols-2 md:space-y-0 pt-20 w-[80%] m-auto pb-20 font-bold' >
         {tableData.map(table => (
-      <article key={table.id} onClick={() => handleClick(table)} className='cursor-pointer cover flex items-center h-[90px] md:items-start md:h-[200px] cursor-pointer bg-white rounded-lg bg-gray-400' >
+      <article key={table.id} onClick={() => handleClick(table)} className='cursor-pointer cover flex items-center h-[90px] md:items-start md:h-[200px] cursor-pointer bg-gray-400 rounded-lg'  >
         <div className='w-full flex justify-center m-auto'>
           <div className='flex flex-col items-center'>
             <img src={table.image} alt="" className='w-[50px] flex md:w-[100px]'/>

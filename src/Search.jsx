@@ -1,29 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore, collection, doc, setDoc, onSnapshot, updateDoc } from "firebase/firestore";
-
-
-const firebaseConfig = {
-
-  apiKey: "AIzaSyACtbBgoL3zMSan0hLsenIUBJJRdKEuy74",
-
-  authDomain: "rest-9be9d.firebaseapp.com",
-
-  projectId: "rest-9be9d",
-
-  storageBucket: "rest-9be9d.appspot.com",
-
-  messagingSenderId: "1071388118345",
-
-  appId: "1:1071388118345:web:52373773bf237cb6e91e98"
-
-};
-
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+import { collection, doc, setDoc, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
+import { app, db } from "../src/firebase";
 
 const Search = ({ tableId }) => {
   const [items, setItems] = useState([
@@ -44,19 +21,22 @@ const Search = ({ tableId }) => {
 
   const handleAddButtonClick = () => {
     if (selectedItem) {
-      setAddedItems([...addedItems, selectedItem]);
-      addItem(tableId, selectedItem);
+      const itemToAdd = { ...selectedItem, quantity: 1, totalPrice: selectedItem.price.toFixed(2) };
+      setAddedItems([...addedItems, itemToAdd]);
+      addItem(tableId, itemToAdd);
     }
   };
 
   const addItem = async (tableId, itemToAdd) => {
     try {
       const docRef = doc(collection(db, "tables"), tableId, "items", itemToAdd.id.toString());
-      await setDoc(docRef, itemToAdd);
+      const itemData = { ...itemToAdd }; // Добавляем свойство quantity со значением 1
+      await setDoc(docRef, itemData);
     } catch (error) {
       console.error("Error adding item to Firestore: ", error);
     }
   };
+  
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -68,17 +48,79 @@ const Search = ({ tableId }) => {
     );
     return () => unsubscribe();
   }, [tableId]);
-
+  const updateItem = async (tableId, itemId, dataToUpdate) => {
+    try {
+      const docRef = doc(collection(db, "tables", tableId, "items"), itemId.toString());
+      await updateDoc(docRef, dataToUpdate);
+    } catch (error) {
+      console.error("Error updating item in Firestore: ", error);
+    }
+  };
+  
+  const handlePlusButtonClick = async (id) => {
+    const updatedItems = addedItems.map((item) => {
+      if (item.id === id) {
+        const updatedQuantity = item.quantity + 1;
+        const totalPrice = (item.price * updatedQuantity).toFixed(2);
+        const updatedItem = { ...item, quantity: updatedQuantity, totalPrice };
+        updateItem(tableId, id, updatedItem);
+        return updatedItem;
+      } else {
+        return item;
+      }
+    });
+    setAddedItems(updatedItems);
+  };
+  
+  const handleMinusButtonClick = async (id) => {
+    const updatedItems = addedItems.map((item) => {
+      if (item.id === id) {
+        const updatedQuantity = item.quantity - 1;
+        if (updatedQuantity === 0) {
+          deleteItem(tableId, id);
+          return null;
+        } else {
+          const totalPrice = (item.price * updatedQuantity).toFixed(2);
+          const updatedItem = { ...item, quantity: updatedQuantity, totalPrice };
+          updateItem(tableId, id, updatedItem);
+          return updatedItem;
+        }
+      } else {
+        return item;
+      }
+    });
+    setAddedItems(updatedItems.filter((item) => item !== null));
+  };
+  const deleteItem = async (tableId, itemId) => {
+    try {
+      const docRef = doc(collection(db, "tables", tableId, "items"), itemId.toString());
+      await deleteDoc(docRef);
+    } catch (error) {
+      console.error("Error deleting item from Firestore: ", error);
+    }
+  };
+  const handleDeleteButtonClick = async (id) => {
+    try {
+      const docRef = doc(collection(db, "tables", tableId, "items"), id.toString());
+      await deleteDoc(docRef);
+      setAddedItems(addedItems.filter((item) => item.id !== id));
+    } catch (error) {
+      console.error("Error deleting item from Firestore: ", error);
+    }
+  };
   return (
     <div>
       <input type="text" value={searchTerm} onChange={handleInputChange} />
       <button onClick={handleAddButtonClick}>Add</button>
       <div>
-        {addedItems.map((item) => (
-          <div key={item.id}>
-            {item.text} - {item.price}
-          </div>
-        ))}
+      {addedItems.map((item) => (
+        <div key={item.id}>
+          {item.text} - {item.price} - {item.quantity + 'x'} - {item.totalPrice}
+          <button onClick={() => handleMinusButtonClick(item.id)}>-</button>
+          <button onClick={() => handlePlusButtonClick(item.id)}>+</button>
+          <button onClick={() => handleDeleteButtonClick(item.id)}>Удалить</button>
+        </div>
+      ))}
       </div>
     </div>
   );
