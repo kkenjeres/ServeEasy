@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { collection, doc, setDoc, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
 import { app, db } from "../src/firebase";
+import {AiFillMinusCircle, AiFillPlusCircle, AiOutlineCloseCircle} from 'react-icons/ai'
 
 const Search = ({ tableId }) => {
   const [items, setItems] = useState([
@@ -112,18 +113,34 @@ const Search = ({ tableId }) => {
   };
   return (
     <div>
-      <input type="text" value={searchTerm} onChange={handleInputChange} />
+      <input type="text" value={searchTerm} onChange={handleInputChange} placeholder="Suchen"
+        className='w-full px-2 rounded-lg'/>
       
       <button onClick={handleAddButtonClick}>Add</button>
-      <div>
-      {addedItems.map((item) => (
-        <div key={item.id}>
-          {item.text} - {item.price} - {item.quantity + 'x'} - {item.totalPrice}
-          <button onClick={() => handleMinusButtonClick(item.id)}>-</button>
-          <button onClick={() => handlePlusButtonClick(item.id)}>+</button>
-          <button onClick={() => handleDeleteButtonClick(item.id)}>Удалить</button>
-        </div>
-      ))}
+      <div className="bg-white px-2 rounded-lg">
+        <ul>
+          {addedItems.map((item) => (
+            <div key={item.id} className='flex-col w-full justify-between border-b border-black mt-2 '>
+              <div className="p-2">
+                <ul className='flex justify-between'>
+                  <li className='text-[18px]' key={item.id}>{item.quantity + "x" + ' ' + item.text}</li>
+                  <li className='font-bold' key={item.id}>{(item.price * item.quantity ).toFixed(2) +'€'}</li>
+                </ul>
+                <div className='flex justify-between'>
+                  <div className="flex flex-col mt-2">
+                    <div>
+                      <button onClick={() => handleMinusButtonClick(item.id)} className='text-[24px]'><AiFillMinusCircle /></button>
+                      <button onClick={() => handlePlusButtonClick(item.id)} className='ml-4 text-[24px]'><AiFillPlusCircle/></button>
+                    </div>
+                  </div>
+                  <button onClick={() => handleDeleteButtonClick(item.id)}>Löschen</button>
+                </div>
+              </div>
+              
+            </div>
+          ))}
+
+        </ul>
       </div>
     </div>
   );

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 
 import { db } from "../src/firebase";
 import { collection, doc, getDocs, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
+import logo from '../src/assets/logo.jpg'
+
 const Zahlen = ({ id, setTableData, tableId, onClose }) => {
   const [firebaseData, setFirebaseData] = useState([]);
 
@@ -39,9 +41,10 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
     onClose();
   };
   return (
-    <div className='fixed w-[40%] h-full top-0 left-0 flex  justify-center bg-white overflow-y-auto '>
+    <div className='fixed w-full h-full top-0 left-0 flex  justify-center bg-white overflow-y-auto '>
       <div className='w-full'>
         <div className='bg-white px-4 py-10  flex flex-col items-center justify-center'>
+        <img src={logo} alt="" className='w-[100px]'/>
           <h1 className='text-[30px] mb-10'>Al Vecchio Mulino</h1>
           <div className='flex flex-col text-center mb-10 w-full'>
             <div className='mb-20'>
@@ -80,9 +83,11 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
                 </table>
                 -----------------------------------------------------------
                 <div className='flex'>
-                <p className='text-black text-[16px] text-center w-full'>Zwischensumme: {totalPrice.toFixed(2)} €</p>
+                  <p className='text-black text-[16px] text-center w-full'>Zwischensumme: </p>
+                  <p> {totalPrice.toFixed(2)}</p>
 
                 </div>
+                
                 -----------------------------------------------------------
                 <table className='w-full'>
                   <thead >
@@ -136,6 +141,7 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
             <div className='w-full my-4 flex justify-center'>
               <div className='flex justify-between items-center w-[90%]'>
                 <p className='text-black text-[20px]'>Betrag bezahlt:</p>
+                <p className='text-black text-[24px]'>{totalPrice.toFixed(2) + ' Euro'}</p>
               </div>
               
             </div>
@@ -146,8 +152,8 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
             </div>
             -----------------------------------------------------------
             <p>Wir wünsche Ihnen einen shcönen Tag </p>
-            <button onClick={handleClearTableClick}>Очистить стол</button>
-            <button onClick={handleBackClick}>Назад</button>
+            <button onClick={handleClearTableClick} className='px-4 py-2 rounded-full bg-black mt-10 text-white'>Zahlen</button>
+            <button onClick={handleBackClick} className='px-4 py-2 rounded-full bg-white border border-black mt-10 text-black'>Zurück</button>
           </div>
         </div>
       </div>

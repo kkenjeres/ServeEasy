@@ -1,21 +1,26 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+
 const firebaseConfig = {
 
-  apiKey: "AIzaSyACtbBgoL3zMSan0hLsenIUBJJRdKEuy74",
+  apiKey: "AIzaSyBtFNeA9fKxOxBGvnsn4wZMrkeDaFr5d9o",
 
-  authDomain: "rest-9be9d.firebaseapp.com",
+  authDomain: "branko-1a7dd.firebaseapp.com",
 
-  projectId: "rest-9be9d",
+  projectId: "branko-1a7dd",
 
-  storageBucket: "rest-9be9d.appspot.com",
+  storageBucket: "branko-1a7dd.appspot.com",
 
-  messagingSenderId: "1071388118345",
+  messagingSenderId: "720327257363",
 
-  appId: "1:1071388118345:web:52373773bf237cb6e91e98"
+  appId: "1:720327257363:web:4d87e40c3028b752d3fee6"
 
 };
+
+
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
 
-export { db };
+export { app, auth, db };

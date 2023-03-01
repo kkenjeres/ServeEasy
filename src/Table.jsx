@@ -1,9 +1,9 @@
-import {React, useState, useEffect} from 'react' 
-import tableImg from '../src/assets/tableImg.svg'
+import { React, useState, useEffect } from 'react';
+import tableImg from '../src/assets/tableImg.svg';
 import { useNavigate } from 'react-router-dom';
-import { collection, getDocs, doc } from "firebase/firestore";
-import { db } from "../src/firebase";
-
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../src/firebase';
+import bg from '../src/assets/BG.svg'
 const Table = () => {
   const [tableData, setTableData] = useState(
     [
@@ -133,52 +133,62 @@ const Table = () => {
         tasks:[]
       }
     ]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
 
-  const checkItemsExist = async (tableId) => {
-    const querySnapshot = await getDocs(collection(db, `tables/${tableId}/items`));
-    return !querySnapshot.empty;
-  }
-
   useEffect(() => {
-    const updateTableColors = async () => {
-      const updatedTableData = tableData.map(async table => {
-        const hasItems = await checkItemsExist(table.id);
-        return {
-          ...table,
-          color: hasItems ? 'bg-green-500 ' : 'bg-gray-500'
-        }
-      });
-      const result = await Promise.all(updatedTableData);
-      setTableData(result);
+    const fetchData = async () => {
+      try {
+        const updatedTableData = await Promise.all(
+          tableData.map(async (table) => {
+            const querySnapshot = await getDocs(collection(db, `tables/${table.id}/items`));
+            const hasItems = !querySnapshot.empty;
+            return {
+              ...table,
+              color: hasItems ? 'bg-green-500' : 'bg-white',
+            };
+          })
+        );
+        setTableData(updatedTableData);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
     };
-    updateTableColors();
-  }, [tableData]);
+
+    fetchData();
+  }, []);
 
   const handleClick = (table) => {
     navigate(`/table/${table.id}`);
   };
-    
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
   return (
-    <div className='gap-2 grid grid-cols-2 md:space-y-0 pt-20 w-[80%] m-auto pb-20 font-bold'>
-      {tableData.map(table => (
-        <article
-          key={table.id}
-          onClick={() => handleClick(table)}
-          className={`cursor-pointer cover flex items-center h-[90px] md:items-start md:h-[200px] cursor-pointer rounded-lg ${table.color}`}
-        >
-          <div className='w-full flex justify-center m-auto'>
-            <div className='flex flex-col items-center'>
-              <img src={table.image} alt="" className='w-[50px] flex md:w-[100px]'/>
-              <p className='text-center'>{"Tisch" + " " + '#' + table.id}</p>
+    <div style={{backgroundImage: `url(${bg})`, backgroundSize: 'cover'}}>
+      <div className='gap-2 grid grid-cols-2 md:space-y-0 pt-20 w-[80%] m-auto pb-20 font-bold' >
+        {tableData.map((table) => (
+          <article
+            key={table.id}
+            onClick={() => handleClick(table)}
+            className={`cursor-pointer cover flex items-center h-[90px] md:items-start md:h-[200px] cursor-pointer rounded-lg ${table.color}`}
+          >
+            <div className='w-full flex justify-center m-auto'>
+              <div className='flex flex-col items-center'>
+                <img src={table.image} alt='' className='w-[50px] flex md:w-[100px]' />
+                <p className='text-center'>{'Tisch' + ' ' + '#' + table.id}</p>
+              </div>
             </div>
-          </div>
-        </article>
-      ))}
+          </article>
+        ))}
+      </div>
     </div>
   );
 };
-
 
 export default Table;
