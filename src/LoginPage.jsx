@@ -48,18 +48,19 @@ const LoginPage = () => {
   const navigate = useNavigate();
   
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    try {
-      const user = await loginUser(email, password);
-      if (user) {
-        localStorage.setItem('userId', user.uid);
-        navigate("/");
-      }
-    } catch (error) {
-      console.error(error);
+
+const handleLogin = async (event) => {
+  event.preventDefault();
+  try {
+    const user = await loginUser(email, password);
+    if (user) {
+      localStorage.setItem('userId', user.uid);
+      navigate("/");
     }
-  };
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   const handleFaceIdLogin = async (event) => {
     event.preventDefault();
@@ -90,8 +91,7 @@ const LoginPage = () => {
     } catch (error) {
       console.error(error);
     }
-  };
-
+};
   useEffect(() => {
     const userId = localStorage.getItem('userId');
     if (userId === 'faceIdUser') {
