@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAuth, setPersistence, browserSessionPersistence, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserSessionPersistence, onAuthStateChanged } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import bg from '../src/assets/BG.svg'
 import {BsPersonCircle, BsPersonFill} from 'react-icons/bs'
+
 
 const firebaseConfig = {
 
@@ -24,14 +25,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-setPersistence(auth, browserSessionPersistence)
-  .then(() => {
-    console.log("Session persistence set successfully!");
-  })
-  .catch((error) => {
-    console.error(error);
-  });
 const db = getFirestore(app);
+
 const loginUser = async (email, password) => {
   try {
     await setPersistence(auth, browserSessionPersistence);
@@ -43,11 +38,6 @@ const loginUser = async (email, password) => {
     return null;
   }
 };
-
-
-export { app, auth, db, loginUser};
-
-
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -95,7 +85,16 @@ const LoginPage = () => {
     }
   };
 
-  // Check if Face ID is supported by the browser
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigate("/");
+      }
+    });
+
+    return unsubscribe;
+  }, [auth, navigate]);
+
   useEffect(() => {
     if (window.FaceDetector) {
       console.log("Face detection is supported!");
