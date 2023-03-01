@@ -1,7 +1,8 @@
 import {React, useState, useEffect} from 'react' 
 import tableImg from '../src/assets/tableImg.svg'
 import { useNavigate } from 'react-router-dom';
-
+import { collection, getDocs, doc } from "firebase/firestore";
+import { db } from "../src/firebase";
 
 const Table = () => {
   const [tableData, setTableData] = useState(
@@ -132,38 +133,52 @@ const Table = () => {
         tasks:[]
       }
     ]);
-    
-  const [selectedTableId, setSelectedTableId] = useState(null);
-  const [selectedTable, setSelectedTable] = useState(null);
-  const [isVisible, setIsVisible] = useState(false);
+
   const navigate = useNavigate();
 
+  const checkItemsExist = async (tableId) => {
+    const querySnapshot = await getDocs(collection(db, `tables/${tableId}/items`));
+    return !querySnapshot.empty;
+  }
+
+  useEffect(() => {
+    const updateTableColors = async () => {
+      const updatedTableData = tableData.map(async table => {
+        const hasItems = await checkItemsExist(table.id);
+        return {
+          ...table,
+          color: hasItems ? 'bg-green-500 ' : 'bg-gray-500'
+        }
+      });
+      const result = await Promise.all(updatedTableData);
+      setTableData(result);
+    };
+    updateTableColors();
+  }, [tableData]);
 
   const handleClick = (table) => {
-    setSelectedTable(table);
-    setSelectedTableId(table.id);
-    setIsVisible(true);
     navigate(`/table/${table.id}`);
   };
     
-  
   return (
-    <div className='gap-2 grid grid-cols-2 md:space-y-0 pt-20 w-[80%] m-auto pb-20 font-bold' >
-        {tableData.map(table => (
-      <article key={table.id} onClick={() => handleClick(table)} className='cursor-pointer cover flex items-center h-[90px] md:items-start md:h-[200px] cursor-pointer bg-gray-400 rounded-lg'  >
-        <div className='w-full flex justify-center m-auto'>
-          <div className='flex flex-col items-center'>
-            <img src={table.image} alt="" className='w-[50px] flex md:w-[100px]'/>
-            <p className='text-center'>{"Tisch" + " " + '#' + table.id}</p>
+    <div className='gap-2 grid grid-cols-2 md:space-y-0 pt-20 w-[80%] m-auto pb-20 font-bold'>
+      {tableData.map(table => (
+        <article
+          key={table.id}
+          onClick={() => handleClick(table)}
+          className={`cursor-pointer cover flex items-center h-[90px] md:items-start md:h-[200px] cursor-pointer rounded-lg ${table.color}`}
+        >
+          <div className='w-full flex justify-center m-auto'>
+            <div className='flex flex-col items-center'>
+              <img src={table.image} alt="" className='w-[50px] flex md:w-[100px]'/>
+              <p className='text-center'>{"Tisch" + " " + '#' + table.id}</p>
+            </div>
           </div>
-        </div>
-      </article>
-    ))}
-      
-      
+        </article>
+      ))}
     </div>
-    
   );
 };
+
 
 export default Table;
