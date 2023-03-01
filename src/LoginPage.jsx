@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
@@ -25,7 +25,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
 const loginUser = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -46,21 +45,18 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  
 
-
-const handleLogin = async (event) => {
-  event.preventDefault();
-  try {
-    const user = await loginUser(email, password);
-    if (user) {
-      localStorage.setItem('userId', user.uid);
-      navigate("/");
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    try {
+      const user = await loginUser(email, password);
+      if (user) {
+        navigate("/");
+      }
+    } catch (error) {
+      console.error(error);
     }
-  } catch (error) {
-    console.error(error);
-  }
-};
+  };
 
   const handleFaceIdLogin = async (event) => {
     event.preventDefault();
@@ -86,18 +82,17 @@ const handleLogin = async (event) => {
       });
       // Use the credential to authenticate the user
       console.log("Credential:", credential);
-      localStorage.setItem('userId', 'faceIdUser');
-      navigate.push('/');
     } catch (error) {
       console.error(error);
     }
-};
+  };
+
+  // Check if Face ID is supported by the browser
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
-    if (userId === 'faceIdUser') {
-      handleFaceIdLogin({ preventDefault: () => {} });
-    } else if (userId) {
-      navigate("/");
+    if (window.FaceDetector) {
+      console.log("Face detection is supported!");
+    } else {
+      console.log("Face detection is not supported!");
     }
   }, []);
 
