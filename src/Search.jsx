@@ -10,7 +10,9 @@ const Search = ({ tableId }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
   const [addedItems, setAddedItems] = useState([]);
-
+  const foundItems = items.filter((item) =>
+  item.id.toString().includes(searchTerm)
+);
   const handleInputChange = (event) => {
     const { value } = event.target;
     setSearchTerm(value);
@@ -111,6 +113,7 @@ const Search = ({ tableId }) => {
   return (
     <div>
       <input type="text" value={searchTerm} onChange={handleInputChange} />
+      
       <button onClick={handleAddButtonClick}>Add</button>
       <div>
       {addedItems.map((item) => (

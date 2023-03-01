@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
-import { getDocs, collection } from "firebase/firestore";
-import { db } from "../src/firebase";
 
-const Zahlen = ({ tableData, tableId }) => {
+
+import { useEffect, useState } from "react";
+
+import { db } from "../src/firebase";
+import { collection, doc, getDocs, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
+const Zahlen = ({ id, setTableData, tableId, onClose }) => {
   const [firebaseData, setFirebaseData] = useState([]);
 
   useEffect(() => {
@@ -19,8 +21,23 @@ const Zahlen = ({ tableData, tableId }) => {
     return acc + item.price * item.quantity;
   }, 0);
 
-  // рендеринг компонента с использованием firebaseData вместо tableData
+  const handleClearTableClick = async () => {
+    try {
+      const tableItemsRef = collection(db, "tables", tableId, "items");
+      const tableItemsSnapshot = await getDocs(tableItemsRef);
+      tableItemsSnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref);
+      });
+      setTableData([]);
+      onClose();
+    } catch (error) {
+      console.error("Error clearing table in Firestore: ", error);
+    }
+  };
 
+  const handleBackClick = () => {
+    onClose();
+  };
   return (
     <div className='fixed w-[40%] h-full top-0 left-0 flex  justify-center bg-white overflow-y-auto '>
       <div className='w-full'>
@@ -129,7 +146,8 @@ const Zahlen = ({ tableData, tableId }) => {
             </div>
             -----------------------------------------------------------
             <p>Wir wünsche Ihnen einen shcönen Tag </p>
-            
+            <button onClick={handleClearTableClick}>Очистить стол</button>
+            <button onClick={handleBackClick}>Назад</button>
           </div>
         </div>
       </div>
