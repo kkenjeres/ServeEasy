@@ -29,7 +29,7 @@ const db = getFirestore(app);
 
 const loginUser = async (email, password) => {
   try {
-    await setPersistence(auth, browserSessionPersistence);
+    await setPersistence(auth, localStorage);
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     return user;
