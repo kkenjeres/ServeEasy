@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useHistory } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
@@ -46,7 +46,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const history = useHistory();
+  
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -86,7 +86,7 @@ const LoginPage = () => {
       // Use the credential to authenticate the user
       console.log("Credential:", credential);
       localStorage.setItem('userId', 'faceIdUser');
-      history.push('/');
+      navigate.push('/');
     } catch (error) {
       console.error(error);
     }
