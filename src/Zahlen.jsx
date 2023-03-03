@@ -90,50 +90,58 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
                 
                 -----------------------------------------------------------
                 <table className='w-full'>
-                  <thead >
-                    <tr className=' '>
-                      <th className='text-left w-[25%]'>MwSt %</th>
-                      <th className='text-center w-[25%]'>Netto</th>
-                      <th className='text-center w-[25%]'>MwSt</th>
-                      <th className='text-right w-[25%]'>Brutto</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className=' '>
-                      <td className='text-left w-[25%]'>{
-                        firebaseData.length > 0 && 
-                        firebaseData.reduce((total, item) => {
-                          return total + item.percent;
-                        }, 0) / firebaseData.length
-                      } %</td>
-                      <td className='text-center w-[25%]'>{ 
-                        firebaseData.length > 0 && 
-                        firebaseData.reduce((total, item) => {
-                          const totalPrice = item.price * item.quantity;
-                          const netto = totalPrice / (1 + item.percent / 100);
-                          return total + netto;
-                        }, 0).toFixed(2)
-                      }</td>
-                      <td className='text-center w-[25%]'>{
-                        firebaseData.length > 0 && 
-                        firebaseData.reduce((total, item) => {
-                          const totalPrice = item.price * item.quantity;
-                          const netto = totalPrice / (1 + item.percent / 100);
-                          const mwst = totalPrice - netto;
-                          return total + mwst;
-                        }, 0).toFixed(2)
-                      }</td>
-                      <td className='text-right w-[25%]'>{
-                        firebaseData.length > 0 && 
-                        firebaseData.reduce((total, item) => {
-                          const totalPrice = item.price * item.quantity;
-                          const brutto = totalPrice;
-                          return total + brutto;
-                        }, 0).toFixed(2)
-                      }</td>
-                    </tr>
-                  </tbody>
-                </table>
+  <thead >
+    <tr className=' '>
+      <th className='text-left w-[25%]'>MwSt %</th>
+      <th className='text-center w-[25%]'>Netto</th>
+      <th className='text-center w-[25%]'>MwSt</th>
+      <th className='text-right w-[25%]'>Brutto</th>
+    </tr>
+  </thead>
+  {firebaseData.length > 0 && (
+    <tbody>
+      {firebaseData.reduce((acc, item) => {
+        const group = acc.find((group) => group.percent === item.percent);
+        if (group) {
+          group.items.push(item);
+        } else {
+          acc.push({
+            percent: item.percent,
+            items: [item],
+          });
+        }
+        return acc;
+      }, []).map((group) => (
+        <tr key={group.percent} className=' '>
+          <td className='text-left w-[25%]'>{group.percent} %</td>
+          <td className='text-center w-[25%]'>{ 
+            group.items.reduce((total, item) => {
+              const totalPrice = item.price * item.quantity;
+              const netto = totalPrice / (1 + item.percent / 100);
+              return total + netto;
+            }, 0).toFixed(2)
+          }</td>
+          <td className='text-center w-[25%]'>{
+            group.items.reduce((total, item) => {
+              const totalPrice = item.price * item.quantity;
+              const netto = totalPrice / (1 + item.percent / 100);
+              const mwst = totalPrice - netto;
+              return total + mwst;
+            }, 0).toFixed(2)
+          }</td>
+          <td className='text-right w-[25%]'>{
+            group.items.reduce((total, item) => {
+              const totalPrice = item.price * item.quantity;
+              const brutto = totalPrice;
+              return total + brutto;
+            }, 0).toFixed(2)
+          }</td>
+        </tr>
+      ))}
+    </tbody>
+  )}
+</table>
+
               </div>
             </div>
             -----------------------------------------------------------
