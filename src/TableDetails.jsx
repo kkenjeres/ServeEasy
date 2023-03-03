@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import bg from '../src/assets/BG.svg';
 import Search from './Search';
 import Zahlen from './Zahlen';
-import {IoArrowBackCircleOutline} from 'react-icons/io5'
+import {AiOutlineArrowLeft} from 'react-icons/ai'
 
 function TableDetails() {
   const { id } = useParams();
@@ -22,13 +22,17 @@ function TableDetails() {
     setShowZahlen(false);
   }
   return (
-    <div className='w-full h-screen   items-center justify-center bg-gray-500 overflow-y-auto font-bold' style={{ backgroundImage: `url(${bg})`, backgroundSize: 'cover' }}>
-      <button onClick={handleBack}className='text-[40px] mt-2 ml-2'><IoArrowBackCircleOutline /></button>
+    <div className='w-full h-screen overflow-y-auto font-bold bg-white flex flex-col ' >
+      <button onClick={handleBack} className='text-[32px] mt-2 ml-2'><AiOutlineArrowLeft className=' border p-1 border-black rounded-full' /></button>
       
-      <div className='h-full w-[90%] m-auto mt-[50px] text-center'>
-        <h1 className='mb-[100px] text-[30px]'>Tisch #{id}</h1>
+      <div className=' w-[90%] mx-auto h-full text-center'>
+        <h1 className='mt-10 mb-[100px] border-b border-black text-left text-black font-normal text-[25px]'>Tisch #{id}</h1>
         <Search tableId={id} setTableData={setTableData} />
-        <button onClick={handleZahlenClick} className='px-4 py-2 rounded-full bg-black mt-10 text-white w-full'>Zahlen</button>
+        <div className='fixed bottom-0 left-0 w-full'>
+          <p className='border border-gray-300 '></p>
+        <button onClick={handleZahlenClick} className='py-2  bg-black text-white w-[90%] rounded-lg my-4 '>Zahlen</button>
+
+        </div>
         {showZahlen && <Zahlen tableId={id} setTableData={setTableData} onClose={() => setShowZahlen(false)} />}
       </div>
     </div>

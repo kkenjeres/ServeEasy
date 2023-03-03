@@ -14,3 +14,20 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.zahlen-modal {
+  position: fixed;
+  top: 20px;
+  bottom: -100%;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background-color: white;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  transition: bottom 0.3s ease-in-out;
+}
+
+.zahlen-modal--open {
+  bottom: 0;
+}

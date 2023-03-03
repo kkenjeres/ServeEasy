@@ -170,7 +170,7 @@ const Table = () => {
   }
 
   return (
-    <div style={{backgroundImage: `url(${bg})`, backgroundSize: 'cover'}}>
+    <div className='bg-[#edf5ff]'>
       <div className='gap-2 grid grid-cols-2 md:space-y-0 pt-20 w-[80%] m-auto pb-20 font-bold' >
         {tableData.map((table) => (
           <article
