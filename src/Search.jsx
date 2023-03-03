@@ -299,12 +299,12 @@ const handleAddButtonClick = (item) => {
         value={searchTerm}
         onChange={handleInputChange}
         placeholder="Suchen"
-        className="w-full px-2 rounded-lg border border-black"
+        className="w-full px-2 py-1 mt-10 placeholder:text-gray-500 rounded-lg bg-gray-300 focus:ring-2  focus:outline-none"
       />
   
       {searchTerm !== "" && (
         <div className="bg-white mt-2 rounded-lg">
-          <ul className="bg-gray-300 rounded-lg">
+          <ul className=" rounded-lg">
             {filteredItems.map((item) => (
               <div className="flex justify-between w-full p-2">
                 <li key={item.id}>
@@ -324,13 +324,12 @@ const handleAddButtonClick = (item) => {
               key={item.id}
               className="flex-col w-full justify-between border-b border-gray-300 mt-2 "
             >
-              <div className="p-2">
-                <ul className="flex justify-between">
-                  <li className="text-[18px]" key={item.id}>
-                    <input type="checkbox" value={item.id} />
+              <div className="p-2 font-medium">
+                <ul className="flex justify-between text-left">
+                  <li className="text-[16px]" key={item.id}>
                     {item.text}
                   </li>
-                  <li className="font-bold" key={item.id}>
+                  <li className="text-[16px] " key={item.id}>
                     {(item.price * item.quantity).toFixed(2) + "€"}
                   </li>
                 </ul>
