@@ -11,7 +11,7 @@ const Extra = ({ itemId, onExtraItemSelected }) => {
   };
 
   return (
-    <div className='bg-red-300'>
+    <div className='bg-gray-200'>
       <ul>
         {extraItem.map((item) => (
           <li className='w-full flex justify-between px-20 border-b border-black py-6' key={item.id}>

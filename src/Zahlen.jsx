@@ -1,7 +1,7 @@
 
 
 import { useEffect, useState } from "react";
-
+import React from "react";
 import { db } from "../src/firebase";
 import { collection, doc, getDocs, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
 import logo from '../src/assets/logo.jpg'
@@ -20,8 +20,17 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
   }, [tableId]);
 
   const totalPrice = firebaseData.reduce((acc, item) => {
-    return acc + item.price * item.quantity;
+    let itemTotal = item.price * item.quantity;
+  
+    if (item.extras) {
+      itemTotal += item.extras.reduce((extraAcc, extra) => {
+        return extraAcc + extra.price * extra.quantity;
+      }, 0);
+    }
+  
+    return acc + itemTotal;
   }, 0);
+  
 
   const handleClearTableClick = async () => {
     try {
@@ -69,17 +78,27 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
                   </thead>
                   
                   <tbody>
-                    
-                  {firebaseData.map((item, index) => (
-        <tr key={index} className='text-black text-left'>
-          <td>{item.quantity}</td>
-          <td className='text-left'>{item.text}</td>
-          <td className='text-center'>{item.price.toFixed(2)}</td>
-          <td className='text-center'>{(item.price * item.quantity).toFixed(2)}</td>
-          <td className='text-right'>{item.percent}</td>
+  {firebaseData.map((item, index) => (
+    <React.Fragment key={index}>
+      <tr className='text-black text-left'>
+        <td>{item.quantity}</td>
+        <td className='text-left'>{item.text}</td>
+        <td className='text-center'>{item.price.toFixed(2)}</td>
+        <td className='text-center'>{(item.price * item.quantity).toFixed(2)}</td>
+        <td className='text-right'>{item.percent}</td>
+      </tr>
+      {item.extras && item.extras.map((extra, extraIndex) => (
+        <tr key={`${index}-${extraIndex}`} className='text-black text-left'>
+          <td>{extra.quantity}</td>
+          <td className='text-left pl-4'>- {extra.text}</td>
+          <td className='text-center'>{extra.price.toFixed(2)}</td>
+          <td className='text-center'>{(extra.price * extra.quantity).toFixed(2)}</td>
+          <td className='text-right'>{extra.percent}</td>
         </tr>
       ))}
-                  </tbody>
+    </React.Fragment>
+  ))}
+</tbody>
                 </table>
                 -----------------------------------------------------------
                 <div className='flex'>
