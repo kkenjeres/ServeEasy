@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../src/firebase';
 import bg from '../src/assets/BG.svg'
+import logo from '../src/assets/logo.jpg'
+
 const Table = () => {
   const [tableData, setTableData] = useState(
     [
@@ -164,10 +166,14 @@ const Table = () => {
   const handleClick = (table) => {
     navigate(`/table/${table.id}`);
   };
-
   if (isLoading) {
-    return <p>Loading...</p>;
+    return (
+      <div className='flex justify-center items-center h-screen'>
+        <img src={logo} alt="Loading logo" />
+      </div>
+    );
   }
+  
 
   return (
     <div className='bg-[#edf5ff]'>
@@ -187,6 +193,7 @@ const Table = () => {
           </article>
         ))}
       </div>
+
     </div>
   );
 };
