@@ -329,6 +329,14 @@ const addItem = async (tableId, itemToAdd) => {
     });
     setAddedItems(updatedItems);
   };
+  const calculateTotalPriceWithExtras = (item) => {
+    const extrasTotalPrice = item.extras.reduce(
+      (total, extra) => total + extra.price * extra.quantity,
+      0
+    );
+    return (item.price * item.quantity + extrasTotalPrice).toFixed(2);
+  };
+  
   return (
     <div>
       <input
@@ -372,7 +380,8 @@ const addItem = async (tableId, itemToAdd) => {
                     {item.text}
                   </li>
                   <li className="text-[16px] " key={item.id}>
-                    {(item.price * item.quantity).toFixed(2) + "€"}
+                  {calculateTotalPriceWithExtras(item) + "€"}
+
                   </li>
                 </ul>
                 {item.extras.map((extra) => (
@@ -380,7 +389,7 @@ const addItem = async (tableId, itemToAdd) => {
                       key={extra.id}
                       className="text-sm text-gray-600 flex justify-between"
                     >
-                      {extra.text} ({extra.quantity}) - {extra.price}€
+                      {extra.text} ({extra.quantity}) - {extra.price.toFixed(2)}€
                     </li>
                   ))}
                 <div className="flex justify-between">
@@ -410,7 +419,7 @@ const addItem = async (tableId, itemToAdd) => {
                   </button>
                 </div>
                 {selectedItemId === item.id && (
-                    <Extra itemId={item.id} onExtraItemSelected={handleExtraItemSelected} />
+                    <Extra itemId={item.id} onExtraItemSelected={handleExtraItemSelected} setSelectedItemId={setSelectedItemId} />
                   )}             
               </div>
             </div>
