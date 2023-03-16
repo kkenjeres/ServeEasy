@@ -389,7 +389,7 @@ const addItem = async (tableId, itemToAdd) => {
                       key={extra.id}
                       className="text-sm text-gray-600 flex justify-between"
                     >
-                      + {extra.text}
+                      + {extra.text} 
                     </li>
                   ))}
                 <div className="flex justify-between mt-5">
