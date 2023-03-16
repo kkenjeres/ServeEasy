@@ -61,19 +61,20 @@ const [currentPage, setCurrentPage] = useState(1);
 
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
-      <div className="bg-gray-200 rounded-lg md:w-[60%] w-[90%] flex flex-col">
+<div className="rounded-lg md:w-[60%] w-[90%] flex flex-col bg-gradient-to-br from-gray-200 via-gray-300 to-gray-100 shadow-md">
+
         <div className="flex justify-between items-start px-4 py-2">
           <div></div>
           <button
-            className="rounded-lg my-4 text-[20px] px-2"
+            className="rounded-lg my-4 text-[30px] px-2"
             onClick={handleCloseButtonClick}
           >
             <AiOutlineCloseCircle />
           </button>
         </div>
-        <ul className="gap-2 grid grid-cols-2 ">
+        <ul className="gap-2 grid grid-cols-2 px-2">
           {paginatedItems.map((item) => (
-            <div className={`w-full flex justify-between py-2 px-4 text-white rounded-xl ${
+            <div className={`w-full flex flex-col py-2 px-4 text-white rounded-xl ${
               clickedItemId === item.id ? 'bg-green-500' : 'bg-blue-500'
             }`} 
             key={item.id} 
@@ -85,12 +86,15 @@ const [currentPage, setCurrentPage] = useState(1);
               }, 100);
             }}>
               <li>
-                {item.text} {item.price.toFixed(2)}c
+                {item.text}
+              </li>
+              <li>
+                {item.price.toFixed(2)} c
               </li>
             </div>
           ))}
         </ul>
-        <div className="flex justify-center mt-4">
+        <div className="flex justify-center my-4">
           {[...Array(totalPages)].map((_, index) => (
             <button
               key={index}

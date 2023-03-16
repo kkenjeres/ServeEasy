@@ -348,14 +348,14 @@ const addItem = async (tableId, itemToAdd) => {
       />
   
       {searchTerm !== "" && (
-        <div className="bg-white mt-2 rounded-lg">
+        <div className="bg-white mt-2 rounded-lg" >
           <ul className=" rounded-lg">
             {filteredItems.map((item) => (
-              <div className="flex justify-between w-full p-2">
+              <div className="flex justify-between w-full p-2 shadow-xl rounded-xl" onClick={() => handleAddButtonClick(item)}>
                 <li key={item.id}>
                   {item.text}{" "}
                 </li>
-                  <button onClick={() => handleAddButtonClick(item)}><AiOutlinePlus/></button>
+                +
               </div>
             ))}
           </ul>
@@ -389,11 +389,11 @@ const addItem = async (tableId, itemToAdd) => {
                       key={extra.id}
                       className="text-sm text-gray-600 flex justify-between"
                     >
-                      {extra.text} ({extra.quantity}) - {extra.price.toFixed(2)}€
+                      + {extra.text}
                     </li>
                   ))}
-                <div className="flex justify-between">
-                  <div className="flex flex-col mt-2">
+                <div className="flex justify-between mt-5">
+                  <div className="flex flex-col">
                     <div className="bg-gray-300 px-2 py-1 rounded-full items-center flex justify-between gap-5">
                       <button
                         onClick={() => handleMinusButtonClick(item.id)}
@@ -428,6 +428,6 @@ const addItem = async (tableId, itemToAdd) => {
       </div>
     </div>
   );
-          }   
+}   
 
 export default Search;

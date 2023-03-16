@@ -88,14 +88,15 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
         <td className='text-right'>{item.percent}</td>
       </tr>
       {item.extras && item.extras.map((extra, extraIndex) => (
-        <tr key={`${index}-${extraIndex}`} className='text-black text-left'>
-          <td>{extra.quantity}</td>
-          <td className='text-left pl-4'>- {extra.text}</td>
-          <td className='text-center'>{extra.price.toFixed(2)}</td>
-          <td className='text-center'>{(extra.price * extra.quantity).toFixed(2)}</td>
-          <td className='text-right'>{extra.percent}</td>
-        </tr>
-      ))}
+  <tr key={`${index}-${extraIndex}`} className='text-black text-left'>
+    <td>{extra.quantity = ''}</td>
+    <td className='text-left pl-2'>+ {extra.text}</td>
+    <td className='text-center'>{extra.price.toFixed(2)}</td>
+    <td className='text-center'>{extra.price.toFixed(2)}</td>
+    <td className='text-right'>{extra.percent}</td>
+  </tr>
+))}
+
     </React.Fragment>
   ))}
 </tbody>
