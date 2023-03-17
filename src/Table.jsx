@@ -2,11 +2,26 @@ import { React, useState, useEffect } from 'react';
 import tableImg from '../src/assets/tableImg.svg';
 import { useNavigate } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../src/firebase';
+import { auth, db, onAuthStateChanged, signOut } from '../src/firebase';
 import bg from '../src/assets/BG.svg'
 import logo from '../src/assets/logo.jpg'
+import {FiLogOut} from 'react-icons/fi'
 
 const Table = () => {
+  const [userEmail, setUserEmail] = useState(null);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserEmail(user.email);
+      } else {
+        setUserEmail(null);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
   const [tableData, setTableData] = useState(
     [
       {
@@ -173,10 +188,34 @@ const Table = () => {
       </div>
     );
   }
-  
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      navigate('/login');
+    } catch (error) {
+      console.error('Error signing out: ', error);
+    }
+  };
 
   return (
     <div className='bg-[#edf5ff]'>
+      <div className="text-left pt-5 font-bold flex justify-between px-2 items-center">
+        <div className='flex flex-col'>
+          <span>Hallo 👋</span>
+          <span>{userEmail ? ` ${userEmail}` : 'Not logged in'}</span>
+        </div>
+      
+        {userEmail && (
+      <div className="text-center ">
+        <button
+          onClick={handleSignOut}
+          className=" text-black  rounded"
+        >
+          <FiLogOut />
+        </button>
+      </div>
+    )}
+    </div>
       <div className='gap-2 grid grid-cols-2 md:space-y-0 pt-20 w-[80%] m-auto pb-20 font-bold' >
         {tableData.map((table) => (
           <article
