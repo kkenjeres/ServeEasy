@@ -26,7 +26,8 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
       itemWithExtras.extras = item.extras.map((extra) => ({ ...extra }));
     }
   
-    const selectedQuantity = selectedQuantities[item.id] || item.quantity;
+    // Установка начального значения счетчика на 1
+    const selectedQuantity = 1;
   
     if (splitItems.some((i) => i.id === item.id)) {
       setSplitItems(splitItems.filter((i) => i.id !== item.id));
@@ -34,8 +35,10 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
     } else {
       itemWithExtras.selectedQuantity = Number(selectedQuantity);
       setSplitItems([...splitItems, itemWithExtras]);
+      setSelectedQuantities({ ...selectedQuantities, [item.id]: selectedQuantity });
     }
   };
+  
   
   
   useEffect(() => {
@@ -49,16 +52,18 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
   }, [tableId]);
 
   const totalPrice = firebaseData.reduce((acc, item) => {
-    let itemTotal = item.price * item.quantity;
+    const selectedQuantity = selectedQuantities[item.id] || item.quantity;
+    let itemTotal = item.price * selectedQuantity;
   
     if (item.extras) {
       itemTotal += item.extras.reduce((extraAcc, extra) => {
-        return extraAcc + extra.price * extra.quantity;
+        return extraAcc + extra.price * selectedQuantity;
       }, 0);
     }
   
     return acc + itemTotal;
   }, 0);
+  
   
 
   const handleClearTableClick = async () => {
@@ -129,16 +134,20 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
   
    
   const incrementQuantity = (itemId) => {
+    const item = firebaseData.find((item) => item.id === itemId);
+    const maxQuantity = item.quantity;
     const currentQuantity = selectedQuantities[itemId] || 1;
-    setSelectedQuantities({ ...selectedQuantities, [itemId]: currentQuantity + 1 });
+  
+    if (currentQuantity < maxQuantity) {
+      setSelectedQuantities({ ...selectedQuantities, [itemId]: currentQuantity + 1 });
+    }
   };
   
-  const decrementQuantity = (itemId, itemQuantity) => {
+  const decrementQuantity = (itemId) => {
     const currentQuantity = selectedQuantities[itemId] || 1;
+  
     if (currentQuantity > 1) {
       setSelectedQuantities({ ...selectedQuantities, [itemId]: currentQuantity - 1 });
-    } else {
-      setSelectedQuantities({ ...selectedQuantities, [itemId]: itemQuantity });
     }
   };
   return (
@@ -170,70 +179,75 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
                   </thead>
                   
                   <tbody>
-  {firebaseData.map((item, index) => (
-    <React.Fragment key={index}>
-      <tr
-        className={`text-black text-left ${
-          splitItems.some((i) => i.id === item.id) ? "bg-green-300" : ""
-        }`}
-        onClick={(e) => handleRowClick(item, e)}
-      >
-        <td className="flex justify-center items-center">
-          {splitItems.some((i) => i.id === item.id) && item.quantity > 1 && ( // Добавлено условие для отображения кнопок плюс и минус
-            <>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  decrementQuantity(item.id, item.quantity);
-                }}
-                className="px-2 py-1 bg-gray-200 text-black font-semibold"
-              >
-                -
-              </button>
-              <span className="mx-2">
-                {selectedQuantities[item.id] || item.quantity}
-              </span>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  incrementQuantity(item.id);
-                }}
-                className="px-2 py-1 bg-gray-200 text-black font-semibold"
-              >
-                +
-              </button>
-            </>
-          )}
-        </td>
-        <td>{item.quantity}</td>
-        <td className="text-left">{item.text}</td>
-        <td className="text-center">{item.price.toFixed(2)}</td>
-        <td className="text-center">{(item.price * item.quantity).toFixed(2)}</td>
-        <td className="text-right">{item.percent}</td>
-      </tr>
-      {item.extras &&
-        item.extras.map((extra, extraIndex) => (
-          <tr
-            key={`${index}-${extraIndex}`}
-            className={`text-black text-left ${
-              splitItems.some((i) => i.id === item.id) ? "bg-green-300" : ""
-            }`}
-            onClick={() => handleItemSelection(item)}
-          >
-            <td>{extra.quantity = ''}</td>
-            <td className="text-left pl-2">+ {extra.text}</td>
-            <td className="text-center">{extra.price.toFixed(2)}</td>
-            <td className='text-center'>{extra.price.toFixed(2)}</td>
-            <td className="text-right">{extra.percent}</td>
-          </tr>
-        ))}
-    </React.Fragment>
-  ))}
-</tbody>
+    {firebaseData.map((item, index) => (
+      <React.Fragment key={index}>
+        <tr
+          className={`text-black text-left ${
+            splitItems.some((i) => i.id === item.id) ? "line-through" : ""
+          }`}
+          onClick={(e) => handleRowClick(item, e)}
+        >
+          <td>{item.quantity}</td>
+          <td className="text-left">{item.text}</td>
+          <td className="text-center">{item.price.toFixed(2)}</td>
+          <td className="text-center">{(item.price * item.quantity).toFixed(2)}</td>
+          <td className="text-right">{item.percent}</td>
+        </tr>
+        <tr className="">
+          <td colSpan="5">
+            <div className="flex justify-center items-center">
+              {splitItems.some((i) => i.id === item.id) && item.quantity > 1 && (
+                <div className="flex space-between w-full">
+                  <div className="flex flex-col">
+                    <div className="bg-gray-300 px-2 rounded-full items-center flex justify-between gap-4">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          decrementQuantity(item.id, item.quantity);
+                        }}
+                        className="text-[20px]"
+                      >
+                        -
+                      </button>
+                      <span className="text-[16px]">{selectedQuantities[item.id] || item.quantity}</span>
 
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          incrementQuantity(item.id);
+                        }}
+                        className=" text-[20px]"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </td>
+        </tr>
+        {item.extras &&
+          item.extras.map((extra, extraIndex) => (
+            <tr
+              key={`${index}-${extraIndex}`}
+              className={`text-black text-left ${
+                splitItems.some((i) => i.id === item.id) ? "line-through" : ""
+              }`}
+              onClick={() => handleItemSelection(item)}
+            >
+              <td>{extra.quantity = ''}</td>
+              <td className="text-left pl-2">+ {extra.text}</td>
+              <td className="text-center">{extra.price.toFixed(2)}</td>
+              <td className='text-center'>{extra.price.toFixed(2)}</td>
+              <td className="text-right">{extra.percent}</td>
+            </tr>
+          ))}
+      </React.Fragment>
+    ))}
+  </tbody>
+</table>
 
-
-                </table>
                 -----------------------------------------------------------
                 <div className='flex'>
                   <p className='text-black text-[16px] text-center w-full'>Zwischensumme: </p>
@@ -313,7 +327,7 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
             </div>
             -----------------------------------------------------------
             <p>Wir wünsche Ihnen einen shcönen Tag </p>
-            <button onClick={handlePaySelectedItems} className='px-4 py-2 rounded-full bg-black mt-10 text-white'>Pay Selected Items</button>
+            <button onClick={handlePaySelectedItems} className='px-4 py-2 rounded-full bg-black mt-10 text-white'>Getrennt Zahlen</button>
 
             <button onClick={handleClearTableClick} className='px-4 py-2 rounded-full bg-black mt-10 text-white'>Zahlen</button>
             <button onClick={handleBackClick} className='px-4 py-2 rounded-full bg-white border border-black mt-10 text-black'>Zurück</button>
