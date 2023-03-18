@@ -76,6 +76,13 @@ function registerValidSW(swUrl, config) {
               if (config && config.onUpdate) {
                 config.onUpdate(registration);
               }
+
+              // Add a 'controllerchange' event listener
+              navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (window.confirm('Обновления доступны. Обновить сейчас?')) {
+                  window.location.reload();
+                }
+              });
             } else {
               // At this point, everything has been precached.
               // It's the perfect time to display a
@@ -135,3 +142,4 @@ export function unregister() {
       });
   }
 }
+

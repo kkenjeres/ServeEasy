@@ -148,7 +148,12 @@ const Table = () => {
         id: 25,
         image: tableImg,
         tasks:[]
-      }
+      },
+      {
+        id: 50,
+        image: tableImg,
+        tasks:[]
+      },
     ]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -197,6 +202,7 @@ const Table = () => {
     }
   };
 
+  
   return (
     <div className='bg-[#edf5ff]'>
       <div className="text-left pt-5 font-bold flex justify-between px-2 items-center">

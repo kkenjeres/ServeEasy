@@ -205,13 +205,18 @@ const handleInputChange = (event) => {
 
 
 const handleAddButtonClick = (item) => {
+  // Добавьте условие для скидки
+  const discountedPrice = tableId === "50" ? item.price * 0.9 : item.price;
+
   const itemToAdd = {
     ...item,
+    price: discountedPrice, // Используйте скидочную цену
     quantity: 1,
-    totalPrice: item.price.toFixed(2),
+    totalPrice: discountedPrice.toFixed(2),
     extras: [],
+    tableId: tableId,
   };
-  setAddedItems([...addedItems, itemToAdd]);
+  setAddedItems([itemToAdd, ...addedItems]);
   addItem(tableId, itemToAdd);
   setSearchTerm("");
   setSelectedItem(null);
