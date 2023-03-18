@@ -144,11 +144,7 @@ const Table = () => {
         image: tableImg,
         tasks:[]
       },
-      {
-        id: 25,
-        image: tableImg,
-        tasks:[]
-      },
+      
       {
         id: 50,
         image: tableImg,
