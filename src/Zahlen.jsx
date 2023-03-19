@@ -167,7 +167,7 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
             <div className='w-full flex flex-col items-center'>
               <div className='w-full'>
 
-                <table className=' font-normal w-[90%] m-auto'>
+                <table className=' font-normal w-full'>
                   <thead className='text-left'>
                     <tr>
                       <th>M</th>
@@ -250,7 +250,7 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
 
 <div style={{width: '100%', height: '2px', backgroundColor: 'transparent', backgroundImage: 'linear-gradient(to right, black 50%, transparent 0%)', backgroundPosition: '0 1px', backgroundSize: '6px 1px', backgroundRepeat: 'repeat-x', marginTop: '10px', marginBottom: '10px'}}></div>
 
-                <div className='flex'>
+                <div className='flex font-[500]'>
                   <p className='text-black text-[16px] text-center w-full'>Zwischensumme: </p>
                   <p> {totalPrice.toFixed(2)}</p>
 
@@ -281,8 +281,8 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
         }
         return acc;
       }, []).map((group) => (
-        <tr key={group.percent} className=' '>
-          <td className='text-left w-[25%]'>{group.percent} %</td>
+        <tr key={group.percent} className='font-[500] '>
+          <td className='text-center w-[25%]'>{group.percent}</td>
           <td className='text-center w-[25%]'>{ 
             group.items.reduce((total, item) => {
               const totalPrice = item.price * item.quantity;
@@ -316,7 +316,7 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
             <div style={{width: '100%', height: '2px', backgroundColor: 'transparent', backgroundImage: 'linear-gradient(to right, black 50%, transparent 0%)', backgroundPosition: '0 1px', backgroundSize: '6px 1px', backgroundRepeat: 'repeat-x', marginTop: '10px', marginBottom: '10px'}}></div>
 
             <div className='w-full my-4 flex justify-center'>
-              <div className='flex justify-between items-center w-[90%]'>
+              <div className='flex justify-between items-center w-full'>
                 <p className='text-black text-[20px]'>Betrag bezahlt:</p>
                 <p className='text-black text-[24px]'>{(splitItems.length ? splitTotalPrice : totalPrice).toFixed(2) + ' Euro'}</p>
               </div>
