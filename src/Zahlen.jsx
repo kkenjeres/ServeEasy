@@ -165,9 +165,9 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
             </div>
             <p className='text-black text-[24px] w-full tex-left mb-4 text-left'>Tisch: {tableId}</p>
             <div className='w-full flex flex-col items-center'>
-              <div className='w-[90%]'>
+              <div className='w-full'>
 
-                <table className=' font-normal w-full'>
+                <table className=' font-normal w-[90%] m-auto'>
                   <thead className='text-left'>
                     <tr>
                       <th>M</th>
@@ -248,14 +248,16 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
   </tbody>
 </table>
 
-                -----------------------------------------------------------
+<div style={{width: '100%', height: '2px', backgroundColor: 'transparent', backgroundImage: 'linear-gradient(to right, black 50%, transparent 0%)', backgroundPosition: '0 1px', backgroundSize: '6px 1px', backgroundRepeat: 'repeat-x', marginTop: '10px', marginBottom: '10px'}}></div>
+
                 <div className='flex'>
                   <p className='text-black text-[16px] text-center w-full'>Zwischensumme: </p>
                   <p> {totalPrice.toFixed(2)}</p>
 
                 </div>
                 
-                -----------------------------------------------------------
+                <div style={{width: '100%', height: '2px', backgroundColor: 'transparent', backgroundImage: 'linear-gradient(to right, black 50%, transparent 0%)', backgroundPosition: '0 1px', backgroundSize: '6px 1px', backgroundRepeat: 'repeat-x', marginTop: '10px', marginBottom: '10px'}}></div>
+
                 <table className='w-full'>
   <thead >
     <tr className=' '>
@@ -311,7 +313,7 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
 
               </div>
             </div>
-            -----------------------------------------------------------
+            <div style={{width: '100%', height: '2px', backgroundColor: 'transparent', backgroundImage: 'linear-gradient(to right, black 50%, transparent 0%)', backgroundPosition: '0 1px', backgroundSize: '6px 1px', backgroundRepeat: 'repeat-x', marginTop: '10px', marginBottom: '10px'}}></div>
 
             <div className='w-full my-4 flex justify-center'>
               <div className='flex justify-between items-center w-[90%]'>
@@ -320,13 +322,17 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
               </div>
               
             </div>
-            -----------------------------------------------------------
+            <div style={{width: '100%', height: '2px', backgroundColor: 'transparent', backgroundImage: 'linear-gradient(to right, black 50%, transparent 0%)', backgroundPosition: '0 1px', backgroundSize: '6px 1px', backgroundRepeat: 'repeat-x', marginTop: '10px', marginBottom: '10px'}}></div>
+
             <div className='flex flex-col w-full'>
+              <span>{new Date().toLocaleString([], {hour: '2-digit', minute: '2-digit', hour12: false, day: '2-digit', month: '2-digit', year: 'numeric'}).replace(/:\d\d\s/, ' ').replace(',', ' ')} Uhr</span>
               <span>IBAN: DE07600501010008770088</span>
               <span>BIC: SOLADEST600</span>
+
             </div>
-            -----------------------------------------------------------
-            <p>Wir wünsche Ihnen einen shcönen Tag </p>
+            <div style={{width: '100%', height: '2px', backgroundColor: 'transparent', backgroundImage: 'linear-gradient(to right, black 50%, transparent 0%)', backgroundPosition: '0 1px', backgroundSize: '6px 1px', backgroundRepeat: 'repeat-x', marginTop: '10px', marginBottom: '10px'}}></div>
+
+            <p>Wir wünsche Ihnen einen schönen Tag </p>
             <button onClick={handlePaySelectedItems} className='px-4 py-2 rounded-full bg-black mt-10 text-white'>Getrennt Zahlen</button>
 
             <button onClick={handleClearTableClick} className='px-4 py-2 rounded-full bg-black mt-10 text-white'>Zahlen</button>

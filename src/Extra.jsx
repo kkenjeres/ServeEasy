@@ -35,10 +35,18 @@ const Extra = ({ itemId, onExtraItemSelected, setSelectedItemId}) => {
     { id: 30, text: "Tonno", price: 0.60 },
     { id: 31, text: "Sardellen", price: 0.60 },
     { id: 32, text: "Spinat", price: 0.60 },
-    { id: 33, text: "Zwiebel", price: 0.60 },
     { id: 34, text: "Shrimps", price: 0.60 },
     { id: 35, text: "Tomaten", price: 0.60 },
-  ];
+    { id: 33, text: "Zwiebel", price: 0.60 },
+  ].sort((a, b) => a.text.localeCompare(b.text));
+  ;
+
+  const getUniqueStartingLetters = () => {
+    const uniqueLetters = new Set(extraItem.map((item) => item.text[0]));
+    return Array.from(uniqueLetters);
+  };
+
+  const uniqueStartingLetters = getUniqueStartingLetters();
 
   const handleExtraItemSelected = (extra) => {
     onExtraItemSelected(itemId, extra);
@@ -46,22 +54,19 @@ const Extra = ({ itemId, onExtraItemSelected, setSelectedItemId}) => {
   const handleCloseButtonClick = () => {
     setSelectedItemId(null);
   };
-  const itemsPerPage = 10;
-const totalPages = Math.ceil(extraItem.length / itemsPerPage);
-const [currentPage, setCurrentPage] = useState(1);
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
+
+  const [currentLetter, setCurrentLetter] = useState(uniqueStartingLetters[0]);
+
+  const handleLetterChange = (letter) => {
+    setCurrentLetter(letter);
   };
-  
-  const paginatedItems = extraItem.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+
+  const paginatedItems = extraItem.filter((item) => item.text[0] === currentLetter);
   const [clickedItemId, setClickedItemId] = useState(null);
 
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
-<div className="rounded-lg md:w-[60%] w-[90%] flex flex-col bg-gradient-to-br from-gray-200 via-gray-300 to-gray-100 shadow-md">
+      <div className="rounded-lg md:w-[60%] w-[90%] flex flex-col bg-gradient-to-br from-gray-200 via-gray-300 to-gray-100 shadow-md">
 
         <div className="flex justify-between items-start px-4 py-2">
           <div></div>
@@ -94,21 +99,20 @@ const [currentPage, setCurrentPage] = useState(1);
             </div>
           ))}
         </ul>
-        <div className="flex justify-center my-4">
-          {[...Array(totalPages)].map((_, index) => (
-            <button
-              key={index}
-              className={`${
-                index + 1 === currentPage
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-white'
-              } border border-gray-400 rounded-md px-3 py-1 mx-1`}
-              onClick={() => handlePageChange(index + 1)}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
+        <div className="flex justify-center my-4 gap-2" style={{ flexWrap: 'wrap' }}>
+  {uniqueStartingLetters.map((letter, index) => (
+    <button
+      key={index}
+      className={`${
+        letter === currentLetter ? 'bg-blue-500 text-white' : 'bg-white'
+      } border border-gray-400 rounded-md px-3 py-1 mx-1`}
+      onClick={() => handleLetterChange(letter)}
+    >
+      {letter}
+    </button>
+  ))}
+</div>
+
       </div>
     </div>
   );
