@@ -8,9 +8,9 @@ import ExtraMinus from './ExtraMinus';
 
 const Search = ({ tableId }) => {
   const [items, setItems] = useState([
-    { id:1, text: "Martini Rosso/Bianco", price: 5.10, percent: 19},
-    { id:2, text: "Cynar Soda", price: 5.20, percent: 19},
-    { id:3, text: "Sherry", price: 4.20, percent: 19},
+    { id: 1, text: "Martini Rosso/Bianco", price: 5.10},
+  { id: 2, text: "Cynar Soda", price: 5.20, percent: 19},
+  { id: 3, text: "Sherry", price: 4.20, percent: 19},
     { id:4, text: "Aperol Spritz", price: 6.90, percent: 19},
     { id:5, text: "Bitterino", price: 4.60, percent: 19},
     { id:6, text: "Campari Soda/Orange", price: 5.90, percent: 19},
@@ -83,7 +83,7 @@ const Search = ({ tableId }) => {
     { id: 102, text: "Spezi 0.3", price: 3.30, percent: 19 },
     { id: 103, text: "Bitter Lemon 0.3", price: 3.80, percent: 19 },
     { id: 104, text: "Saft 0.3", price: 3.60, percent: 19 },
-    { id: 105, text: "Apfelsaftschorle 0.3", price: 3.30, percent: 19 },
+    { id: 105, text: "Saftschorle 0.3", price: 3.30, percent: 19, options: ["Orange", "Maracuja", "Apfel", "Johannes"] },
     { id: 106, text: "Suse Sprudel 0.3", price: 3.30, percent: 19 },
     { id: 108, text: "Vio 0.25", price: 3.10, percent: 19 },
     { id: 210, text: "Vio 0.75", price: 5.10, percent: 19 },
@@ -94,7 +94,7 @@ const Search = ({ tableId }) => {
     { id: 113, text: "Spezi 0.4", price: 4.10, percent: 19 },
     { id: 114, text: "Bitter Lemon 0.4", price: 4.50, percent: 19 },
     { id: 115, text: "Bitter Lemon 0.4", price: 4.50, percent: 19 },
-    { id: 116, text: "Apfelsaftschorle 0.4", price: 4.10, percent: 19 },
+    { id: 116, text: "Saftschorle 0.4", price: 4.10, percent: 19, percent: 19, options: ["medium", "medium-", "medium+"]  },
     { id: 117, text: "Safte 0.4", price: 4.40, percent: 19 },
     { id: 118, text: "Suse Sprudel 0.4", price: 4.10, percent: 19 },
     { id: 119, text: "Cola Light 0.3", price: 3.80, percent: 19 },
@@ -120,9 +120,9 @@ const Search = ({ tableId }) => {
     { id: 147, text: "Saltimbocca alla Romana", price: 24.90, percent: 7 },
     { id: 148, text: "Scaloppina al Vino Bianco/Limone", price: 24.50, percent: 7 },
     { id: 149, text: "Scaloppina al Limone", price: 24.50, percent: 7 },
-    { id: 150, text: "Filetto di Manzo al Gorgonzola", price: 34.00, percent: 7 },
-    { id: 151, text: "Filetto di Manzo Grill", price: 33.00, percent: 7 },
-    { id: 152, text: "Filetto di Manzo al Pepe", price: 34.00, percent: 7 },
+    { id: 150, text: "Filetto di Manzo al Gorgonzola", price: 34.00, percent: 7, percent: 19, options: ["medium", "medium-", "medium+"]  },
+    { id: 151, text: "Filetto di Manzo Grill", price: 33.00, percent: 7, percent: 19, options: ["medium", "medium-", "medium+"]  },
+    { id: 152, text: "Filetto di Manzo al Pepe", price: 34.00, percent: 7, percent: 19, options: ["medium", "medium-", "medium+"]  },
     { id: 153, text: "Calamari alla Grill", price: 22.00, percent: 7 },
     { id: 154, text: "Rana Pescatrice ", price: 28.50, percent: 7 },
     { id: 155, text: "Rana Pescatrice ", price: 28.50, percent: 7 },
@@ -353,7 +353,11 @@ const addItem = async (tableId, itemToAdd) => {
     );
     return (item.price * item.quantity + extrasTotalPrice).toFixed(2);
   };
-  
+  const handleOptionClick = (item, option) => {
+    // Здесь вы можете обработать выбранный вариант и добавить его к элементу
+    // Например, вы можете добавить выбранный вариант к тексту элемента:
+    handleAddButtonClick({...item, text: item.text + ' ' + option});
+  };
   return (
     <div>
       <input
@@ -365,18 +369,32 @@ const addItem = async (tableId, itemToAdd) => {
       />
   
       {searchTerm !== "" && (
-        <div className="bg-white mt-2 rounded-lg" >
-          <ul className=" rounded-lg">
-            {filteredItems.map((item) => (
-              <div className="flex justify-between w-full p-2 shadow-xl rounded-xl" onClick={() => handleAddButtonClick(item)}>
-                <li key={item.id}>
-                  {item.text}{" "}
-                </li>
-                +
-              </div>
-            ))}
-          </ul>
-        </div>
+        <div className="bg-white mt-2 rounded-lg">
+        <ul className="rounded-lg">
+          {filteredItems.map((item) => (
+            <div
+              className={`w-full p-2 shadow-xl rounded-xl ${
+                item.options ? "flex flex-col" : "flex justify-between"
+              }`}
+              onClick={() => handleAddButtonClick(item)}
+            >
+              <li key={item.id}>{item.text}{" "}</li>
+              {item.options ? item.options.map((option, index) => (
+                <button
+                  key={index}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOptionClick(item, option);
+                  }}
+                >
+                  {option}
+                </button>
+              )) : "+"}
+            </div>
+          ))}
+        </ul>
+      </div>
+      
       )}
   
   <div className="bg-white rounded-lg mt-10">
@@ -411,7 +429,7 @@ const addItem = async (tableId, itemToAdd) => {
                 ))}
 
                   
-                <div className="flex justify-between mt-5">
+                <div className="flex justify-between mt-5 items-center">
                   <div className="flex flex-col">
                     <div className="bg-gray-300 px-2 py-1 rounded-full items-center flex justify-between gap-5">
                       <button
@@ -431,10 +449,10 @@ const addItem = async (tableId, itemToAdd) => {
                     </div>
                   </div>
                   {item.category === 'pizza' && (
-                    <>
-                      <button onClick={() => handleExtraButtonClick(item.id)}>Extra</button>
-                      <button onClick={() => handleExtraMinusButtonClick(item.id)}>ExtraMinus</button>
-                    </>
+                    <div className='flex flex-col gap-4'>
+                      <button onClick={() => handleExtraButtonClick(item.id)}>Extra+</button>
+                      <button onClick={() => handleExtraMinusButtonClick(item.id)}>Extra-</button>
+                    </div>
                   )}
                   <button onClick={() => handleDeleteButtonClick(item.id)}>
                     Löschen

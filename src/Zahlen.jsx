@@ -199,7 +199,7 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
               {splitItems.some((i) => i.id === item.id) && item.quantity > 1 && (
                 <div className="flex space-between w-full">
                   <div className="flex flex-col">
-                    <div className="bg-gray-300 px-2 rounded-full items-center flex justify-between gap-4">
+                    <div className="bg-gray-300 px-2 rounded-full items-center flex justify-between gap-8 mt-2">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();

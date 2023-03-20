@@ -215,7 +215,7 @@ const Table = () => {
       <div className="text-center ">
         <button
           onClick={handleSignOut}
-          className=" text-black  rounded"
+          className=" text-black rounded text-[26px]"
         >
           <FiLogOut />
         </button>
