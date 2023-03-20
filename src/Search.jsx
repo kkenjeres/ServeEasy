@@ -4,6 +4,8 @@ import { app, db } from "../src/firebase";
 import {AiOutlineMinus, AiOutlinePlus, AiOutlineCloseCircle} from 'react-icons/ai'
 import {FaTrash} from 'react-icons/fa'
 import Extra from "./Extra";
+import ExtraMinus from './ExtraMinus';
+
 const Search = ({ tableId }) => {
   const [items, setItems] = useState([
     { id:1, text: "Martini Rosso/Bianco", price: 5.10, percent: 19},
@@ -310,7 +312,14 @@ const addItem = async (tableId, itemToAdd) => {
   };
   const [showExtra, setShowExtra] = useState(false); // Добавьте состояние для отображения компонента Extra
     const [selectedItemId, setSelectedItemId] = useState(null); // Добавьте новое состояние selectedItemId
-
+    const [selectedItemIdMinus, setSelectedItemIdMinus] = useState(null);
+    const handleExtraMinusButtonClick = (itemId) => {
+      if (selectedItemIdMinus === itemId) {
+        setSelectedItemIdMinus(null);
+      } else {
+        setSelectedItemIdMinus(itemId);
+      }
+    };
   const handleExtraButtonClick = (itemId) => {
     if (selectedItemId === itemId) {
       setSelectedItemId(null);
@@ -319,11 +328,13 @@ const addItem = async (tableId, itemToAdd) => {
     }
   };
   const handleExtraItemSelected = (itemId, extra) => {
+    const isExtraMinus = selectedItemIdMinus === itemId;
+    const newExtra = { ...extra, isExtraMinus };
     const updatedItems = addedItems.map((item) => {
       if (item.id === itemId) {
         const updatedExtras = item.extras
-          ? [...item.extras, { ...extra, quantity: 1 }]
-          : [{ ...extra, quantity: 1 }];
+          ? [...item.extras, { ...newExtra, quantity: 1 }] // Используйте newExtra здесь
+          : [{ ...newExtra, quantity: 1 }]; // Используйте newExtra здесь
   
         const updatedItem = { ...item, extras: updatedExtras };
         updateItem(tableId, itemId, updatedItem);
@@ -334,6 +345,7 @@ const addItem = async (tableId, itemToAdd) => {
     });
     setAddedItems(updatedItems);
   };
+  
   const calculateTotalPriceWithExtras = (item) => {
     const extrasTotalPrice = item.extras.reduce(
       (total, extra) => total + extra.price * extra.quantity,
@@ -390,13 +402,15 @@ const addItem = async (tableId, itemToAdd) => {
                   </li>
                 </ul>
                 {item.extras.map((extra) => (
-                    <li
-                      key={extra.id}
-                      className="text-sm text-gray-600 flex justify-between"
-                    >
-                      + {extra.text} 
-                    </li>
-                  ))}
+                  <li
+                    key={extra.id}
+                    className="text-sm text-gray-600 flex justify-between"
+                  >
+                    {extra.isExtraMinus ? '-' : '+'} {extra.text}
+                  </li>
+                ))}
+
+                  
                 <div className="flex justify-between mt-5">
                   <div className="flex flex-col">
                     <div className="bg-gray-300 px-2 py-1 rounded-full items-center flex justify-between gap-5">
@@ -417,7 +431,10 @@ const addItem = async (tableId, itemToAdd) => {
                     </div>
                   </div>
                   {item.category === 'pizza' && (
-                    <button onClick={() => handleExtraButtonClick(item.id)}>Extra</button>
+                    <>
+                      <button onClick={() => handleExtraButtonClick(item.id)}>Extra</button>
+                      <button onClick={() => handleExtraMinusButtonClick(item.id)}>ExtraMinus</button>
+                    </>
                   )}
                   <button onClick={() => handleDeleteButtonClick(item.id)}>
                     Löschen
@@ -425,7 +442,10 @@ const addItem = async (tableId, itemToAdd) => {
                 </div>
                 {selectedItemId === item.id && (
                     <Extra itemId={item.id} onExtraItemSelected={handleExtraItemSelected} setSelectedItemId={setSelectedItemId} />
-                  )}             
+                  )}
+                {selectedItemIdMinus === item.id && (
+                  <ExtraMinus itemId={item.id} onExtraItemSelected={handleExtraItemSelected} setSelectedItemIdMinus={setSelectedItemIdMinus} />
+                )}         
               </div>
             </div>
           ))}

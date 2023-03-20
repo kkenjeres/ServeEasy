@@ -237,7 +237,7 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
               onClick={() => handleItemSelection(item)}
             >
               <td>{extra.quantity = ''}</td>
-              <td className="text-left pl-2">+ {extra.text}</td>
+              <td className="text-left pl-2">{extra.isExtraMinus ? '-' : '+'} {extra.text}</td>
               <td className="text-center">{extra.price.toFixed(2)}</td>
               <td className='text-center'>{extra.price.toFixed(2)}</td>
               <td className="text-right">{extra.percent}</td>
