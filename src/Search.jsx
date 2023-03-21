@@ -333,7 +333,7 @@ const addItem = async (tableId, itemToAdd) => {
     const updatedItems = addedItems.map((item) => {
       if (item.id === itemId) {
         const updatedExtras = item.extras
-          ? [...item.extras, { ...newExtra, quantity: 1 }] // Используйте newExtra здесь
+          ? [{ ...newExtra, quantity: 1 }, ...item.extras] // Используйте newExtra здесь и добавьте в начало массива
           : [{ ...newExtra, quantity: 1 }]; // Используйте newExtra здесь
   
         const updatedItem = { ...item, extras: updatedExtras };
@@ -356,7 +356,8 @@ const addItem = async (tableId, itemToAdd) => {
   const handleOptionClick = (item, option) => {
     // Здесь вы можете обработать выбранный вариант и добавить его к элементу
     // Например, вы можете добавить выбранный вариант к тексту элемента:
-    handleAddButtonClick({...item, text: item.text + ' ' + option});
+    const newItem = { ...item, text: item.text + ' ' + option };
+    handleAddButtonClick(newItem);
   };
   return (
     <div>
@@ -399,7 +400,7 @@ const addItem = async (tableId, itemToAdd) => {
   
   <div className="bg-white rounded-lg mt-10">
         <ul>
-          {addedItems.map((item) => (
+          {addedItems.slice().reverse().map((item) => (
             <div
               key={item.id}
               className="flex-col w-full justify-between border-b border-gray-300 mt-2 "

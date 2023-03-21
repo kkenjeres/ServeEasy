@@ -152,7 +152,8 @@ const Table = () => {
       {
         id: 50,
         image: tableImg,
-        tasks:[]
+        tasks:[],
+        text:'Getrennt / Zahlen'
       },
     ]);
   const [isLoading, setIsLoading] = useState(true);
@@ -233,6 +234,7 @@ const Table = () => {
               <div className='flex flex-col items-center'>
                 <img src={table.image} alt='' className='w-[50px] flex md:w-[100px]' />
                 <p className='text-center'>{'Tisch' + ' ' + '#' + table.id}</p>
+                <p className='text-[10px] text-black bg-yellow-300 px-2 rounded-lg'>{table.text}</p>
               </div>
             </div>
           </article>

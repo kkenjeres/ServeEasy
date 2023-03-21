@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {AiOutlineCloseCircle} from 'react-icons/ai'
 const Extra = ({ itemId, onExtraItemSelected, setSelectedItemId}) => {
   
@@ -9,7 +9,7 @@ const Extra = ({ itemId, onExtraItemSelected, setSelectedItemId}) => {
     { id: 4, text: "Kartoffeln", price: 0.60 },
     { id: 5, text: "Knoblauch", price: 0.60 },
     { id: 6, text: "Mozzarella Buffalo", price: 3.30 },
-    { id: 7, text: "Paprika", price: 2.30 },
+    { id: 7, text: "Paprika", price: 0.60 },
     { id: 8, text: "Pepperoni", price: 0.60 },
     { id: 9, text: "Prosciutto", price: 0.60 },
     { id: 10, text: "Artischocken", price: 0.00 },
@@ -18,7 +18,7 @@ const Extra = ({ itemId, onExtraItemSelected, setSelectedItemId}) => {
     { id: 13, text: "Käse", price: 0.60 },
     { id: 14, text: "Lachs", price: 3.30 },
     { id: 15, text: "Oliven", price: 0.60 },
-    { id: 16, text: "Parma", price: 0.60 },
+    { id: 16, text: "Parma", price: 2.30 },
     { id: 17, text: "Pesto", price: 0.60 },
     { id: 18, text: "Rucola", price: 0.60 },
     { id: 19, text: "Basilikum", price: 0.60 },
@@ -63,10 +63,23 @@ const Extra = ({ itemId, onExtraItemSelected, setSelectedItemId}) => {
 
   const paginatedItems = extraItem.filter((item) => item.text[0] === currentLetter);
   const [clickedItemId, setClickedItemId] = useState(null);
+  const disableBodyScroll = () => {
+    document.body.style.overflow = 'hidden';
+  };
 
+  const enableBodyScroll = () => {
+    document.body.style.overflow = 'auto';
+  };
+
+  useEffect(() => {
+    disableBodyScroll();
+    return () => {
+      enableBodyScroll();
+    };
+  }, []);
   return (
-    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
-      <div className="rounded-lg md:w-[60%] w-[90%] flex flex-col bg-gradient-to-br from-gray-200 via-gray-300 to-gray-100 shadow-md">
+    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-70">
+      <div className="rounded-lg md:w-[60%] w-[90%] h-[70%] flex flex-col justify-between bg-gradient-to-br from-gray-200 via-gray-300 to-gray-100 shadow-md">
 
         <div className="flex justify-between items-start px-4 py-2">
           <div></div>
