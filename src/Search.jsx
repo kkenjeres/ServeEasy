@@ -180,6 +180,8 @@ const Search = ({ tableId }) => {
   const [addedItems, setAddedItems] = useState([]);
   const [checkedItems, setCheckedItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
+  const [beilageCount, setBeilageCount] = useState(0);
+
   const foundItems = items.filter((item) =>
   item.id.toString().includes(searchTerm)
 );
@@ -327,6 +329,8 @@ const addItem = async (tableId, itemToAdd) => {
       setSelectedItemId(itemId);
     }
   };
+  const [selectedExtras, setSelectedExtras] = useState([]);
+
   const handleExtraItemSelected = (itemId, extra) => {
     const isExtraMinus = selectedItemIdMinus === itemId;
     const newExtra = { ...extra, isExtraMinus };
@@ -431,8 +435,8 @@ const addItem = async (tableId, itemToAdd) => {
 
                   
                 <div className="flex justify-between mt-5 items-center">
-                  <div className="flex flex-col">
-                    <div className="bg-gray-300 px-2 py-1 rounded-full items-center flex justify-between gap-5">
+                  <div className="flex flex-col w-full">
+                    <div className="bg-gray-300 px-2 py-1 rounded-full items-center flex justify-between gap-5 w-[40%]">
                       <button
                         onClick={() => handleMinusButtonClick(item.id)}
                         className="text-[20px]"
@@ -448,9 +452,9 @@ const addItem = async (tableId, itemToAdd) => {
                         <AiOutlinePlus />
                       </button>
                     </div>
-                  </div>
-                  {item.category === 'pizza' && (
-                    <div className='flex flex-col gap-4'>
+                    <div className="flex justify-between mt-4">
+                    {item.category === 'pizza' && (
+                    <div className='flex gap-4'>
                       <button onClick={() => handleExtraButtonClick(item.id)}>Extra+</button>
                       <button onClick={() => handleExtraMinusButtonClick(item.id)}>Extra-</button>
                     </div>
@@ -458,10 +462,19 @@ const addItem = async (tableId, itemToAdd) => {
                   <button onClick={() => handleDeleteButtonClick(item.id)}>
                     Löschen
                   </button>
+                    </div>
+                  </div>
+                  
                 </div>
                 {selectedItemId === item.id && (
-                    <Extra itemId={item.id} onExtraItemSelected={handleExtraItemSelected} setSelectedItemId={setSelectedItemId} />
-                  )}
+                <Extra
+                itemId={item.id}
+                onExtraItemSelected={handleExtraItemSelected}
+                setSelectedItemId={setSelectedItemId}
+                selectedExtras={selectedExtras}
+                setSelectedExtras={setSelectedExtras}
+                />
+              )}
                 {selectedItemIdMinus === item.id && (
                   <ExtraMinus itemId={item.id} onExtraItemSelected={handleExtraItemSelected} setSelectedItemIdMinus={setSelectedItemIdMinus} />
                 )}         

@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import {AiOutlineCloseCircle} from 'react-icons/ai'
-const Extra = ({ itemId, onExtraItemSelected, setSelectedItemId}) => {
+const Extra = ({ itemId, onExtraItemSelected, setSelectedItemId, selectedExtras,setSelectedExtras  }) => {
   
   const extraItem = [
     { id: 1, text: "Ananas", price: 0.60 },
@@ -35,11 +35,16 @@ const Extra = ({ itemId, onExtraItemSelected, setSelectedItemId}) => {
     { id: 30, text: "Tonno", price: 0.60 },
     { id: 31, text: "Sardellen", price: 0.60 },
     { id: 32, text: "Spinat", price: 0.60 },
+    { id: 33, text: "Zwiebel", price: 0.60 },
     { id: 34, text: "Shrimps", price: 0.60 },
     { id: 35, text: "Tomaten", price: 0.60 },
-    { id: 33, text: "Zwiebel", price: 0.60 },
+    { id: 36, text: "Kartoffel", price: 0.00, category:"Beilage" },
+    { id: 37, text: "Nudeln", price: 0.00, category:"Beilage" },
+    { id: 38, text: "Salat", price: 0.00, category:"Beilage" },
+    { id: 39, text: "Gemuse", price: 0.00, category:"Beilage" },
   ].sort((a, b) => a.text.localeCompare(b.text));
-  ;
+
+  const beilageItems = extraItem.filter((item) => item.category === 'Beilage');
 
   const getUniqueStartingLetters = () => {
     const uniqueLetters = new Set(extraItem.map((item) => item.text[0]));
@@ -49,8 +54,40 @@ const Extra = ({ itemId, onExtraItemSelected, setSelectedItemId}) => {
   const uniqueStartingLetters = getUniqueStartingLetters();
 
   const handleExtraItemSelected = (extra) => {
-    onExtraItemSelected(itemId, extra);
+    const updatedExtra = { ...extra };
+  
+    if (extra.category === 'Beilage') {
+      const existingBeilageItems = selectedExtras.filter(
+        (selectedExtra) => selectedExtra.category === 'Beilage'
+      );
+  
+      // Update the extra price if there is at least one existing Beilage item
+      if (existingBeilageItems.length >= 1) {
+        updatedExtra.price = 4;
+      }
+    }
+  
+    // Update the parent component
+    onExtraItemSelected(itemId, updatedExtra);
+  
+    setSelectedExtras((prevExtras) => {
+      // Update the price of Beilage items in the selectedExtras state
+      const updatedExtras = prevExtras.map((selectedExtra) => {
+        if (
+          selectedExtra.category === 'Beilage' &&
+          selectedExtra.id !== updatedExtra.id &&
+          selectedExtra.price === 0
+        ) {
+          return { ...selectedExtra, price: 4 };
+        }
+        return selectedExtra;
+      });
+  
+      return [...updatedExtras, updatedExtra];
+    });
   };
+  
+  
   const handleCloseButtonClick = () => {
     setSelectedItemId(null);
   };
@@ -58,10 +95,11 @@ const Extra = ({ itemId, onExtraItemSelected, setSelectedItemId}) => {
   const [currentLetter, setCurrentLetter] = useState(uniqueStartingLetters[0]);
 
   const handleLetterChange = (letter) => {
-    setCurrentLetter(letter);
+    setCurrentLetter(letter === 'Beilage' ? null : letter);
   };
-
-  const paginatedItems = extraItem.filter((item) => item.text[0] === currentLetter);
+  const paginatedItems = currentLetter
+  ? extraItem.filter((item) => item.text[0] === currentLetter)
+  : beilageItems;
   const [clickedItemId, setClickedItemId] = useState(null);
   const disableBodyScroll = () => {
     document.body.style.overflow = 'hidden';
@@ -92,40 +130,45 @@ const Extra = ({ itemId, onExtraItemSelected, setSelectedItemId}) => {
         </div>
         <ul className="gap-2 grid grid-cols-2 px-2">
           {paginatedItems.map((item) => (
-            <div className={`w-full flex flex-col py-2 px-4 text-white rounded-xl ${
-              clickedItemId === item.id ? 'bg-green-500' : 'bg-blue-500'
-            }`} 
-            key={item.id} 
-            onClick={() => {
-              handleExtraItemSelected(item);
-              setClickedItemId(item.id);
-              setTimeout(() => {
-                setClickedItemId(null);
-              }, 100);
-            }}>
-              <li>
-                {item.text}
-              </li>
-              <li>
-                {item.price.toFixed(2)} c
-              </li>
+            <div
+              className={`w-full flex flex-col py-2 px-4 text-white rounded-xl ${
+                clickedItemId === item.id ? 'bg-green-500' : 'bg-blue-500'
+              }`}
+              key={item.id}
+              onClick={() => {
+                handleExtraItemSelected(item);
+                setClickedItemId(item.id);
+                setTimeout(() => {
+                  setClickedItemId(null);
+                }, 100);
+              }}
+            >
+              <li>{item.text}</li>
+              <li>{item.price.toFixed(2)} c</li>
             </div>
           ))}
         </ul>
         <div className="flex justify-center my-4 gap-2" style={{ flexWrap: 'wrap' }}>
-  {uniqueStartingLetters.map((letter, index) => (
-    <button
-      key={index}
-      className={`${
-        letter === currentLetter ? 'bg-blue-500 text-white' : 'bg-white'
-      } border border-gray-400 rounded-md px-3 py-1 mx-1`}
-      onClick={() => handleLetterChange(letter)}
-    >
-      {letter}
-    </button>
-  ))}
-</div>
-
+          {uniqueStartingLetters.map((letter, index) => (
+            <button
+              key={index}
+              className={`${
+                letter === currentLetter ? 'bg-blue-500 text-white' : 'bg-white'
+              } border border-gray-400 rounded-md px-3 py-1 mx-1`}
+              onClick={() => handleLetterChange(letter)}
+            >
+              {letter}
+            </button>
+          ))}
+          <button
+            className={`${
+              !currentLetter ? 'bg-blue-500 text-white' : 'bg-white'
+            } border border-gray-400 rounded-md px-3 py-1 mx-1`}
+            onClick={() => handleLetterChange('Beilage')}
+          >
+            Beilage
+          </button>
+        </div>
       </div>
     </div>
   );
