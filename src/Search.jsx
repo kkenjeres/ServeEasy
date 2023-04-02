@@ -212,8 +212,12 @@ const handleAddButtonClick = (item) => {
   // Добавьте условие для скидки
   const discountedPrice = tableId === "50" ? item.price * 0.9 : item.price;
 
+  // Создайте уникальный идентификатор для каждого добавленного элемента
+  const uniqueId = Date.now();
+
   const itemToAdd = {
     ...item,
+    id: item.id + "-" + uniqueId, // Добавьте уникальный идентификатор к идентификатору элемента
     price: discountedPrice, // Используйте скидочную цену
     quantity: 1,
     totalPrice: discountedPrice.toFixed(2),
@@ -370,7 +374,7 @@ const addItem = async (tableId, itemToAdd) => {
         value={searchTerm}
         onChange={handleInputChange}
         placeholder="Suchen"
-        className="w-full px-2 py-1 mt-10 placeholder:text-gray-500 rounded-lg bg-gray-300 focus:ring-2  focus:outline-none"
+        className="w-full px-2 py-1 mt-10 placeholder:text-white font-[400] rounded-lg bg-[#6E7780] focus:ring-2  focus:outline-none"
       />
   
       {searchTerm !== "" && (
@@ -435,8 +439,8 @@ const addItem = async (tableId, itemToAdd) => {
 
                   
                 <div className="flex justify-between mt-5 items-center">
-                  <div className="flex flex-col w-full">
-                    <div className="bg-gray-300 px-2 py-1 rounded-full items-center flex justify-between gap-5 w-[40%]">
+                  <div className="flex flex-col w-full ">
+                    <div className="bg-[#6E7780] px-2 py-1 rounded-full items-center flex justify-between gap-5 w-[40%] text-white">
                       <button
                         onClick={() => handleMinusButtonClick(item.id)}
                         className="text-[20px]"
