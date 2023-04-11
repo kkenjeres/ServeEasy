@@ -7,6 +7,7 @@ import { collection, doc, getDocs, onSnapshot, updateDoc, deleteDoc } from "fire
 import logo from '../src/assets/logo.jpg'
 
 const Zahlen = ({ id, setTableData, tableId, onClose }) => {
+  const [printText, setPrintText] = useState("");
   const [firebaseData, setFirebaseData] = useState([]);
   const [splitItems, setSplitItems] = useState([]);
   const [selectedQuantities, setSelectedQuantities] = useState({});
