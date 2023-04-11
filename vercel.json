@@ -4,7 +4,7 @@
     {
       "src": "package.json",
       "use": "@vercel/node",
-      "config": { "entrypoint": "server.js" }
+      "config": { "entrypoint": "api/index.js" }
     },
     {
       "src": "build/**",
@@ -15,7 +15,7 @@
     { "src": "/(css|js)/.*", "headers": { "cache-control": "public,max-age=31536000,immutable" }, "continue": true },
     { "src": "/(favicon.ico|logo192.png)", "headers": { "cache-control": "public,max-age=31536000,immutable" }, "continue": true },
     { "src": "/(manifest.json|robots.txt)", "headers": { "cache-control": "public,max-age=0,must-revalidate" }, "continue": true },
-    { "src": "/print", "dest": "server.js" },
+    { "src": "/print", "dest": "api/index.js" },
     { "src": "/.*", "dest": "build/index.html" }
   ],
   "env": {
