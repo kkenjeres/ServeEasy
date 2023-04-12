@@ -286,7 +286,7 @@ const handlePrint = async () => {
     });
 
     if (response.ok) {
-      setMessage("Текст успешно напечатан!");
+      setMessage("Текст успешноx напечатан!");
     } else {
       const errorData = await response.json();
       console.error("Ошибка печати:", errorData);
