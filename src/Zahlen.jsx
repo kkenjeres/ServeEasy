@@ -1,6 +1,6 @@
 
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import React from "react";
 import { db } from "../src/firebase";
 import { collection, doc, getDocs, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
@@ -150,26 +150,184 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
       setSelectedQuantities({ ...selectedQuantities, [itemId]: currentQuantity - 1 });
     }
   };
-  return (
-    <div className='fixed w-full h-full top-0 left-0 flex  justify-center bg-white overflow-y-auto '>
-      <div className='w-full'>
-        <div className='bg-white px-4 py-10  flex flex-col items-center justify-center'>
-        <img src={logo} alt="" className='w-[100px]'/>
-          <h1 className='text-[30px] mb-10'>Al Vecchio Mulino</h1>
-          <div className='flex flex-col text-center mb-10 w-full'>
-            <div className='mb-20'>
-              <p>Augsburger Str. 672</p>
-              <p>70239 Stuttgart Obertürkheim</p>
-              <p>Tel: 0711 32 69 83</p>
-              <p>St. Nr. :97396/68694</p>
-            </div>
-            <p className='text-black text-[24px] w-full tex-left mb-4 text-left'>Tisch: {tableId}</p>
+
+  // Drucken 
+  const [message, setMessage] = useState(null);
+const [text, setText] = useState("");
+const headerRefs = useRef(null);
+const rowsRefs = useRef([]);
+const apiUrl = process.env.NODE_ENV === "development" ? "http://localhost:3001" : "";
+const getRowRef = (index) => (el) => {
+  rowsRefs.current[index] = el;
+};
+
+const handlePrint = async () => {
+  const addressText =
+    "Augsburger Str. 672\n70239 Stuttgart Obertürkheim\nTel: 0711 32 69 83\nSt. Nr. :97396/68694";
+  const tableIdText = `Tisch: ${tableId}`;
+  const dateText = new Date().toLocaleString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+  const ibanText = "IBAN: DE07600501010008770088";
+  const bicText = "BIC: SOLADEST600";
+  const closingText = "Wir wünsche Ihnen einen schönen Tag";
+  
+  const headerText = headerRefs.current
+    ? [...headerRefs.current.children].map((th) => th.textContent).join(" | ")
+    : "";
+
+    const rowsText = firebaseData
+  .flatMap((item, index) => {
+    const itemRows = [
+      [
+        item.quantity,
+        item.text,
+        item.price.toFixed(2),
+        (item.price * item.quantity).toFixed(2),
+        item.percent,
+      ].join(" | "),
+    ];
+
+    if (item.extras) {
+      itemRows.push(
+        ...item.extras.map((extra) => [
+          extra.quantity || "",
+          `${extra.isExtraMinus ? "-" : "+"} ${extra.text}`,
+          extra.price.toFixed(2),
+          extra.price.toFixed(2),
+          extra.percent,
+        ].join(" | "))
+      );
+    }
+
+    return itemRows;
+  })
+  .join("\n");
+
+  
+
+  const splitItemsText = splitItems
+    .map(
+      (item) =>
+        `${item.name} - ${item.price.toFixed(2)} x ${
+          selectedQuantities[item.id] || item.quantity
+        }`
+    )
+    .join("\n");
+  const totalPriceText = `Zwischensumme: ${totalPrice.toFixed(2)} Euro`;
+
+  const mwstHeadersText = "MwSt % | Netto | MwSt | Brutto";
+
+  const mwstText = firebaseData.length > 0
+    ? firebaseData.reduce((acc, item) => {
+        const group = acc.find((group) => group.percent === item.percent);
+        if (group) {
+          group.items.push(item);
+        } else {
+          acc.push({
+            percent: item.percent,
+            items: [item],
+          });
+        }
+        return acc;
+      }, []).map((group) => (
+        [
+          group.percent,
+          group.items.reduce((total, item) => {
+            const totalPrice = item.price * item.quantity;
+            const netto = totalPrice / (1 + item.percent / 100);
+            return total + netto;
+          }, 0).toFixed(2),
+          group.items.reduce((total, item) => {
+            const totalPrice = item.price * item.quantity;
+            const netto = totalPrice / (1 + item.percent / 100);
+            const mwst = totalPrice - netto;
+            return total + mwst;
+          }, 0).toFixed(2),
+          group.items.reduce((total, item) => {
+            const totalPrice = item.price * item.quantity;
+            const brutto = totalPrice;
+            return total + brutto;
+          }, 0).toFixed(2),
+        ].join(" | ")
+      )).join("\n")
+    : "";
+  
+  const betragBezahltText = `Betrag bezahlt: ${(splitItems.length ? splitTotalPrice : totalPrice).toFixed(2)} Euro`;
+  
+  const textToPrint = `
+    ${addressText || ""}
+    ${tableIdText || ""}
+    ${headerText ? `\n${headerText}\n` : ""}
+    ${rowsText || ""}
+    ${splitItemsText || ""}
+    ${totalPriceText || ""}
+    ${mwstHeadersText ? `\n${mwstHeadersText}\n` : ""}
+    ${mwstText ? `\n${mwstText}\n` : ""}
+    ${betragBezahltText || ""}
+    ${dateText || ""}
+    ${ibanText || ""}
+    ${bicText || ""}
+    ${closingText || ""}
+  `;
+
+  try {
+    const response = await fetch(`${apiUrl}/print`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ text: textToPrint }),
+    });
+
+    if (response.ok) {
+      setMessage("Текст успешно напечатан!");
+    } else {
+      const errorData = await response.json();
+      console.error("Ошибка печати:", errorData);
+      setMessage("Ошибка печати, пожалуйста, попробуйте еще раз.");
+    }
+  } catch (error) {
+    console.error("Ошибка при выполнении запроса:", error);
+    setMessage("Ошибка печати, пожалуйста, попробуйте еще раз.");
+  }
+};
+
+  // Drucken 
+
+
+  const logoRef = useRef(null);
+const headerRef = useRef(null);
+const addressRef = useRef(null);
+const tableIdRef = useRef(null);
+const steuerdRef = useRef(null);
+const summedRef = useRef(null);
+
+return (
+  <div className='fixed w-full h-full top-0 left-0 flex  justify-center bg-white overflow-y-auto '>
+    <div className='w-full'>
+      <div className='bg-white px-4 py-10  flex flex-col items-center justify-center'>
+        <img ref={logoRef} src={logo} alt="" className='w-[100px]'/>
+        <h1 ref={headerRef} className='text-[30px] mb-10'>Al Vecchio Mulino</h1>
+        <div className='flex flex-col text-center mb-10 w-full'>
+          <div className='mb-20' ref={addressRef}>
+            <p>Augsburger Str. 672</p>
+            <p>70239 Stuttgart Obertürkheim</p>
+            <p>Tel: 0711 32 69 83</p>
+            <p>St. Nr. :97396/68694</p>
+          </div>
+          <p ref={tableIdRef} className='text-black text-[24px] w-full tex-left mb-4 text-left'>Tisch: {tableId}</p>
             <div className='w-full flex flex-col items-center'>
               <div className='w-full'>
 
                 <table className=' font-normal w-full'>
                   <thead className='text-left'>
-                    <tr>
+                    <tr ref={headerRefs}>
                       <th>M</th>
                       <th>Beschreibung</th>
                       <th className='text-center'>EP</th>
@@ -230,6 +388,8 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
         {item.extras &&
           item.extras.map((extra, extraIndex) => (
             <tr
+            ref={getRowRef(index)}
+
               key={`${index}-${extraIndex}`}
               className={`text-black text-left ${
                 splitItems.some((i) => i.id === item.id) ? "line-through" : ""
@@ -251,7 +411,7 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
 <div style={{width: '100%', height: '2px', backgroundColor: 'transparent', backgroundImage: 'linear-gradient(to right, black 50%, transparent 0%)', backgroundPosition: '0 1px', backgroundSize: '6px 1px', backgroundRepeat: 'repeat-x', marginTop: '10px', marginBottom: '10px'}}></div>
 
                 <div className='flex font-[500]'>
-                  <p className='text-black text-[16px] text-center w-full'>Zwischensumme: </p>
+                  <p ref={summedRef} className='text-black text-[16px] text-center w-full'>Zwischensumme: </p>
                   <p> {totalPrice.toFixed(2)}</p>
 
                 </div>
@@ -334,6 +494,7 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
 
             <p>Wir wünsche Ihnen einen schönen Tag </p>
             <button onClick={handlePaySelectedItems} className='px-4 py-2 rounded-full bg-black mt-10 text-white'>Getrennt Zahlen</button>
+<button className='your-button-styles' onClick={handlePrint}>Drucken</button>
 
             <button onClick={handleClearTableClick} className='px-4 py-2 rounded-full bg-black mt-10 text-white'>Zahlen</button>
             <button onClick={handleBackClick} className='px-4 py-2 rounded-full bg-white border border-black mt-10 text-black'>Zurück</button>

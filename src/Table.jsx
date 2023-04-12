@@ -6,7 +6,6 @@ import { auth, db, onAuthStateChanged, signOut } from '../src/firebase';
 import bg from '../src/assets/BG.svg'
 import logo from '../src/assets/logo.jpg'
 import {FiLogOut} from 'react-icons/fi'
-
 const Table = () => {
   const [userEmail, setUserEmail] = useState(null);
   useEffect(() => {
@@ -240,7 +239,6 @@ const Table = () => {
           </article>
         ))}
       </div>
-
     </div>
   );
 };
