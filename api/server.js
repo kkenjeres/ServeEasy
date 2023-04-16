@@ -16,11 +16,11 @@ app.use(express.json());
 
 app.post("/print", async (req, res) => {
   const { text } = req.body;
-
+  console.log("print request")
   try {
     const device = new escpos.Network(PRINTER.host, PRINTER.port);
     const printer = new escpos.Printer(device);
-
+    
     device.open(async (error) => {
       if (error) {
         console.error("Ошибка при подключении к устройству:", error);
