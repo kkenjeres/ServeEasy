@@ -3,6 +3,7 @@ const cors = require("cors");
 const escpos = require("escpos");
 
 const app = express();
+const port = 3001;
 
 const PRINTER = {
   device_name: "Epson TM-M30",
@@ -10,7 +11,7 @@ const PRINTER = {
   port: 9100,
 };
 
-app.use(cors({ origin: "*", credentials: true }));
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(express.json());
 
 app.post("/print", async (req, res) => {
@@ -49,4 +50,7 @@ app.post("/print", async (req, res) => {
   }
 });
 
-module.exports = app;
+app.listen(3001, () => {
+  console.log(`Server is listening at http://localhost:3001`);
+});
+

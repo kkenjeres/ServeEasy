@@ -3,7 +3,7 @@ import React, { useState } from "react";
 function PrintComponent() {
   const [text, setText] = useState("");
   const [message, setMessage] = useState(null);
-  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3001";
+  const apiUrl = process.env.NODE_ENV === "development" ? "http://localhost:3001" : "https://restaurantfiebaseapp.vercel.app:3001";
 
   const handlePrint = async () => {
     try {
@@ -14,7 +14,7 @@ function PrintComponent() {
         },
         body: JSON.stringify({ text }),
       });
-
+  
       if (response.ok) {
         setMessage("Текст успешно напечатан!");
       } else {
@@ -27,6 +27,7 @@ function PrintComponent() {
       setMessage("Ошибка печати, пожалуйста, попробуйте еще раз.");
     }
   };
+  
 
   return (
     <div>
