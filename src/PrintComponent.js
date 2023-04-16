@@ -3,7 +3,7 @@ import React, { useState } from "react";
 function PrintComponent() {
   const [text, setText] = useState("");
   const [message, setMessage] = useState(null);
-  const apiUrl = process.env.NODE_ENV === "development" ? "http://localhost:3002" : "https://restaurantfiebaseapp.vercel.app:3001";
+  const apiUrl = process.env.NODE_ENV === "development" ? "http://localhost:3001" : "https://server-pi-opal.vercel.app/";
 
   const handlePrint = async () => {
     try {
