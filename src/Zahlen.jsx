@@ -156,7 +156,7 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
 const [text, setText] = useState("");
 const headerRefs = useRef(null);
 const rowsRefs = useRef([]);
-const apiUrl = process.env.NODE_ENV === "development" ? "http://localhost:3001" : "https://server-pi-opal.vercel.app/";
+const apiUrl = process.env.NODE_ENV === "development" ? "http://localhost:3001" : "https://mern-restaurant.herokuapp.com";
 const getRowRef = (index) => (el) => {
   rowsRefs.current[index] = el;
 };
