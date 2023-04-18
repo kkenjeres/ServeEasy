@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function PrintComponent() {
   const [text, setText] = useState("");
   const [message, setMessage] = useState(null);
-  const apiUrl = process.env.NODE_ENV === "development" ? "http://localhost:3001" : "https://mern-restaurant.herokuapp.com/";
+  const [apiUrl, setApiUrl] = useState("");
 
+  useEffect(() => {
+    setApiUrl(process.env.NODE_ENV === "development" ? "http://localhost:3001" : "http://192.168.2.100:3001");
+  }, []);
+  
   const handlePrint = async () => {
     try {
       const response = await fetch(`${apiUrl}/print`, {
