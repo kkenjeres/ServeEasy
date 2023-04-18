@@ -156,7 +156,7 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
 const [text, setText] = useState("");
 const headerRefs = useRef(null);
 const rowsRefs = useRef([]);
-const apiUrl = process.env.NODE_ENV === "development" ? "http://localhost:3001/" : "https://mern-restaurant.herokuapp.com/";
+const apiUrl = process.env.NODE_ENV === "development" ? "http://localhost:3001" : "";
 const getRowRef = (index) => (el) => {
   rowsRefs.current[index] = el;
 };
@@ -277,7 +277,7 @@ const handlePrint = async () => {
   `;
 
   try {
-    const response = await fetch(`${apiUrl}print`, {
+    const response = await fetch(`${apiUrl}/print`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
