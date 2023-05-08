@@ -6,7 +6,7 @@ function PrintComponent() {
   const [apiUrl, setApiUrl] = useState("");
 
   useEffect(() => {
-    setApiUrl(process.env.NODE_ENV === "development" ? "http://localhost:3001" : "http://192.168.2.100:3001");
+    setApiUrl(process.env.NODE_ENV === "development" ? "https://192.168.2.100:3001" : "");
   }, []);
   
   const handlePrint = async () => {
