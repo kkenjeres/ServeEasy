@@ -76,7 +76,7 @@ const Search = ({ tableId }) => {
     { id: 94, text: "Pizza Frutti di Mare", price: 13.90, percent: 7, category:'pizza' },
     { id: 96, text: "Pizza Quattro Stagioni", price: 10.90, percent: 7, category:'pizza' },
     { id: 97, text: "Pizza Vegetariana", price: 11.20, percent: 7, category:'pizza' },
-    { id: 98, text: "Pizza Diavolo", price: 0, percent: 7, category:'pizza' },
+    { id: 98, text: "Pizza Diavolo", price: 10.80, percent: 7, category:'pizza' },
     { id: 99, text: "Pizza Calzone", price: 11.30, percent: 7, category:'pizza' },
     { id: 100, text: "Coca 0.3", price: 3.30, percent: 19 },
     { id: 101, text: "Fanta 0.3", price: 3.30, percent: 19 },
