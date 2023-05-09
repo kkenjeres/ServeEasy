@@ -8,7 +8,7 @@ import ExtraMinus from './ExtraMinus';
 
 const Search = ({ tableId }) => {
   const [items, setItems] = useState([
-    { id: 1, text: "Martini Rosso/Bianco", price: 5.10},
+    { id: 1, text: "Martini Rosso/Bianco", price: 5.10, percent: 19},
   { id: 2, text: "Cynar Soda", price: 5.20, percent: 19},
   { id: 3, text: "Sherry", price: 4.20, percent: 19},
     { id:4, text: "Aperol Spritz", price: 6.90, percent: 19},
@@ -67,7 +67,7 @@ const Search = ({ tableId }) => {
     { id: 84, text: "Pizza Bianca", price: 10.90, percent: 7, category:'pizza' },
     { id: 85, text: "Pizza Funghi", price: 9.40, percent: 7, category:'pizza' },
     { id: 86, text: "Pizza Salami", price: 9.40, percent: 7, category:'pizza' },
-    { id: 87, text: "Pizza Sardele", price: 0, percent: 7, category:'pizza' },
+    { id: 87, text: "Pizza Sardele", price: 9.4, percent: 7, category:'pizza' },
     { id: 88, text: "Pizza Tonno", price: 10.60, percent: 7, category:'pizza' },
     { id: 89, text: "Pizza Pesto", price: 9.40, percent: 7, category:'pizza' },
     { id: 90, text: "Pizza Capricciosa", price: 10.70, percent: 7, category:'pizza' },
