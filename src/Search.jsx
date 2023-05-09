@@ -71,7 +71,7 @@ const Search = ({ tableId }) => {
     { id: 88, text: "Pizza Tonno", price: 10.60, percent: 7, category:'pizza' },
     { id: 89, text: "Pizza Pesto", price: 9.40, percent: 7, category:'pizza' },
     { id: 90, text: "Pizza Capricciosa", price: 10.70, percent: 7, category:'pizza' },
-    { id: 91, text: "Pizza Gorgonzola e Spinace", price: 10.50, percent: 7, category:'pizza' },
+    { id: 91, text: "Pizza Gorgonzola e Spinaci", price: 10.50, percent: 7, category:'pizza' },
     { id: 93, text: "Pizza Siciliana", price: 11.20, percent: 7, category:'pizza' },
     { id: 94, text: "Pizza Frutti di Mare", price: 13.90, percent: 7, category:'pizza' },
     { id: 96, text: "Pizza Quattro Stagioni", price: 10.90, percent: 7, category:'pizza' },
