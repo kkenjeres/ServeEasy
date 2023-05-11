@@ -63,21 +63,21 @@ const Heart = ({ setSelectedItemId, setTableData, tableId, handleCloseHeart }) =
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-70">
-      <div className="rounded-lg md:w-[60%] w-[90%] h-[70%] flex flex-col justify-between bg-gradient-to-br from-gray-200 via-gray-300 to-gray-100 shadow-md">
+    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-70 h-full">
+      <div className="rounded-lg md:w-[60%] w-[90%] h-[70%] h-[70%] flex flex-col justify-between bg-gradient-to-br from-gray-200 via-gray-300 to-gray-100 shadow-md">
         <div className="flex justify-between items-start px-4 py-2">
           <div></div>
           <button
-            className="rounded-lg my-4 text-[30px] px-2"
+            className="rounded-lg my-4 text-[30px] px-2 "
             onClick={handleCloseButtonClick}
           >
             <AiOutlineCloseCircle />
           </button>
         </div>
-        <ul className="gap-2 grid grid-cols-2 px-2">
+        <ul className="gap-2 grid grid-cols-2 px-2 overflow-y-auto max-h-[80%] py-20"> {/* Add these styles */}
           {heartItems.map((item) => (
             <div
-              className={`w-full flex flex-col py-2 px-4 text-white rounded-xl ${
+              className={`w-full flex flex-col py-1 px-2 text-white rounded-xl ${
                 item.id === clickedItemId ? 'bg-green-500' : 'bg-blue-500'
               }`}
               key={item.id}
@@ -91,22 +91,23 @@ const Heart = ({ setSelectedItemId, setTableData, tableId, handleCloseHeart }) =
                 placeholder="Price"
               />
               <button
-  onClick={() => {
-    handleItemSelected(item);
-    setClickedItemId(item.id);
-    setTimeout(() => {
-      setClickedItemId(null);
-    }, 100);
-  }}
->
-  Add
-</button>
+                onClick={() => {
+                  handleItemSelected(item);
+                  setClickedItemId(item.id);
+                  setTimeout(() => {
+                    setClickedItemId(null);
+                  }, 100);
+                }}
+              >
+                hinzufügen
+              </button>
             </div>
           ))}
         </ul>
       </div>
     </div>
   );
+
 };
 
 export default Heart;
