@@ -6,7 +6,7 @@ import {FaTrash} from 'react-icons/fa'
 import Extra from "./Extra";
 import ExtraMinus from './ExtraMinus';
 
-const Search = ({ tableId }) => {
+function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
   const [items, setItems] = useState([
     { id: 1, text: "Martini Rosso/Bianco", price: 5.10, percent: 19},
   { id: 2, text: "Cynar Soda", price: 5.20, percent: 19},
@@ -319,7 +319,6 @@ const addItem = async (tableId, itemToAdd) => {
     }
   };
   const [showExtra, setShowExtra] = useState(false); // Добавьте состояние для отображения компонента Extra
-    const [selectedItemId, setSelectedItemId] = useState(null); // Добавьте новое состояние selectedItemId
     const [selectedItemIdMinus, setSelectedItemIdMinus] = useState(null);
     const handleExtraMinusButtonClick = (itemId) => {
       if (selectedItemIdMinus === itemId) {
@@ -328,13 +327,14 @@ const addItem = async (tableId, itemToAdd) => {
         setSelectedItemIdMinus(itemId);
       }
     };
-  const handleExtraButtonClick = (itemId) => {
-    if (selectedItemId === itemId) {
-      setSelectedItemId(null);
-    } else {
-      setSelectedItemId(itemId);
-    }
-  };
+  
+    const handleExtraButtonClick = (itemId) => {
+      if (selectedItemId === itemId) {
+        setSelectedItemId(null);
+      } else {
+        setSelectedItemId(itemId);
+      }
+    };
   const [selectedExtras, setSelectedExtras] = useState([]);
 
   const handleExtraItemSelected = (itemId, extra) => {

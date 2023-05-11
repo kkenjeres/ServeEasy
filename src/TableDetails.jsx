@@ -5,12 +5,15 @@ import Search from './Search';
 import Zahlen from './Zahlen';
 import {AiOutlineLeft} from 'react-icons/ai'
 import { useHistory } from "react-router-dom"; // Добавьте этот импорт
-
+import {AiFillHeart} from 'react-icons/ai'
+import Heart from './Heart';
 function TableDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [tableData, setTableData] = useState([]);
   const [showZahlen, setShowZahlen] = useState(false);
+  const [showHeart, setShowHeart] = useState(false); // Add this line
+  const [selectedItemId, setSelectedItemId] = useState(null);
   
   const handleBack = () => {
     navigate('/');
@@ -19,8 +22,17 @@ function TableDetails() {
   const handleZahlenClick = () => {
     setShowZahlen(true);
   };
+
   const handleCloseZahlen = () => {
     setShowZahlen(false);
+  }
+
+  const handleHeartClick = () => {
+    setShowHeart(true);
+  }
+
+  const handleCloseHeart = () => { // Add this function
+    setShowHeart(false);
   }
   return (
     <div className="w-full h-screen overflow-y-auto font-bold bg-white flex flex-col">
@@ -35,10 +47,12 @@ function TableDetails() {
           Tisch #{id}
         </h1>
       </div>
-  
+      <div>
+        <AiFillHeart onClick={handleHeartClick} /> {/* Modify this line */}
+      </div>
       <div className="w-[90%] mx-auto flex-grow flex flex-col justify-between">
         <div>
-          <Search tableId={id} setTableData={setTableData} />
+        <Search tableId={id} setTableData={setTableData} setSelectedItemId={setSelectedItemId} selectedItemId={selectedItemId} />
           <div className="w-full">
             <p className="border-1 border-gray-300"></p>
           </div>
@@ -59,6 +73,9 @@ function TableDetails() {
           onClose={() => setShowZahlen(false)}
         />
       )}
+       {showHeart && (
+    <Heart setSelectedItemId={setSelectedItemId} setTableData={setTableData} tableId={id} handleCloseHeart={handleCloseHeart} />
+  )}
     </div>
   );
   
