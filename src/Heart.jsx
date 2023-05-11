@@ -14,11 +14,11 @@ const Heart = ({ setSelectedItemId, setTableData, tableId, handleCloseHeart }) =
     { id: 7, text: "M1", price: 0.0 },
     { id: 8, text: "M2", price: 0.0 },
     { id: 9, text: "M3", price: 0.0 },
-    { id: 10, text: "Kuche", price: 0.0 },
+    { id: 10, text: "Küche", price: 0.0 },
     { id: 11, text: "Antipasti", price: 0.0 },
     { id: 12, text: "Wein Fl.", price: 0.0 },
     { id: 13, text: "Wein 0.2", price: 0.0 },
-    { id: 14, text: "WEin 0.1", price: 0.0 },
+    { id: 14, text: "Wein 0.1", price: 0.0 },
   ];
 
   

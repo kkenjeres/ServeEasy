@@ -47,12 +47,15 @@ function TableDetails() {
           Tisch #{id}
         </h1>
       </div>
-      <div>
-        <AiFillHeart onClick={handleHeartClick} /> {/* Modify this line */}
+      <div className='flex justify-end px-10 mt-10'> 
+        <AiFillHeart onClick={handleHeartClick} className='w-[50px] h-[50px]'/> {/* Modify this line */}
       </div>
       <div className="w-[90%] mx-auto flex-grow flex flex-col justify-between">
         <div>
-        <Search tableId={id} setTableData={setTableData} setSelectedItemId={setSelectedItemId} selectedItemId={selectedItemId} />
+          <div>
+            <Search tableId={id} setTableData={setTableData} setSelectedItemId={setSelectedItemId} selectedItemId={selectedItemId} />
+
+          </div>
           <div className="w-full">
             <p className="border-1 border-gray-300"></p>
           </div>

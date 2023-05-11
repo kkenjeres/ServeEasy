@@ -129,7 +129,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
     { id: 154, text: "Rana Pescatrice ", price: 28.50, percent: 7, category:'pizza' },
     { id: 155, text: "Rana Pescatrice ", price: 28.50, percent: 7, category:'pizza' },
     { id: 158, text: "Gamberoni alla Griglia ", price: 26.50, percent: 7, category:'pizza' },
-    { id: 159, text: "Raa Pescatrice al Pepe ", price: 28.50, percent: 7, category:'pizza' },
+    { id: 159, text: "Rana Pescatrice al Pepe ", price: 28.50, percent: 7, category:'pizza' },
     { id: 160, text: "Amaretto 0.2", price: 4.20, percent: 19 },
     { id: 161, text: "Sambuca 0.2", price: 4.20, percent: 19 },
     { id: 162, text: "Cynar Spirituosen 0.2", price: 4.20, percent: 19 },
@@ -365,7 +365,7 @@ const addItem = async (tableId, itemToAdd) => {
   };
   const handleOptionClick = (item, option) => {
     // Здесь вы можете обработать выбранный вариант и добавить его к элементу
-    // Например, вы можете добавить выбранный вариант к тексту элемента:
+    // Например, вы можете добавить выбранный вариант к тексту элемента:f
     const newItem = { ...item, text: item.text + ' ' + option };
     handleAddButtonClick(newItem);
   };

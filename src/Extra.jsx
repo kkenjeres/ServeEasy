@@ -60,17 +60,6 @@ const Extra = ({ itemId, onExtraItemSelected, setSelectedItemId, selectedExtras,
   const handleExtraItemSelected = (extra) => {
     const updatedExtra = { ...extra };
   
-    if (extra.category === 'Beilage') {
-      const existingBeilageItems = selectedExtras.filter(
-        (selectedExtra) => selectedExtra.category === 'Beilage'
-      );
-  
-      // Update the extra price if there is at least one existing Beilage item
-      if (existingBeilageItems.length >= 1) {
-        updatedExtra.price = 4;
-      }
-    }
-  
     // Update the parent component
     onExtraItemSelected(itemId, updatedExtra);
   
