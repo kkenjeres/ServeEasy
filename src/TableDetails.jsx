@@ -4,6 +4,7 @@ import bg from '../src/assets/BG.svg';
 import Search from './Search';
 import Zahlen from './Zahlen';
 import {AiOutlineLeft} from 'react-icons/ai'
+import { useHistory } from "react-router-dom"; // Добавьте этот импорт
 
 function TableDetails() {
   const { id } = useParams();

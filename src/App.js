@@ -4,6 +4,7 @@ import { auth } from './firebase.js';
 import Table from '../src/Table';
 import TableDetails from '../src/TableDetails';
 import LoginPage from '../src/LoginPage'
+import Home from '../src/Home.jsx'
 function App() {
   const [user, setUser] = useState(null);
 
@@ -14,20 +15,10 @@ function App() {
     return unsubscribe;
   }, []);
   return (
-    // <Router>
-    //   <Routes>
-    //     {user ? (
-    //       <Route path="/" element={<TodoApp />} />
-    //     ) : (
-    //       <Route path="/" element={<Navigate to="/login" />} />
-    //     )}
-    //     <Route path="/login" element={<LoginPage />} />
-    //   </Routes>
-    // </Router>
     <Router>
       <Routes>
       {user ? (
-          <Route path="/" element={<Table />} />
+          <Route path="/" element={<Home />} />
         ) : (
           <Route path="/" element={<Navigate to="/login" />} />
         )}
