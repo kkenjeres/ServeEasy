@@ -130,7 +130,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
     { id: 155, text: "Rana Pescatrice ", price: 28.50, percent: 7, category:'pizza' },
     { id: 158, text: "Gamberoni alla Griglia ", price: 26.50, percent: 7, category:'pizza' },
     { id: 159, text: "Rana Pescatrice al Pepe ", price: 28.50, percent: 7, category:'pizza' },
-    { id: 160, text: "Amaretto 0.2", price: 4.20, percent: 19 },
+    { id: 160, text: "Amaretto 0.2", price: 4.20, percent: 19, category:'pizza'  },
     { id: 161, text: "Sambuca 0.2", price: 4.20, percent: 19 },
     { id: 162, text: "Cynar Spirituosen 0.2", price: 4.20, percent: 19 },
     { id: 163, text: "Fernet Branca 0.2", price: 4.20, percent: 19 },
@@ -210,27 +210,6 @@ const handleInputChange = (event) => {
 
 
 
-const handleAddButtonClick = (item) => {
-  // Добавьте условие для скидки
-  const discountedPrice = tableId === "50" ? item.price * 0.9 : item.price;
-
-  // Создайте уникальный идентификатор для каждого добавленного элемента
-  const uniqueId = Date.now();
-
-  const itemToAdd = {
-    ...item,
-    id: item.id + "-" + uniqueId, // Добавьте уникальный идентификатор к идентификатору элемента
-    price: discountedPrice, // Используйте скидочную цену
-    quantity: 1,
-    totalPrice: discountedPrice.toFixed(2),
-    extras: [],
-    tableId: tableId,
-  };
-  setAddedItems([itemToAdd, ...addedItems]);
-  addItem(tableId, itemToAdd);
-  setSearchTerm("");
-  setSelectedItem(null);
-};
 
 const addItem = async (tableId, itemToAdd) => {
   try {
@@ -369,6 +348,29 @@ const addItem = async (tableId, itemToAdd) => {
     const newItem = { ...item, text: item.text + ' ' + option };
     handleAddButtonClick(newItem);
   };
+  const handleAddButtonClick = (item) => {
+    // Добавьте условие для скидки
+    const discountedPrice = tableId === "50" ? item.price * 0.9 : item.price;
+  
+    // Создайте уникальный идентификатор для каждого добавленного элемента
+    const uniqueId = Date.now();
+  
+    const itemToAdd = {
+      ...item,
+      id: item.id + "-" + uniqueId, // Добавьте уникальный идентификатор к идентификатору элемента
+      price: discountedPrice, // Используйте скидочную цену
+      quantity: 1,
+      totalPrice: discountedPrice.toFixed(2),
+      extras: [],
+      tableId: tableId,
+    };
+    setAddedItems([itemToAdd, ...addedItems]);
+    addItem(tableId, itemToAdd);
+    setSearchTerm("");
+    setSelectedItem(null);
+  };
+  console.log(addedItems);
+    
   return (
     <div>
       <input
@@ -410,7 +412,7 @@ const addItem = async (tableId, itemToAdd) => {
   
   <div className="bg-white rounded-lg mt-10">
         <ul>
-          {addedItems.slice().reverse().map((item) => (
+          {addedItems.map((item) => (
             <div
               key={item.id}
               className="flex-col w-full justify-between border-b border-gray-300 mt-2 "
