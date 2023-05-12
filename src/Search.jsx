@@ -176,6 +176,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
     { id: 993, text: "Malvasia 0.75", price: 28.50, percent: 19 },
     { id: 992, text: "Malvasia 0.2", price: 9.80, percent: 19 },
     { id: 991, text: "Ca de Frati Weis/Rot/Rosse 0.75", price: 36.50, percent: 19 },
+    
   ]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
@@ -227,16 +228,17 @@ const addItem = async (tableId, itemToAdd) => {
 };
   
 
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collection(db, "tables", tableId, "items"),
-      (snapshot) => {
-        const addedItemsData = snapshot.docs.map((doc) => doc.data());
-        setAddedItems(addedItemsData);
-      }
-    );
-    return () => unsubscribe();
-  }, [tableId]);
+useEffect(() => {
+  const unsubscribe = onSnapshot(
+    collection(db, "tables", tableId, "items"),
+    (snapshot) => {
+      const addedItemsData = snapshot.docs.map((doc) => doc.data());
+      setAddedItems(addedItemsData.sort((a, b) => b.createdAt - a.createdAt));
+    }
+  );
+  return () => unsubscribe();
+}, [tableId]);
+
   const updateItem = async (tableId, itemId, dataToUpdate) => {
     try {
       const docRef = doc(collection(db, "tables", tableId, "items"), itemId.toString());
@@ -363,8 +365,10 @@ const addItem = async (tableId, itemToAdd) => {
       totalPrice: discountedPrice.toFixed(2),
       extras: [],
       tableId: tableId,
+      createdAt: Date.now(), // Добавьте это поле
     };
-    setAddedItems([itemToAdd, ...addedItems]);
+    
+    setAddedItems([itemToAdd, ...addedItems].sort((a, b) => b.createdAt - a.createdAt));
     addItem(tableId, itemToAdd);
     setSearchTerm("");
     setSelectedItem(null);
