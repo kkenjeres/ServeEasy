@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { AiOutlineCloseCircle, AiOutlinePlus } from 'react-icons/ai'; // Import AiOutlinePlus
 import { doc, setDoc, updateDoc, collection } from "firebase/firestore"; // Import necessary Firestore methods
 import { db } from "./firebase"; // Import your Firestore instance
 
@@ -66,58 +66,53 @@ const Heart = ({ setSelectedItemId, setTableData, tableId, handleCloseHeart }) =
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-70 h-full">
-      <div className="rounded-lg md:w-[60%] w-[90%] h-[70%] h-[70%] flex flex-col justify-between bg-gradient-to-br from-gray-200 via-gray-300 to-gray-100 shadow-md">
-        <div className="flex justify-between items-start px-4 py-2">
-          <div></div>
+    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-70 ">
+      <div className="rounded-lg w-full md:w-[60%] h-[80%] md:h-[70%] flex flex-col justify-between bg-gradient-to-br from-gray-200 via-gray-300 to-gray-100 shadow-md overflow-y-auto p-2 md:p-4">
+        <div className="flex justify-between items-start">
           <button
-            className="rounded-lg my-4 text-[30px] px-2 "
+            className="rounded-lg text-[30px] md:text-[40px] p-2"
             onClick={handleCloseButtonClick}
           >
             <AiOutlineCloseCircle />
           </button>
         </div>
-        <ul className="gap-2 grid grid-cols-2 px-2 overflow-y-auto max-h-[80%] py-20"> {/* Add these styles */}
-        {heartItems.map((item) => (
-  <div
-    className={`w-full flex flex-col py-1 px-2 text-white rounded-xl ${
-      item.id === clickedItemId ? 'bg-green-500' : 'bg-blue-500'
-    }`}
-    key={item.id}
-  >
-    <li>{item.text}</li>
-    {
-      // Показывайте поле ввода только для элементов, которые не равны "Verpackubng" или "Teller"
-      item.text !== "Verpackubng" && item.text !== "Teller" && (
-        <input
-          type="number"
-          value={priceInputs[item.id] || ""}
-          onChange={(e) => handlePriceInputChange(item.id, e.target.value)}
-          style={{ color: 'black' }}
-          placeholder="Price"
-        />
-      )
-    }
-    <button
-      onClick={() => {
-        handleItemSelected(item);
-        setClickedItemId(item.id);
-        setTimeout(() => {
-          setClickedItemId(null);
-        }, 100);
-      }}
-    >
-      hinzufügen
-    </button>
-  </div>
-))}
-
+        <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 py-10">
+          {heartItems.map((item) => (
+            <div
+              className={`w-full flex flex-col items-center py-2 px-4 text-white rounded-xl ${
+                item.id === clickedItemId ? 'bg-green-500' : 'bg-blue-500'
+              }`}
+              key={item.id}
+            >
+              <li className="text-lg md:text-xl">{item.text}</li>
+              {item.text !== "Verpackubng" && item.text !== "Teller" && (
+                <input
+                  type="number"
+                  value={priceInputs[item.id] || ""}
+                  onChange={(e) => handlePriceInputChange(item.id, e.target.value)}
+                  className="w-full mt-2 mb-4 text-center text-black text-lg md:text-xl"
+                  placeholder="Price"
+                />
+              )}
+              <button
+                className="flex items-center justify-center text-2xl md:text-3xl"
+                onClick={() => {
+                  handleItemSelected(item);
+                  setClickedItemId(item.id);
+                  setTimeout(() => {
+                    setClickedItemId(null);
+                  }, 100);
+                  handleCloseHeart();
+                }}
+              >
+                <AiOutlinePlus />
+              </button>
+            </div>
+          ))}
         </ul>
       </div>
     </div>
   );
-
 };
 
 export default Heart;
-
