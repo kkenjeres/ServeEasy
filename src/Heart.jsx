@@ -5,7 +5,7 @@ import { db } from "./firebase"; // Import your Firestore instance
 
 const Heart = ({ setSelectedItemId, setTableData, tableId, handleCloseHeart }) => { // Add handleCloseHeart here
   const heartItems = [
-    { id: 1, text: "Verpackubng", price: 0.50 },
+    { id: 1, text: "Verpackung", price: 0.50 },
     { id: 2, text: "Teller", price: 1.00 },
     { id: 3, text: "Pizza", price: 0.0 },
     { id: 4, text: "Nudeln", price: 0.0 },
