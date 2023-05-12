@@ -7,6 +7,7 @@ import bg from '../src/assets/BG.svg'
 import logo from '../src/assets/logo.jpg'
 import {FiLogOut} from 'react-icons/fi'
 import PrintComponent from './PrintComponent';
+import boss from '../src/assets/boss.png'
 const Table = () => {
   const [userEmail, setUserEmail] = useState(null);
   useEffect(() => {
@@ -155,6 +156,12 @@ const Table = () => {
         tasks:[],
         text:'Getrennt / Zahlen'
       },
+      {
+        id: 0,
+        image: boss,
+        tasks:[],
+        text:'BOSS 😎'
+      },
     ]);
     const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -213,7 +220,6 @@ const Table = () => {
             </div>
           </article>
         ))}
-        <PrintComponent />
       </div>
     </div>
   );

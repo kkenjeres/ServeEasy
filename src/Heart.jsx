@@ -10,7 +10,7 @@ const Heart = ({ setSelectedItemId, setTableData, tableId, handleCloseHeart }) =
     { id: 3, text: "Pizza", price: 0.0 },
     { id: 4, text: "Nudeln", price: 0.0 },
     { id: 5, text: "Fleish", price: 0.0 },
-    { id: 6, text: "Fish", price: 0.0 },
+    { id: 6, text: "Fish", price: 0.0, boss:true },
     { id: 7, text: "Getranke", price: 0.0 },
     { id: 8, text: "Desert", price: 0.0 },
     { id: 9, text: "M1", price: 0.0 },
@@ -42,11 +42,22 @@ const Heart = ({ setSelectedItemId, setTableData, tableId, handleCloseHeart }) =
       );
       const itemData = { ...itemToAdd, extras: [] };
       await setDoc(docRef, itemData);
+  
+      if (itemToAdd.boss) {
+        const brankoDocRef = doc(
+          collection(db, "tables"),
+          "0",
+          "items",
+          itemToAdd.id.toString()
+        );
+        const brankoItemData = { ...itemToAdd, extras: [], originTableId: tableId };
+        await setDoc(brankoDocRef, brankoItemData);
+      }
     } catch (error) {
       console.error("Error adding item to Firestore: ", error);
     }
   };
-
+  
   const handleItemSelected = (item) => {
     const uniqueId = Date.now();
     const itemToAdd = {
