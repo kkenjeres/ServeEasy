@@ -5,20 +5,23 @@ import { db } from "./firebase"; // Import your Firestore instance
 
 const Heart = ({ setSelectedItemId, setTableData, tableId, handleCloseHeart }) => { // Add handleCloseHeart here
   const heartItems = [
-    { id: 1, text: "Pizza", price: 0.0 },
-    { id: 2, text: "Nudeln", price: 0.0 },
-    { id: 3, text: "Fleish", price: 0.0 },
-    { id: 4, text: "Fish", price: 0.0 },
-    { id: 5, text: "Getranke", price: 0.0 },
-    { id: 6, text: "Desert", price: 0.0 },
-    { id: 7, text: "M1", price: 0.0 },
-    { id: 8, text: "M2", price: 0.0 },
-    { id: 9, text: "M3", price: 0.0 },
-    { id: 10, text: "Küche", price: 0.0 },
-    { id: 11, text: "Antipasti", price: 0.0 },
-    { id: 12, text: "Wein Fl.", price: 0.0 },
-    { id: 13, text: "Wein 0.2", price: 0.0 },
-    { id: 14, text: "Wein 0.1", price: 0.0 },
+    { id: 1, text: "Verpackubng", price: 0.50 },
+    { id: 2, text: "Teller", price: 1.00 },
+    { id: 3, text: "Pizza", price: 0.0 },
+    { id: 4, text: "Nudeln", price: 0.0 },
+    { id: 5, text: "Fleish", price: 0.0 },
+    { id: 6, text: "Fish", price: 0.0 },
+    { id: 7, text: "Getranke", price: 0.0 },
+    { id: 8, text: "Desert", price: 0.0 },
+    { id: 9, text: "M1", price: 0.0 },
+    { id: 10, text: "M2", price: 0.0 },
+    { id: 11, text: "M3", price: 0.0 },
+    { id: 12, text: "Küche", price: 0.0 },
+    { id: 13, text: "Antipasti", price: 0.0 },
+    { id: 14, text: "Wein Fl.", price: 0.0 },
+    { id: 15, text: "Wein 0.2", price: 0.0 },
+    { id: 16, text: "Wein 0.1", price: 0.0 },
+
   ];
 
   
@@ -75,34 +78,40 @@ const Heart = ({ setSelectedItemId, setTableData, tableId, handleCloseHeart }) =
           </button>
         </div>
         <ul className="gap-2 grid grid-cols-2 px-2 overflow-y-auto max-h-[80%] py-20"> {/* Add these styles */}
-          {heartItems.map((item) => (
-            <div
-              className={`w-full flex flex-col py-1 px-2 text-white rounded-xl ${
-                item.id === clickedItemId ? 'bg-green-500' : 'bg-blue-500'
-              }`}
-              key={item.id}
-            >
-              <li>{item.text}</li>
-              <input
-                type="number"
-                value={priceInputs[item.id] || ""}
-                onChange={(e) => handlePriceInputChange(item.id, e.target.value)}
-                style={{ color: 'black' }}
-                placeholder="Price"
-              />
-              <button
-                onClick={() => {
-                  handleItemSelected(item);
-                  setClickedItemId(item.id);
-                  setTimeout(() => {
-                    setClickedItemId(null);
-                  }, 100);
-                }}
-              >
-                hinzufügen
-              </button>
-            </div>
-          ))}
+        {heartItems.map((item) => (
+  <div
+    className={`w-full flex flex-col py-1 px-2 text-white rounded-xl ${
+      item.id === clickedItemId ? 'bg-green-500' : 'bg-blue-500'
+    }`}
+    key={item.id}
+  >
+    <li>{item.text}</li>
+    {
+      // Показывайте поле ввода только для элементов, которые не равны "Verpackubng" или "Teller"
+      item.text !== "Verpackubng" && item.text !== "Teller" && (
+        <input
+          type="number"
+          value={priceInputs[item.id] || ""}
+          onChange={(e) => handlePriceInputChange(item.id, e.target.value)}
+          style={{ color: 'black' }}
+          placeholder="Price"
+        />
+      )
+    }
+    <button
+      onClick={() => {
+        handleItemSelected(item);
+        setClickedItemId(item.id);
+        setTimeout(() => {
+          setClickedItemId(null);
+        }, 100);
+      }}
+    >
+      hinzufügen
+    </button>
+  </div>
+))}
+
         </ul>
       </div>
     </div>
