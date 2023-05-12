@@ -85,15 +85,16 @@ const Heart = ({ setSelectedItemId, setTableData, tableId, handleCloseHeart }) =
               key={item.id}
             >
               <li className="text-lg md:text-xl">{item.text}</li>
-              {item.text !== "Verpackubng" && item.text !== "Teller" && (
-                <input
-                  type="number"
-                  value={priceInputs[item.id] || ""}
-                  onChange={(e) => handlePriceInputChange(item.id, e.target.value)}
-                  className="w-full mt-2 mb-4 text-center text-black text-lg md:text-xl"
-                  placeholder="Price"
-                />
-              )}
+              {item.text !== "Verpackung" && item.text !== "Teller" && (
+  <input
+    type="number"
+    value={priceInputs[item.id] || ""}
+    onChange={(e) => handlePriceInputChange(item.id, e.target.value)}
+    className="w-full mt-2 mb-4 text-center text-black text-lg md:text-xl"
+    placeholder="Price"
+  />
+)}
+
               <button
                 className="flex items-center justify-center text-2xl md:text-3xl"
                 onClick={() => {
