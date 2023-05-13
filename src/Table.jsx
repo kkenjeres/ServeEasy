@@ -8,6 +8,7 @@ import logo from '../src/assets/logo.jpg'
 import {FiLogOut} from 'react-icons/fi'
 import PrintComponent from './PrintComponent';
 import boss from '../src/assets/boss.png'
+import chef from '../src/assets/chef.png'
 const Table = () => {
   const [userEmail, setUserEmail] = useState(null);
   useEffect(() => {
@@ -158,10 +159,11 @@ const Table = () => {
       },
       {
         id: 0,
-        image: boss,
+        image: chef,
         tasks:[],
         text:'BOSS 😎'
       },
+      
     ]);
     const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -205,24 +207,57 @@ const Table = () => {
   return (
     <div className='bg-[#edf5ff]'>
       <div className='gap-2 grid grid-cols-2 md:space-y-0 pt-10 w-[80%] m-auto pb-20 font-bold' >
-        {tableData.map((table) => (
-          <article
-            key={table.id}
-            onClick={() => handleClick(table)}
-            className={`cursor-pointer cover flex items-center h-[90px] md:items-start md:h-[200px] cursor-pointer rounded-lg ${table.color}`}
-          >
-            <div className='w-full flex justify-center m-auto'>
-              <div className='flex flex-col items-center'>
-                <img src={table.image} alt='' className='w-[50px] flex md:w-[100px]' />
-                <p className='text-center'>{'Tisch' + ' ' + '#' + table.id}</p>
-                <p className='text-[10px] text-black bg-yellow-300 px-2 rounded-lg'>{table.text}</p>
+        {tableData.map((table) => {
+          if (table.id === 0) {
+            return (
+              <article
+                key={table.id}
+                onClick={() => handleClick(table)}
+                className={`cursor-pointer cover flex items-center h-[90px] md:items-start md:h-[200px] cursor-pointer rounded-lg ${table.color}`}
+              >
+                <div className='w-full flex justify-center m-auto'>
+                  <div className='flex flex-col items-center'>
+                    <img src={table.image} alt='' className='w-[50px] flex md:w-[100px]' />
+                    <p className='text-center'>{'Tisch' + ' ' + '#' + table.id}</p>
+                    <p className='text-[10px] text-black bg-yellow-300 px-2 rounded-lg'>{table.text}</p>
+                  </div>
+                  <div>
+                    {/* Место для отображения заказов стола 0 */}
+                    {table.tasks.map((item) => (
+                      <div key={item.id}>
+                        <span>{item.text}{" "}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </article>
+            );
+          }
+
+          return (
+            <article
+              key={table.id}
+              onClick={() => handleClick(table)}
+              className={`cursor-pointer cover flex items-center h-[90px] md:items-start md:h-[200px] cursor-pointer rounded-lg ${table.color}`}
+            >
+              <div className='w-full flex justify-center m-auto'>
+                <div className='flex flex-col items-center'>
+                  <img src={table.image} alt='' className='w-[50px] flex md:w-[100px]' />
+                  <p className='text-center'>{'Tisch' + ' ' + '#' + table.id}</p>
+                  <p className='text-[10px] text-black bg-yellow-300 px-2 rounded-lg'>{table.text}</p>
+                </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          );
+        })}
       </div>
     </div>
   );
 };
 
+
 export default Table;
+
+
+
+

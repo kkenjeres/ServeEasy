@@ -47,7 +47,8 @@ const Home = () => {
         onSlideChange={handleSwiperChange}
         spaceBetween={0}
         slidesPerView={1}
-      >
+        autoHeight={true} // Добавьте эту строку
+        >
         {components.map((component, index) => (
           <SwiperSlide key={index}>
             {component}

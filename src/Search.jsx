@@ -184,6 +184,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
   const [checkedItems, setCheckedItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
   const [beilageCount, setBeilageCount] = useState(0);
+  const [groupedItems, setGroupedItems] = useState([]);
 
   const foundItems = items.filter((item) =>
   item.id.toString().includes(searchTerm)
@@ -210,7 +211,22 @@ const handleInputChange = (event) => {
 
 
 
+useEffect(() => {
+  if (tableId === "0") {
+    const grouped = addedItems.reduce((acc, item) => {
+      if (!acc[item.tableId]) {
+        acc[item.tableId] = [item];
+      } else {
+        acc[item.tableId].push(item);
+      }
+      return acc;
+    }, {});
 
+    setGroupedItems(grouped);
+  } else {
+    setGroupedItems({ [tableId]: addedItems });
+  }
+}, [addedItems, tableId]);
 
 const addItem = async (tableId, itemToAdd) => {
   try {
@@ -233,6 +249,7 @@ const addItem = async (tableId, itemToAdd) => {
       const brankoItemData = { ...itemToAdd, extras: [], isReady: false, originTableId: tableId };
       await setDoc(brankoDocRef, brankoItemData);
     }
+    
   } catch (error) {
     console.error("Error adding item to Firestore: ", error);
   }
@@ -435,121 +452,133 @@ const updateItem = async (tableId, itemId, dataToUpdate) => {
   
       {searchTerm !== "" && (
         <div className="bg-white mt-2 rounded-lg">
-        <ul className="rounded-lg">
-          {filteredItems.map((item) => (
-            <div
-              className={`w-full p-2 shadow-xl rounded-xl ${
-                item.options ? "flex flex-col" : "flex justify-between"
-              }`}
-              onClick={() => handleAddButtonClick(item)}
-            >
-              <li key={item.id}>{item.text}{" "}</li>
-              {item.options ? item.options.map((option, index) => (
-                <button
-                  key={index}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleOptionClick(item, option);
-                  }}
-                >
-                  {option}
-                </button>
-              )) : "+"}
-            </div>
-          ))}
-        </ul>
-      </div>
-      
+          <ul className="rounded-lg">
+            {filteredItems.map((item) => (
+              <div
+                key={item.id}
+                className={`w-full p-2 shadow-xl rounded-xl ${item.options ? "flex flex-col" : "flex justify-between"}`}
+                onClick={() => handleAddButtonClick(item)}
+              >
+                <span>{item.text}{" "}</span>
+                {item.options ? item.options.map((option, index) => (
+                  <button
+                    key={index}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOptionClick(item, option);
+                    }}
+                  >
+                    {option}
+                  </button>
+                )) : "+"}
+              </div>
+            ))}
+          </ul>
+        </div>
       )}
   
   <div className="bg-white rounded-lg mt-10">
-        <ul>
-        {
-  addedItems.map((item) => (
-    <div
-      key={item.id}
-      className={` ${item.isReady ? 'bg-green-500' : 'bg-transparent'}`}
-      onClick={() => tableId === "0" && handleOrderClick(tableId, item.id)}
-    >
-    <div className="p-2 font-medium">
-    {item.extras && (
-      <ul className="mt-2"></ul>
-    )}
-    <ul className="flex justify-between text-left">
-      <li className="text-[16px]" key={item.id}>
-        {tableId === 0 ? `${item.text} from table ${item.originTableId}` : item.text}
-      </li>
-      {tableId !== 0 && (
-        <li className="text-[16px] " key={item.id}>
-          {calculateTotalPriceWithExtras(item) + "€"}
-        </li>
-      )}
-    </ul>
-    {item.extras.map((extra) => (
-      <li
-        key={extra.id}
-        className="text-sm text-gray-600 flex justify-between"
-      >
-        {extra.isExtraMinus ? '-' : '+'} {extra.text}
-      </li>
-    ))}
-
-    {tableId !== 0 && (
-      <div className="flex justify-between mt-5 items-center">
-        <div className="flex flex-col w-full ">
-          <div className="bg-[#6E7780] px-2 py-1 rounded-full items-center flex justify-between gap-5 w-[40%] text-white">
-            <button
-              onClick={() => handleMinusButtonClick(item.id)}
-              className="text-[20px]"
-            >
-              <AiOutlineMinus />
-            </button>
-            <span>{item.quantity}</span>
-
-            <button
-              onClick={() => handlePlusButtonClick(item.id)}
-              className=" text-[20px]"
-            >
-              <AiOutlinePlus />
-            </button>
-          </div>
-          <div className="flex justify-between mt-4">
-            {item.category === 'pizza' && (
-              <div className='flex gap-4'>
-                <button onClick={() => handleExtraButtonClick(item.id)}>Extra+</button>
-                <button onClick={() => handleExtraMinusButtonClick(item.id)}>Extra-</button>
-              </div>
+  {Object.entries(groupedItems).map(([tableId, items]) => (
+    <div key={tableId}>
+      <div>
+        {tableId === "0" ? null : (
+          <span className="bg-black text-white text-[26px] mb-4">
+            {`Tisch # ${tableId}`}
+          </span>
             )}
-            <button onClick={() => handleDeleteButtonClick(item.id)}>
-              Löschen
-            </button>
           </div>
-        </div>
-        
-        {selectedItemId === item.id && (
-          <Extra
-            itemId={item.id}
-            onExtraItemSelected={handleExtraItemSelected}
-            setSelectedItemId={setSelectedItemId}
-            selectedExtras={selectedExtras}
-            setSelectedExtras={setSelectedExtras}
-          />
-        )}
+          <div>
+        {items.map((item, i) => (
+          <div
+            key={item.id}
+            className={`${item.isReady ? (tableId === "0" ? "bg-green-500" : "bg-transparent") : "bg-transparent"}`}
+            onClick={() => tableId === "0" ? handleOrderClick(tableId, item.id) : null}
+          >
+                <div className="p-2 font-medium">
+                  {item.extras && (
+                    <ul className="mt-2"></ul>
+                  )}
+                  <ul className="flex justify-between text-left">
+                    <li className="text-[16px]">
+                      <div style={{display: 'flex', flexDirection: 'column'}}>
+                        <span>{item.text}</span>
+                      </div>
+                    </li>
+                    {tableId !== "0" && (
+                      <li className="text-[16px]">
+                        {calculateTotalPriceWithExtras(item) + "€"}
+                      </li>
+                    )}
+                  </ul>
 
-        {selectedItemIdMinus === item.id && (
-          <ExtraMinus itemId={item.id} onExtraItemSelected={handleExtraItemSelected} setSelectedItemIdMinus={setSelectedItemIdMinus} />
-        )}
-      </div>
-    )}
-    </div>
-  </div>
-))}
+                  {item.extras.map((extra) => (
+                    <li
+                      key={extra.id}
+                      className="text-sm text-gray-600 flex justify-between"
+                    >
+                      {extra.isExtraMinus ? '-' : '+'} {extra.text}
+                    </li>
+                  ))}
 
+                  {tableId !== "0" && (
+                    <div className="flex justify-between mt-5 items-center">
+                      <div className="flex flex-col w-full">
+                        <div className="bg-[#6E7780] px-2 py-1 rounded-full items-center flex justify-between gap-5 w-[40%] text-white">
+                          <button
+                            onClick={() => handleMinusButtonClick(item.id)}
+                            className="text-[20px]"
+                          >
+                            <AiOutlineMinus />
+                          </button>
+                            <span>{item.quantity}</span>
+                          <button
+                            onClick={() => handlePlusButtonClick(item.id)}
+                            className="text-[20px]"
+                          >
+                            <AiOutlinePlus />
+                          </button>
+                        </div>
+                        <div className="flex justify-between mt-4">
+                          {item.category === 'pizza' && (
+                            <div className='flex gap-4'>
+                              <button onClick={() => handleExtraButtonClick(item.id)}>Extra+</button>
+                              <button onClick={() => handleExtraMinusButtonClick(item.id)}>Extra-</button>
+                            </div>
+                          )}
+                          <button onClick={() => handleDeleteButtonClick(item.id)}>
+                            Löschen
+                          </button>
+                        </div>
+                      </div>
+                      
+                      {selectedItemId === item.id && (
+                        <Extra
+                          itemId={item.id}
+                          onExtraItemSelected={handleExtraItemSelected}
+                          setSelectedItemId={setSelectedItemId}
+                          selectedExtras={selectedExtras}
+                          setSelectedExtras={setSelectedExtras}
+                        />
+                      )}
 
-        </ul>
+                      {selectedItemIdMinus === item.id && (
+                        <ExtraMinus 
+                          itemId={item.id} 
+                          onExtraItemSelected={handleExtraItemSelected} 
+                          setSelectedItemIdMinus={setSelectedItemIdMinus} 
+                        />
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+          </div>
+        ))}
       </div>
     </div>
   );
-}   
+}
 
-export default Search;
+export default Search
