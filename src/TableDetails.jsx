@@ -14,7 +14,8 @@ function TableDetails() {
   const [showZahlen, setShowZahlen] = useState(false);
   const [showHeart, setShowHeart] = useState(false); // Add this line
   const [selectedItemId, setSelectedItemId] = useState(null);
-  
+  const tableId = parseInt(id, 10);
+
   const handleBack = () => {
     navigate('/');
   };
@@ -47,9 +48,11 @@ function TableDetails() {
           Tisch #{id}
         </h1>
       </div>
+      {tableId !== 0 && (
       <div className='flex justify-end px-10 mt-10'> 
         <AiFillHeart onClick={handleHeartClick} className='w-[50px] h-[50px]'/> {/* Modify this line */}
       </div>
+      )}
       <div className="w-[90%] mx-auto flex-grow flex flex-col justify-between">
         <div>
           <div>
@@ -60,14 +63,16 @@ function TableDetails() {
             <p className="border-1 border-gray-300"></p>
           </div>
         </div>
-        <div className="w-full my-4 text-center ">
-          <button
-            onClick={handleZahlenClick}
-            className="py-2 bg-black text-white w-[90%] rounded-lg"
-          >
-            Zahlen
-          </button>
-        </div>
+        {tableId !== 0 && (
+          <div className="w-full my-4 text-center ">
+            <button
+              onClick={handleZahlenClick}
+              className="py-2 bg-black text-white w-[90%] rounded-lg"
+            >
+              Zahlen
+            </button>
+          </div>
+        )}
       </div>
       {showZahlen && (
         <Zahlen

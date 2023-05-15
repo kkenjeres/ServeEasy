@@ -178,291 +178,298 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
       { id: 991, text: "Ca de Frati Weis/Rot/Rosse 0.75", price: 36.50, percent: 19 },
     
   ]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [addedItems, setAddedItems] = useState([]);
-  const [checkedItems, setCheckedItems] = useState([]);
-  const [filteredItems, setFilteredItems] = useState([]);
-  const [beilageCount, setBeilageCount] = useState(0);
-  const [groupedItems, setGroupedItems] = useState([]);
-  const [readyItems, setReadyItems] = useState({});
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [addedItems, setAddedItems] = useState([]);
+    const [checkedItems, setCheckedItems] = useState([]);
+    const [filteredItems, setFilteredItems] = useState([]);
+    const [beilageCount, setBeilageCount] = useState(0);
+    const [groupedItems, setGroupedItems] = useState([]);
+    const [readyItems, setReadyItems] = useState({});
 
-  const foundItems = items.filter((item) =>
-  item.id.toString().includes(searchTerm)
-);
-const handleInputChange = (event) => {
-  const { value } = event.target;
-  setSearchTerm(value);
-
-  const foundItem = items.find(
-    (item) =>
-      item.id.toString() === value || item.text.toLowerCase().includes(value.toLowerCase())
+    const foundItems = items.filter((item) =>
+    item.id.toString().includes(searchTerm)
   );
-  if (foundItem) {
-    setFilteredItems([foundItem]);
-  } else {
-    const foundItems = items.filter(
+  const handleInputChange = (event) => {
+    const { value } = event.target;
+    setSearchTerm(value);
+
+    const foundItem = items.find(
       (item) =>
-        item.id.toString().includes(value) ||
-        item.text.toLowerCase().includes(value.toLowerCase())
+        item.id.toString() === value || item.text.toLowerCase().includes(value.toLowerCase())
     );
-    setFilteredItems(foundItems);
-  }
-};
+    if (foundItem) {
+      setFilteredItems([foundItem]);
+    } else {
+      const foundItems = items.filter(
+        (item) =>
+          item.id.toString().includes(value) ||
+          item.text.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredItems(foundItems);
+    }
+  };
 
 
 
-useEffect(() => {
-  if (tableId === "0") {
-    const grouped = addedItems.reduce((acc, item) => {
-      if (!acc[item.tableId]) {
-        acc[item.tableId] = [item];
-      } else {
-        acc[item.tableId].push(item);
-      }
-      return acc;
-    }, {});
+  useEffect(() => {
+    if (tableId === "0") {
+      const grouped = addedItems.reduce((acc, item) => {
+        if (!acc[item.tableId]) {
+          acc[item.tableId] = [item];
+        } else {
+          acc[item.tableId].push(item);
+        }
+        return acc;
+      }, {});
 
-    setGroupedItems(grouped);
-  } else {
-    setGroupedItems({ [tableId]: addedItems });
-  }
-}, [addedItems, tableId]);
+      setGroupedItems(grouped);
+    } else {
+      setGroupedItems({ [tableId]: addedItems });
+    }
+  }, [addedItems, tableId]);
 
-const addItem = async (tableId, itemToAdd) => {
-  try {
-    const docRef = doc(
-      collection(db, "tables"),
-      tableId,
-      "items",
-      itemToAdd.id.toString()
-    );
-    const itemData = { ...itemToAdd, extras: [], isReady: false };
-    await setDoc(docRef, itemData);
-
-    if (itemToAdd.boss) {
-      const brankoDocRef = doc(
+  const addItem = async (tableId, itemToAdd) => {
+    try {
+      const docRef = doc(
         collection(db, "tables"),
-        "0",
+        tableId,
         "items",
         itemToAdd.id.toString()
       );
-      const brankoItemData = { ...itemToAdd, extras: [], isReady: false, originTableId: tableId };
-      await setDoc(brankoDocRef, brankoItemData);
-    }
-    
-  } catch (error) {
-    console.error("Error adding item to Firestore: ", error);
-  }
-};
+      const itemData = { ...itemToAdd, extras: [], isReady: false };
+      await setDoc(docRef, itemData);
 
-
-  
-
-useEffect(() => {
-  const unsubscribe = onSnapshot(
-    collection(db, "tables", tableId, "items"),
-    (snapshot) => {
-      const addedItemsData = snapshot.docs.map((doc) => doc.data());
-      setAddedItems(addedItemsData.sort((a, b) => b.createdAt - a.createdAt));
-      addedItemsData.forEach((item) => {
-        setReadyItems((prev) => ({
-          ...prev,
-          [item.id]: item.isReady, // устанавливаем значение isGreen для каждого элемента
-        }));
-      });
-    }
-  );
-  return () => unsubscribe();
-}, [tableId]);
-
-const updateItem = async (tableId, itemId, dataToUpdate) => {
-  try {
-    const docRef = doc(collection(db, "tables", tableId, "items"), itemId.toString());
-    await updateDoc(docRef, dataToUpdate);
-
-    const itemToUpdate = addedItems.find(item => item.id === itemId);
-    if (itemToUpdate && itemToUpdate.boss) {
-      // Обновляем элемент в столе 0
-      const brankoDocRef = doc(collection(db, "tables"), "0", "items", itemId.toString());
-      await updateDoc(brankoDocRef, dataToUpdate);
-
-      // Если элемент был обновлён в столе 0, обновляем его и в оригинальном столе
-      if (tableId === "0" && itemToUpdate.originTableId) {
-        const originTableDocRef = doc(collection(db, "tables"), itemToUpdate.originTableId, "items", itemId.toString());
-        await updateDoc(originTableDocRef, dataToUpdate);
+      if (itemToAdd.boss) {
+        const brankoDocRef = doc(
+          collection(db, "tables"),
+          "0",
+          "items",
+          itemToAdd.id.toString()
+        );
+        const brankoItemData = { 
+          ...itemToAdd, 
+          extras: [], 
+          isReady: false, 
+          originTableId: tableId,
+          styles: {color: 'red'} // здесь устанавливаем стили для отображения в таблице 0
+        };
+        await setDoc(brankoDocRef, brankoItemData);
       }
+      
+      
+    } catch (error) {
+      console.error("Error adding item to Firestore: ", error);
     }
-  } catch (error) {
-    console.error("Error updating item in Firestore: ", error);
-  }
-};
-
-
-  
-  const handlePlusButtonClick = async (id) => {
-    const updatedItems = addedItems.map((item) => {
-      if (item.id === id) {
-        const updatedQuantity = item.quantity + 1;
-        const totalPrice = (item.price * updatedQuantity).toFixed(2);
-        const updatedItem = { ...item, quantity: updatedQuantity, totalPrice };
-        updateItem(tableId, id, updatedItem);
-  
-        if (item.boss) { // Изменил условие здесь
-          updateItem("0", id, updatedItem);
-        }
-  
-        return updatedItem;
-      } else {
-        return item;
-      }
-    });
-    setAddedItems(updatedItems);
   };
-  
-  const handleMinusButtonClick = async (id) => {
-    const updatedItems = addedItems.map((item) => {
-      if (item.id === id) {
-        const updatedQuantity = item.quantity - 1;
-        if (updatedQuantity === 0) {
-          deleteItem(tableId, id);
-          return null;
-        } else {
+
+
+    
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(db, "tables", tableId, "items"),
+      (snapshot) => {
+        const addedItemsData = snapshot.docs.map((doc) => doc.data());
+        setAddedItems(addedItemsData.sort((a, b) => b.createdAt - a.createdAt));
+        addedItemsData.forEach((item) => {
+          setReadyItems((prev) => ({
+            ...prev,
+            [item.id]: item.isReady, // устанавливаем значение isGreen для каждого элемента
+          }));
+        });
+      }
+    );
+    return () => unsubscribe();
+  }, [tableId]);
+
+  const updateItem = async (tableId, itemId, dataToUpdate) => {
+    try {
+      const docRef = doc(collection(db, "tables", tableId, "items"), itemId.toString());
+      await updateDoc(docRef, dataToUpdate);
+
+      const itemToUpdate = addedItems.find(item => item.id === itemId);
+      if (itemToUpdate && itemToUpdate.boss) {
+        // Обновляем элемент в столе 0
+        const brankoDocRef = doc(collection(db, "tables"), "0", "items", itemId.toString());
+        await updateDoc(brankoDocRef, dataToUpdate);
+
+        // Если элемент был обновлён в столе 0, обновляем его и в оригинальном столе
+        if (tableId === "0" && itemToUpdate.originTableId) {
+          const originTableDocRef = doc(collection(db, "tables"), itemToUpdate.originTableId, "items", itemId.toString());
+          await updateDoc(originTableDocRef, dataToUpdate);
+        }
+      }
+    } catch (error) {
+      console.error("Error updating item in Firestore: ", error);
+    }
+  };
+
+
+    
+    const handlePlusButtonClick = async (id) => {
+      const updatedItems = addedItems.map((item) => {
+        if (item.id === id) {
+          const updatedQuantity = item.quantity + 1;
           const totalPrice = (item.price * updatedQuantity).toFixed(2);
           const updatedItem = { ...item, quantity: updatedQuantity, totalPrice };
           updateItem(tableId, id, updatedItem);
-  
+    
           if (item.boss) { // Изменил условие здесь
             updateItem("0", id, updatedItem);
           }
-  
+    
           return updatedItem;
+        } else {
+          return item;
         }
-      } else {
-        return item;
-      }
-    });
-    setAddedItems(updatedItems.filter((item) => item !== null));
-  };
-  const deleteItem = async (tableId, itemId) => {
-    try {
-      const docRef = doc(collection(db, "tables", tableId, "items"), itemId.toString());
-      await deleteDoc(docRef);
-  
-      const itemToDelete = addedItems.find(item => item.id === itemId);
-  
-      if (itemToDelete && itemToDelete.boss) { // Изменил условие здесь
-        const brankoDocRef = doc(collection(db, "tables"), "0", "items", itemId.toString());
-        await deleteDoc(brankoDocRef);
-      }
-    } catch (error) {
-      console.error("Error deleting item from Firestore: ", error);
-    }
-  };
-  const handleDeleteButtonClick = async (id) => {
-    try {
-      const docRef = doc(collection(db, "tables", tableId, "items"), id.toString());
-      await deleteDoc(docRef);
-      setAddedItems(addedItems.filter((item) => item.id !== id));
-  
-      const itemToDelete = addedItems.find(item => item.id === id);
-  
-      if (itemToDelete && itemToDelete.boss) { // Изменил условие здесь
-        const brankoDocRef = doc(collection(db, "tables"), "0", "items", id.toString());
-        await deleteDoc(brankoDocRef);
-      }
-    } catch (error) {
-      console.error("Error deleting item from Firestore: ", error);
-    }
-  };
-  
-  const [showExtra, setShowExtra] = useState(false); // Добавьте состояние для отображения компонента Extra
-    const [selectedItemIdMinus, setSelectedItemIdMinus] = useState(null);
-    const handleExtraMinusButtonClick = (itemId) => {
-      if (selectedItemIdMinus === itemId) {
-        setSelectedItemIdMinus(null);
-      } else {
-        setSelectedItemIdMinus(itemId);
-      }
-    };
-  
-    const handleExtraButtonClick = (itemId) => {
-      if (selectedItemId === itemId) {
-        setSelectedItemId(null);
-      } else {
-        setSelectedItemId(itemId);
-      }
-    };
-  const [selectedExtras, setSelectedExtras] = useState([]);
-
-  const handleExtraItemSelected = (itemId, extra) => {
-    const isExtraMinus = selectedItemIdMinus === itemId;
-    const newExtra = { ...extra, isExtraMinus };
-    const updatedItems = addedItems.map((item) => {
-      if (item.id === itemId) {
-        const updatedExtras = item.extras
-          ? [{ ...newExtra, quantity: 1 }, ...item.extras]
-          : [{ ...newExtra, quantity: 1 }];
-  
-        const updatedItem = { ...item, extras: updatedExtras };
-        updateItem(tableId, itemId, updatedItem);
-        return updatedItem;
-      } else {
-        return item;
-      }
-    });
-    setAddedItems(updatedItems);
-  };
-  
-  const calculateTotalPriceWithExtras = (item) => {
-    const extrasTotalPrice = item.extras.reduce(
-      (total, extra) => total + extra.price * extra.quantity,
-      0
-    );
-    return (item.price * item.quantity + extrasTotalPrice).toFixed(2);
-  };
-  const handleOptionClick = (item, option) => {
-    // Здесь вы можете обработать выбранный вариант и добавить его к элементу
-    // Например, вы можете добавить выбранный вариант к тексту элемента:f
-    const newItem = { ...item, text: item.text + ' ' + option };
-    handleAddButtonClick(newItem);
-  };
-  const handleAddButtonClick = (item) => {
-    // Добавьте условие для скидки
-    const discountedPrice = tableId === "50" ? item.price * 0.9 : item.price;
-  
-    // Создайте уникальный идентификатор для каждого добавленного элемента
-    const uniqueId = Date.now();
-  
-    const itemToAdd = {
-      ...item,
-      id: item.id + "-" + uniqueId, 
-      price: discountedPrice, 
-      quantity: 1,
-      totalPrice: discountedPrice.toFixed(2),
-      extras: [],
-      tableId: tableId,
-      createdAt: Date.now(),
-      isReady: false,  // новое поле
+      });
+      setAddedItems(updatedItems);
     };
     
-    setAddedItems([itemToAdd, ...addedItems].sort((a, b) => b.createdAt - a.createdAt));
-    addItem(tableId, itemToAdd);
-    setSearchTerm("");
-    setSelectedItem(null);
-  };
-  console.log(addedItems);
-  const handleOrderClick = async (itemId) => {
-    if (tableId !== '0') return; // Запрещаем изменения на столах, отличных от стола 0
-    const itemToUpdate = addedItems.find(item => item.id === itemId);
-    if (itemToUpdate) {
-      const isReady = !itemToUpdate.isReady;
-      updateItem(tableId, itemId, { isReady });
-    }
-  };
-  
-  
-  
+    const handleMinusButtonClick = async (id) => {
+      const updatedItems = addedItems.map((item) => {
+        if (item.id === id) {
+          const updatedQuantity = item.quantity - 1;
+          if (updatedQuantity === 0) {
+            deleteItem(tableId, id);
+            return null;
+          } else {
+            const totalPrice = (item.price * updatedQuantity).toFixed(2);
+            const updatedItem = { ...item, quantity: updatedQuantity, totalPrice };
+            updateItem(tableId, id, updatedItem);
+    
+            if (item.boss) { // Изменил условие здесь
+              updateItem("0", id, updatedItem);
+            }
+    
+            return updatedItem;
+          }
+        } else {
+          return item;
+        }
+      });
+      setAddedItems(updatedItems.filter((item) => item !== null));
+    };
+    const deleteItem = async (tableId, itemId) => {
+      try {
+        const docRef = doc(collection(db, "tables", tableId, "items"), itemId.toString());
+        await deleteDoc(docRef);
+    
+        const itemToDelete = addedItems.find(item => item.id === itemId);
+    
+        if (itemToDelete && itemToDelete.boss) { // Изменил условие здесь
+          const brankoDocRef = doc(collection(db, "tables"), "0", "items", itemId.toString());
+          await deleteDoc(brankoDocRef);
+        }
+      } catch (error) {
+        console.error("Error deleting item from Firestore: ", error);
+      }
+    };
+    const handleDeleteButtonClick = async (id) => {
+      try {
+        const docRef = doc(collection(db, "tables", tableId, "items"), id.toString());
+        await deleteDoc(docRef);
+        setAddedItems(addedItems.filter((item) => item.id !== id));
+    
+        const itemToDelete = addedItems.find(item => item.id === id);
+    
+        if (itemToDelete && itemToDelete.boss) { // Изменил условие здесь
+          const brankoDocRef = doc(collection(db, "tables"), "0", "items", id.toString());
+          await deleteDoc(brankoDocRef);
+        }
+      } catch (error) {
+        console.error("Error deleting item from Firestore: ", error);
+      }
+    };
+    
+    const [showExtra, setShowExtra] = useState(false); // Добавьте состояние для отображения компонента Extra
+      const [selectedItemIdMinus, setSelectedItemIdMinus] = useState(null);
+      const handleExtraMinusButtonClick = (itemId) => {
+        if (selectedItemIdMinus === itemId) {
+          setSelectedItemIdMinus(null);
+        } else {
+          setSelectedItemIdMinus(itemId);
+        }
+      };
+    
+      const handleExtraButtonClick = (itemId) => {
+        if (selectedItemId === itemId) {
+          setSelectedItemId(null);
+        } else {
+          setSelectedItemId(itemId);
+        }
+      };
+    const [selectedExtras, setSelectedExtras] = useState([]);
+
+    const handleExtraItemSelected = (itemId, extra) => {
+      const isExtraMinus = selectedItemIdMinus === itemId;
+      const newExtra = { ...extra, isExtraMinus };
+      const updatedItems = addedItems.map((item) => {
+        if (item.id === itemId) {
+          const updatedExtras = item.extras
+            ? [{ ...newExtra, quantity: 1 }, ...item.extras]
+            : [{ ...newExtra, quantity: 1 }];
+    
+          const updatedItem = { ...item, extras: updatedExtras };
+          updateItem(tableId, itemId, updatedItem);
+          return updatedItem;
+        } else {
+          return item;
+        }
+      });
+      setAddedItems(updatedItems);
+    };
+    
+    const calculateTotalPriceWithExtras = (item) => {
+      const extrasTotalPrice = item.extras.reduce(
+        (total, extra) => total + extra.price * extra.quantity,
+        0
+      );
+      return (item.price * item.quantity + extrasTotalPrice).toFixed(2);
+    };
+    const handleOptionClick = (item, option) => {
+      // Здесь вы можете обработать выбранный вариант и добавить его к элементу
+      // Например, вы можете добавить выбранный вариант к тексту элемента:f
+      const newItem = { ...item, text: item.text + ' ' + option };
+      handleAddButtonClick(newItem);
+    };
+    const handleAddButtonClick = (item) => {
+      // Добавьте условие для скидки
+      const discountedPrice = tableId === "50" ? item.price * 0.9 : item.price;
+    
+      // Создайте уникальный идентификатор для каждого добавленного элемента
+      const uniqueId = Date.now();
+    
+      const itemToAdd = {
+        ...item,
+        id: item.id + "-" + uniqueId, 
+        price: discountedPrice, 
+        quantity: 1,
+        totalPrice: discountedPrice.toFixed(2),
+        extras: [],
+        tableId: tableId,
+        createdAt: Date.now(),
+        isReady: false,  // новое поле
+      };
+      
+      setAddedItems([itemToAdd, ...addedItems].sort((a, b) => b.createdAt - a.createdAt));
+      addItem(tableId, itemToAdd);
+      setSearchTerm("");
+      setSelectedItem(null);
+    };
+    console.log(addedItems);
+    const handleOrderClick = async (itemId) => {
+      if (tableId !== '0') return; // Запрещаем изменения на столах, отличных от стола 0
+      const itemToUpdate = addedItems.find(item => item.id === itemId);
+      if (itemToUpdate) {
+        const isReady = !itemToUpdate.isReady;
+        updateItem(tableId, itemId, { isReady });
+      }
+    };
+    
+    
+    
   
   return (
     <div>
@@ -513,21 +520,24 @@ const updateItem = async (tableId, itemId, dataToUpdate) => {
           </div>
           <div>
           {items.map((item, i) => (
-  <div
-    key={item.id}
-    className={`${readyItems[item.id] ? "bg-green-500" : "bg-transparent"}`}
-    onClick={() => handleOrderClick(item.id)}
-  >
+        <div
+          key={item.id}
+          className={`${readyItems[item.id] ? "bg-green-500" : "bg-transparent"}`}
+          onClick={() => handleOrderClick(item.id)}
+        >
                 <div className="p-2 font-medium">
                   {item.extras && (
                     <ul className="mt-2"></ul>
                   )}
                   <ul className="flex justify-between text-left">
-                    <li className="text-[16px]">
-                      <div style={{display: 'flex', flexDirection: 'column'}}>
-                        <span>{item.text}</span>
-                      </div>
-                    </li>
+                  <li 
+  className={(tableId === "0" && item.originTableId !== "0") ? "text-red-500 text-[30px]" : "text-[16px]"} // Увеличиваем размер шрифта и меняем цвет текста для элементов, которые были перемещены на стол "0" с других столов
+>
+  <div style={{display: 'flex', flexDirection: 'column'}}>
+    <span className="md:text-[40px] lg:text-[16px]">{item.text}</span>
+  </div>
+</li>
+
                     {tableId !== "0" && (
                       <li className="text-[16px]">
                         {calculateTotalPriceWithExtras(item) + "€"}
@@ -544,10 +554,10 @@ const updateItem = async (tableId, itemId, dataToUpdate) => {
                     </li>
                   ))}
 
-                  {tableId !== "0" && (
-                    <div className="flex justify-between mt-5 items-center">
-                      <div className="flex flex-col w-full">
-                        <div className="bg-[#6E7780] px-2 py-1 rounded-full items-center flex justify-between gap-5 w-[40%] text-white">
+{tableId !== "0" && (
+            <div className="flex justify-between mt-5 items-center">
+              <div className="flex flex-col w-full">
+                <div className="bg-[#6E7780] px-2 py-1 rounded-full items-center flex justify-between gap-5 w-[40%] text-white">
                           <button
                             onClick={() => handleMinusButtonClick(item.id)}
                             className="text-[20px]"
@@ -563,16 +573,18 @@ const updateItem = async (tableId, itemId, dataToUpdate) => {
                           </button>
                         </div>
                         <div className="flex justify-between mt-4">
-                          {item.category === 'pizza' && (
-                            <div className='flex gap-4'>
-                              <button onClick={() => handleExtraButtonClick(item.id)}>Extra+</button>
-                              <button onClick={() => handleExtraMinusButtonClick(item.id)}>Extra-</button>
-                            </div>
-                          )}
-                          <button onClick={() => handleDeleteButtonClick(item.id)}>
-                            Löschen
-                          </button>
-                        </div>
+                  {item.category === 'pizza' && tableId !== "0" && ( // Скрываем кнопки для tableId === "0"
+                    <div className='flex gap-4'>
+                      <button onClick={() => handleExtraButtonClick(item.id)}>Extra+</button>
+                      <button onClick={() => handleExtraMinusButtonClick(item.id)}>Extra-</button>
+                    </div>
+                  )}
+                  {tableId !== "0" && ( // Скрываем кнопку "Löschen" для tableId === "0"
+                    <button onClick={() => handleDeleteButtonClick(item.id)}>
+                      Löschen
+                    </button>
+                  )}
+                </div>
                       </div>
                       
                       {selectedItemId === item.id && (
