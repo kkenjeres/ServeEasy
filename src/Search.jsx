@@ -534,7 +534,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
   className={(tableId === "0" && item.originTableId !== "0") ? "text-red-500 text-[30px]" : "text-[16px]"} // Увеличиваем размер шрифта и меняем цвет текста для элементов, которые были перемещены на стол "0" с других столов
 >
   <div style={{display: 'flex', flexDirection: 'column'}}>
-    <span className="md:text-[40px] lg:text-[16px]">{item.text}</span>
+    <span className="md:text-[40px] lg:text-[40px]">{item.text}</span>
   </div>
 </li>
 
