@@ -68,16 +68,28 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
 
   const handleClearTableClick = async () => {
     try {
-      const clearTable = async (tableId) => {
-        const tableItemsRef = collection(db, "tables", tableId, "items");
-        const tableItemsSnapshot = await getDocs(tableItemsRef);
-        tableItemsSnapshot.forEach(async (doc) => {
-          await deleteDoc(doc.ref);
-        });
-      }
+      const tableItemsRef = collection(db, "tables", tableId, "items");
+      const tableItemsSnapshot = await getDocs(tableItemsRef);
+      const currentTableItems = tableItemsSnapshot.docs.map(doc => doc.data());
       
-      await clearTable(tableId); // очистка текущего стола
-      await clearTable('0'); // очистка стола с идентификатором 0
+      const tableZeroItemsRef = collection(db, "tables", '0', "items");
+      const tableZeroItemsSnapshot = await getDocs(tableZeroItemsRef);
+      const tableZeroItems = tableZeroItemsSnapshot.docs.map(doc => doc.data());
+      
+      // Находим общие элементы между текущим столом и столом 0
+      const itemsToRemove = tableZeroItems.filter(zeroItem => 
+        currentTableItems.some(currentItem => currentItem.id === zeroItem.id)
+      );
+      
+      // Удаляем общие элементы из текущего стола
+      for (let item of itemsToRemove) {
+        await deleteDoc(doc(collection(db, "tables", tableId, "items"), item.id));
+      }
+  
+      // Удаляем общие элементы из стола 0
+      for (let item of itemsToRemove) {
+        await deleteDoc(doc(collection(db, "tables", '0', "items"), item.id));
+      }
   
       setTableData([]);
       onClose();
@@ -85,6 +97,7 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
       console.error("Error clearing table in Firestore: ", error);
     }
   };
+  
   
 
   const handleBackClick = () => {
