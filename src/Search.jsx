@@ -185,6 +185,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
   const [filteredItems, setFilteredItems] = useState([]);
   const [beilageCount, setBeilageCount] = useState(0);
   const [groupedItems, setGroupedItems] = useState([]);
+  const [readyItems, setReadyItems] = useState({});
 
   const foundItems = items.filter((item) =>
   item.id.toString().includes(searchTerm)
@@ -254,11 +255,8 @@ const addItem = async (tableId, itemToAdd) => {
     console.error("Error adding item to Firestore: ", error);
   }
 };
-const handleOrderClick = async (tableId, itemId) => {
-  const docRef = doc(collection(db, "tables", tableId, "items"), itemId.toString());
-  const item = (await getDoc(docRef)).data();
-  await updateDoc(docRef, { isReady: !item.isReady });
-};
+
+
   
 
 useEffect(() => {
@@ -267,6 +265,12 @@ useEffect(() => {
     (snapshot) => {
       const addedItemsData = snapshot.docs.map((doc) => doc.data());
       setAddedItems(addedItemsData.sort((a, b) => b.createdAt - a.createdAt));
+      addedItemsData.forEach((item) => {
+        setReadyItems((prev) => ({
+          ...prev,
+          [item.id]: item.isReady, // устанавливаем значение isGreen для каждого элемента
+        }));
+      });
     }
   );
   return () => unsubscribe();
@@ -279,13 +283,22 @@ const updateItem = async (tableId, itemId, dataToUpdate) => {
 
     const itemToUpdate = addedItems.find(item => item.id === itemId);
     if (itemToUpdate && itemToUpdate.boss) {
+      // Обновляем элемент в столе 0
       const brankoDocRef = doc(collection(db, "tables"), "0", "items", itemId.toString());
       await updateDoc(brankoDocRef, dataToUpdate);
+
+      // Если элемент был обновлён в столе 0, обновляем его и в оригинальном столе
+      if (tableId === "0" && itemToUpdate.originTableId) {
+        const originTableDocRef = doc(collection(db, "tables"), itemToUpdate.originTableId, "items", itemId.toString());
+        await updateDoc(originTableDocRef, dataToUpdate);
+      }
     }
   } catch (error) {
     console.error("Error updating item in Firestore: ", error);
   }
 };
+
+
   
   const handlePlusButtonClick = async (id) => {
     const updatedItems = addedItems.map((item) => {
@@ -439,7 +452,18 @@ const updateItem = async (tableId, itemId, dataToUpdate) => {
     setSelectedItem(null);
   };
   console.log(addedItems);
-    
+  const handleOrderClick = async (itemId) => {
+    if (tableId !== '0') return; // Запрещаем изменения на столах, отличных от стола 0
+    const itemToUpdate = addedItems.find(item => item.id === itemId);
+    if (itemToUpdate) {
+      const isReady = !itemToUpdate.isReady;
+      updateItem(tableId, itemId, { isReady });
+    }
+  };
+  
+  
+  
+  
   return (
     <div>
       <input
@@ -488,12 +512,12 @@ const updateItem = async (tableId, itemId, dataToUpdate) => {
             )}
           </div>
           <div>
-        {items.map((item, i) => (
-          <div
-            key={item.id}
-            className={`${item.isReady ? (tableId === "0" ? "bg-green-500" : "bg-transparent") : "bg-transparent"}`}
-            onClick={() => tableId === "0" ? handleOrderClick(tableId, item.id) : null}
-          >
+          {items.map((item, i) => (
+  <div
+    key={item.id}
+    className={`${readyItems[item.id] ? "bg-green-500" : "bg-transparent"}`}
+    onClick={() => handleOrderClick(item.id)}
+  >
                 <div className="p-2 font-medium">
                   {item.extras && (
                     <ul className="mt-2"></ul>

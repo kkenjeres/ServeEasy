@@ -68,17 +68,24 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
 
   const handleClearTableClick = async () => {
     try {
-      const tableItemsRef = collection(db, "tables", tableId, "items");
-      const tableItemsSnapshot = await getDocs(tableItemsRef);
-      tableItemsSnapshot.forEach(async (doc) => {
-        await deleteDoc(doc.ref);
-      });
+      const clearTable = async (tableId) => {
+        const tableItemsRef = collection(db, "tables", tableId, "items");
+        const tableItemsSnapshot = await getDocs(tableItemsRef);
+        tableItemsSnapshot.forEach(async (doc) => {
+          await deleteDoc(doc.ref);
+        });
+      }
+      
+      await clearTable(tableId); // очистка текущего стола
+      await clearTable('0'); // очистка стола с идентификатором 0
+  
       setTableData([]);
       onClose();
     } catch (error) {
       console.error("Error clearing table in Firestore: ", error);
     }
   };
+  
 
   const handleBackClick = () => {
     onClose();
