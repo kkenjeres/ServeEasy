@@ -433,8 +433,14 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
             ? [{ ...newExtra, quantity: 1 }, ...item.extras]
             : [{ ...newExtra, quantity: 1 }];
     
-          const updatedItem = { ...item, extras: updatedExtras };
+          const updatedItem = { ...item, extras: updatedExtras, background: item.boss ? 'red' : item.background };
           updateItem(tableId, itemId, updatedItem);
+    
+          // Обновление элемента в столе 0, если он является 'boss'
+          if (item.boss) {
+            updateItem("0", itemId, { ...updatedItem, background: 'red' });
+          }
+    
           return updatedItem;
         } else {
           return item;
@@ -442,6 +448,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
       });
       setAddedItems(updatedItems);
     };
+    
     
     const calculateTotalPriceWithExtras = (item) => {
       const extrasTotalPrice = item.extras.reduce(
@@ -586,17 +593,17 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
 {tableId !== "0" && (
             <div className="flex justify-between mt-5 items-center">
               <div className="flex flex-col w-full">
-                <div className="bg-[#6E7780] px-2 py-1 rounded-full items-center flex justify-between gap-5 w-[40%] text-white">
+                <div className="bg-[#6E7780] md:bg-white md:text-black px-2 py-1 rounded-full items-center flex justify-between gap-5 w-[40%] text-white md:justify-center md:text-[30px]">
                           <button
                             onClick={() => handleMinusButtonClick(item.id)}
-                            className="text-[20px]"
+                            className="text-[20px] md:hidden"
                           >
                             <AiOutlineMinus />
                           </button>
                             <span>{item.quantity}</span>
                           <button
                             onClick={() => handlePlusButtonClick(item.id)}
-                            className="text-[20px]"
+                            className="text-[20px] md:hidden"
                           >
                             <AiOutlinePlus />
                           </button>
@@ -604,12 +611,12 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
                         <div className="flex justify-between mt-4">
                   {item.category === 'pizza' && tableId !== "0" && ( // Скрываем кнопки для tableId === "0"
                     <div className='flex gap-4'>
-                      <button onClick={() => handleExtraButtonClick(item.id)}>Extra+</button>
-                      <button onClick={() => handleExtraMinusButtonClick(item.id)}>Extra-</button>
+                      <button onClick={() => handleExtraButtonClick(item.id)} className="md:hidden">Extra+</button>
+                      <button onClick={() => handleExtraMinusButtonClick(item.id)} className="md:hidden">Extra-</button>
                     </div>
                   )}
                   {tableId !== "0" && ( // Скрываем кнопку "Löschen" для tableId === "0"
-                    <button onClick={() => handleDeleteButtonClick(item.id)}>
+                    <button onClick={() => handleDeleteButtonClick(item.id)} className="md:hidden">
                       Löschen
                     </button>
                   )}
