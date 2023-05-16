@@ -274,6 +274,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
   
   
   
+  
 
     
 
@@ -370,7 +371,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
     
         const itemToDelete = addedItems.find(item => item.id === id);
     
-        if (tableId === "0" && itemToDelete && itemToDelete.boss) { // Изменил условие здесь
+        if (itemToDelete && itemToDelete.boss) { 
           const brankoDocRef = doc(collection(db, "tables"), "0", "items", id.toString());
           await deleteDoc(brankoDocRef);
         }
@@ -378,6 +379,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
         console.error("Error deleting item from Firestore: ", error);
       }
     };
+    
     
     const deleteItem = async (tableId, itemId) => {
       try {
@@ -575,7 +577,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
                   {item.extras.map((extra) => (
                     <li
                       key={extra.id}
-                      className="text-sm text-gray-600 flex justify-between"
+                      className="text-sm text-gray-600 flex justify-between md:text-[30px] md:text-black md:mt-4"
                     >
                       {extra.isExtraMinus ? '-' : '+'} {extra.text}
                     </li>
