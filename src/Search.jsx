@@ -319,50 +319,55 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
 
 
     
-    const handlePlusButtonClick = async (id) => {
-      const updatedItems = addedItems.map((item) => {
-        if (item.id === id) {
-          const updatedQuantity = item.quantity + 1;
+  const handlePlusButtonClick = async (id) => {
+    const updatedItems = addedItems.map((item) => {
+      if (item.id === id) {
+        const updatedQuantity = item.quantity + 1;
+        const totalPrice = (item.price * updatedQuantity).toFixed(2);
+        const updatedItem = { ...item, quantity: updatedQuantity, totalPrice, background: item.background };
+        updateItem(tableId, id, updatedItem);
+  
+        if (item.boss) {
+          const updatedItemForTable0 = { ...updatedItem, background: 'red' };
+          updateItem("0", id, updatedItemForTable0);
+        }
+  
+        return updatedItem;
+      } else {
+        return item;
+      }
+    });
+    setAddedItems(updatedItems);
+  };
+  
+  const handleMinusButtonClick = async (id) => {
+    const updatedItems = addedItems.map((item) => {
+      if (item.id === id) {
+        const updatedQuantity = item.quantity - 1;
+        if (updatedQuantity === 0) {
+          deleteItem(tableId, id);
+          return null;
+        } else {
           const totalPrice = (item.price * updatedQuantity).toFixed(2);
-          const updatedItem = { ...item, quantity: updatedQuantity, totalPrice };
+          const updatedItem = { ...item, quantity: updatedQuantity, totalPrice, background: item.background };
           updateItem(tableId, id, updatedItem);
-    
-          if (item.boss) { // Изменил условие здесь
-            updateItem("0", id, updatedItem);
+  
+          if (item.boss) {
+            const updatedItemForTable0 = { ...updatedItem, background: 'red' };
+            updateItem("0", id, updatedItemForTable0);
           }
-    
+  
           return updatedItem;
-        } else {
-          return item;
         }
-      });
-      setAddedItems(updatedItems);
-    };
-    
-    const handleMinusButtonClick = async (id) => {
-      const updatedItems = addedItems.map((item) => {
-        if (item.id === id) {
-          const updatedQuantity = item.quantity - 1;
-          if (updatedQuantity === 0) {
-            deleteItem(tableId, id);
-            return null;
-          } else {
-            const totalPrice = (item.price * updatedQuantity).toFixed(2);
-            const updatedItem = { ...item, quantity: updatedQuantity, totalPrice };
-            updateItem(tableId, id, updatedItem);
-    
-            if (item.boss) { // Изменил условие здесь
-              updateItem("0", id, updatedItem);
-            }
-    
-            return updatedItem;
-          }
-        } else {
-          return item;
-        }
-      });
-      setAddedItems(updatedItems.filter((item) => item !== null));
-    };
+      } else {
+        return item;
+      }
+    });
+    setAddedItems(updatedItems.filter((item) => item !== null));
+  };
+  
+  
+  
     const handleDeleteButtonClick = async (id) => {
       try {
         const docRef = doc(collection(db, "tables", tableId, "items"), id.toString());
@@ -423,7 +428,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
         }
       };
     const [selectedExtras, setSelectedExtras] = useState([]);
-
+    
     const handleExtraItemSelected = (itemId, extra) => {
       const isExtraMinus = selectedItemIdMinus === itemId;
       const newExtra = { ...extra, isExtraMinus };
@@ -433,12 +438,13 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
             ? [{ ...newExtra, quantity: 1 }, ...item.extras]
             : [{ ...newExtra, quantity: 1 }];
     
-          const updatedItem = { ...item, extras: updatedExtras, background: item.boss ? 'red' : item.background };
+          const updatedItem = { ...item, extras: updatedExtras, background: item.background };
           updateItem(tableId, itemId, updatedItem);
     
           // Обновление элемента в столе 0, если он является 'boss'
           if (item.boss) {
-            updateItem("0", itemId, { ...updatedItem, background: 'red' });
+            const updatedItemForTable0 = { ...updatedItem, background: 'red' };
+            updateItem("0", itemId, updatedItemForTable0);
           }
     
           return updatedItem;
@@ -448,6 +454,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
       });
       setAddedItems(updatedItems);
     };
+    
     
     
     const calculateTotalPriceWithExtras = (item) => {
@@ -488,15 +495,20 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
       setSelectedItem(null);
     };
     console.log(addedItems);
-    const handleOrderClick = async (itemId) => {
+    const handleOrderClick = async (itemId, event) => {
+      // Если кликнули по кнопке, то не меняем цвет и не открываем модальное окно
+      if (event.target.tagName === 'BUTTON' || event.target.parentElement.tagName === 'BUTTON') return;
+    
       if (tableId !== '0') return; // Запрещаем изменения на столах, отличных от стола 0
       const itemToUpdate = addedItems.find(item => item.id === itemId);
       if (itemToUpdate) {
         const isReady = !itemToUpdate.isReady;
-        const background = itemToUpdate.background === 'red' ? 'green' : 'red'; // toggle the background color
+        const background = itemToUpdate.background === 'green' ? 'red' : 'green'; // toggle the background color
         updateItem(tableId, itemId, { isReady, background }); // update both isReady and background
       }
     };
+    
+    
     
     
     
@@ -552,11 +564,13 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
           </div>
           <div>
           {items.map((item, i) => (
-       <div
-       key={item.id}
-       className={`${item.background === "red" ? "bg-red-500" : "transparent"}`}
-       onClick={() => handleOrderClick(item.id)}
-     >
+  <div
+  key={item.id}
+  className={`${item.background === "red" ? "bg-red-500" : item.background === "green" ? "bg-green-300" : "bg-transparent"}`}
+  onClick={(event) => handleOrderClick(item.id, event)}
+>
+
+
      
       
       
@@ -593,30 +607,38 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
 {tableId !== "0" && (
             <div className="flex justify-between mt-5 items-center">
               <div className="flex flex-col w-full">
-                <div className="bg-[#6E7780] md:bg-white md:text-black px-2 py-1 rounded-full items-center flex justify-between gap-5 w-[40%] text-white md:justify-center md:text-[30px]">
-                          <button
-                            onClick={() => handleMinusButtonClick(item.id)}
-                            className="text-[20px] md:hidden"
-                          >
-                            <AiOutlineMinus />
-                          </button>
+                <div className="bg-[#6E7780] md:bg-white lg:bg-[#6E7780] md:text-black px-2 py-1 rounded-full items-center flex justify-between gap-5 w-[40%] text-white md:justify-center lg:justify-between md:text-[30px]">
+                <button
+  onClick={(event) => {
+    event.stopPropagation();
+    handleMinusButtonClick(item.id);
+  }}
+  className="text-[20px] md:hidden lg:block"
+>
+  <AiOutlineMinus />
+</button>
+
+
                             <span>{item.quantity}</span>
-                          <button
-                            onClick={() => handlePlusButtonClick(item.id)}
-                            className="text-[20px] md:hidden"
-                          >
-                            <AiOutlinePlus />
-                          </button>
+                            <button
+  onClick={(event) => {
+    event.stopPropagation();
+    handlePlusButtonClick(item.id);
+  }}
+  className="text-[20px] md:hidden lg:block"
+>
+  <AiOutlinePlus />
+</button>
                         </div>
                         <div className="flex justify-between mt-4">
                   {item.category === 'pizza' && tableId !== "0" && ( // Скрываем кнопки для tableId === "0"
                     <div className='flex gap-4'>
-                      <button onClick={() => handleExtraButtonClick(item.id)} className="md:hidden">Extra+</button>
-                      <button onClick={() => handleExtraMinusButtonClick(item.id)} className="md:hidden">Extra-</button>
+                      <button onClick={() => handleExtraButtonClick(item.id)} className="md:hidden lg:block">Extra+</button>
+                      <button onClick={() => handleExtraMinusButtonClick(item.id)} className="md:hidden lg:block">Extra-</button>
                     </div>
                   )}
                   {tableId !== "0" && ( // Скрываем кнопку "Löschen" для tableId === "0"
-                    <button onClick={() => handleDeleteButtonClick(item.id)} className="md:hidden">
+                    <button onClick={() => handleDeleteButtonClick(item.id)} className="md:hidden lg:block">
                       Löschen
                     </button>
                   )}
