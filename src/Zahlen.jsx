@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import React from "react";
 import { db } from "../src/firebase";
-import { collection, doc, getDocs, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
+import { collection, doc, setDoc, getDocs, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
 import logo from '../src/assets/logo.jpg'
 
 const Zahlen = ({ id, setTableData, tableId, onClose }) => {
@@ -65,38 +65,43 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
   }, 0);
   
   
+const handleClearTableClick = async () => {
+  try {
+    const tableItemsRef = collection(db, "tables", tableId, "items");
+    const tableItemsSnapshot = await getDocs(tableItemsRef);
+    const currentTableItems = tableItemsSnapshot.docs.map(doc => doc.data());
 
-  const handleClearTableClick = async () => {
-    try {
-      const tableItemsRef = collection(db, "tables", tableId, "items");
-      const tableItemsSnapshot = await getDocs(tableItemsRef);
-      const currentTableItems = tableItemsSnapshot.docs.map(doc => doc.data());
-      
-      const tableZeroItemsRef = collection(db, "tables", '0', "items");
-      const tableZeroItemsSnapshot = await getDocs(tableZeroItemsRef);
-      const tableZeroItems = tableZeroItemsSnapshot.docs.map(doc => doc.data());
-      
-      // Находим общие элементы между текущим столом и столом 0
-      const itemsToRemove = tableZeroItems.filter(zeroItem => 
-        currentTableItems.some(currentItem => currentItem.id === zeroItem.id)
-      );
-      
-      // Удаляем общие элементы из текущего стола
-      for (let item of itemsToRemove) {
-        await deleteDoc(doc(collection(db, "tables", tableId, "items"), item.id));
+    const tableZeroItemsRef = collection(db, "tables", '0', "items");
+    const tableZeroItemsSnapshot = await getDocs(tableZeroItemsRef);
+    const tableZeroItems = tableZeroItemsSnapshot.docs.map(doc => doc.data());
+
+    // Move items with boss: true to table 0
+    for (let item of currentTableItems) {
+      if (item.boss) {
+        const newItem = { ...item, deletedFromTable0: true };
+        await setDoc(doc(collection(db, "tables", '0', "items"), item.id), newItem);
       }
-  
-      // Удаляем общие элементы из стола 0
-      for (let item of itemsToRemove) {
-        await deleteDoc(doc(collection(db, "tables", '0', "items"), item.id));
-      }
-  
-      setTableData([]);
-      onClose();
-    } catch (error) {
-      console.error("Error clearing table in Firestore: ", error);
     }
-  };
+
+    // Remove all items from the current table
+    for (let item of currentTableItems) {
+      await deleteDoc(doc(collection(db, "tables", tableId, "items"), item.id));
+    }
+
+    // Remove all items from table 0
+    for (let item of tableZeroItems) {
+      await deleteDoc(doc(collection(db, "tables", '0', "items"), item.id));
+    }
+
+    setTableData([]);
+    onClose();
+  } catch (error) {
+    console.error("Error clearing table in Firestore: ", error);
+  }
+};
+
+  
+  
   
   
 
