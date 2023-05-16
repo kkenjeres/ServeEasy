@@ -237,9 +237,16 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
         "items",
         itemToAdd.id.toString()
       );
-      const itemData = { ...itemToAdd, extras: [], isReady: false };
+  
+      const itemData = { 
+        ...itemToAdd, 
+        extras: [], 
+        isReady: false,
+        background: 'transparent', // always set to transparent when adding to original table
+      };
+      
       await setDoc(docRef, itemData);
-
+  
       if (itemToAdd.boss) {
         const brankoDocRef = doc(
           collection(db, "tables"),
@@ -247,22 +254,26 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
           "items",
           itemToAdd.id.toString()
         );
+  
         const brankoItemData = { 
           ...itemToAdd, 
           extras: [], 
           isReady: false, 
           originTableId: tableId,
-          styles: {color: 'red'} // здесь устанавливаем стили для отображения в таблице 0
+          styles: {color: 'red'}, 
+          background: 'red' // always set to red when adding to table 0
         };
+  
         await setDoc(brankoDocRef, brankoItemData);
       }
-      
-      
+        
     } catch (error) {
       console.error("Error adding item to Firestore: ", error);
     }
   };
-
+  
+  
+  
 
     
 
@@ -351,21 +362,6 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
       });
       setAddedItems(updatedItems.filter((item) => item !== null));
     };
-    const deleteItem = async (tableId, itemId) => {
-      try {
-        const docRef = doc(collection(db, "tables", tableId, "items"), itemId.toString());
-        await deleteDoc(docRef);
-    
-        const itemToDelete = addedItems.find(item => item.id === itemId);
-    
-        if (itemToDelete && itemToDelete.boss) { // Изменил условие здесь
-          const brankoDocRef = doc(collection(db, "tables"), "0", "items", itemId.toString());
-          await deleteDoc(brankoDocRef);
-        }
-      } catch (error) {
-        console.error("Error deleting item from Firestore: ", error);
-      }
-    };
     const handleDeleteButtonClick = async (id) => {
       try {
         const docRef = doc(collection(db, "tables", tableId, "items"), id.toString());
@@ -374,7 +370,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
     
         const itemToDelete = addedItems.find(item => item.id === id);
     
-        if (itemToDelete && itemToDelete.boss) { // Изменил условие здесь
+        if (tableId === "0" && itemToDelete && itemToDelete.boss) { // Изменил условие здесь
           const brankoDocRef = doc(collection(db, "tables"), "0", "items", id.toString());
           await deleteDoc(brankoDocRef);
         }
@@ -382,6 +378,30 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
         console.error("Error deleting item from Firestore: ", error);
       }
     };
+    
+    const deleteItem = async (tableId, itemId) => {
+      try {
+        const itemToDelete = addedItems.find(item => item.id === itemId);
+        if (itemToDelete) {
+          if (tableId === "0") {
+            // Обновляем элемент вместо полного удаления
+            await updateItem(tableId, itemId, { deletedFromTable0: true });
+          } else {
+            const docRef = doc(collection(db, "tables", tableId, "items"), itemId.toString());
+            await deleteDoc(docRef);
+    
+            if (itemToDelete.boss) {
+              const brankoDocRef = doc(collection(db, "tables"), "0", "items", itemId.toString());
+              await deleteDoc(brankoDocRef);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error deleting item from Firestore: ", error);
+      }
+    };
+    
+    
     
     const [showExtra, setShowExtra] = useState(false); // Добавьте состояние для отображения компонента Extra
       const [selectedItemIdMinus, setSelectedItemIdMinus] = useState(null);
@@ -464,9 +484,12 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
       const itemToUpdate = addedItems.find(item => item.id === itemId);
       if (itemToUpdate) {
         const isReady = !itemToUpdate.isReady;
-        updateItem(tableId, itemId, { isReady });
+        const background = itemToUpdate.background === 'red' ? 'green' : 'red'; // toggle the background color
+        updateItem(tableId, itemId, { isReady, background }); // update both isReady and background
       }
     };
+    
+    
     
     
     
@@ -520,11 +543,15 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
           </div>
           <div>
           {items.map((item, i) => (
-        <div
-          key={item.id}
-          className={`${readyItems[item.id] ? "bg-green-500" : "bg-transparent"}`}
-          onClick={() => handleOrderClick(item.id)}
-        >
+       <div
+       key={item.id}
+       className={`${item.background === "red" ? "bg-red-500" : "transparent"}`}
+       onClick={() => handleOrderClick(item.id)}
+     >
+     
+      
+      
+      
                 <div className="p-2 font-medium">
                   {item.extras && (
                     <ul className="mt-2"></ul>
