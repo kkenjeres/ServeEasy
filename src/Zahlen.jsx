@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import React from "react";
 import { db } from "../src/firebase";
-import { collection, doc, setDoc, getDocs, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
+import { collection, doc, setDoc, getDocs, onSnapshot, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import logo from '../src/assets/logo.jpg'
 
 const Zahlen = ({ id, setTableData, tableId, onClose }) => {
@@ -124,38 +124,45 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
   
   
   
-  const handlePaySelectedItems = async () => {
-    const newFirebaseData = [...firebaseData];
-  
-    for (const item of splitItems) {
-      const selectedItemQuantity = selectedQuantities[item.id] || item.quantity;
-      if (selectedItemQuantity < item.quantity) {
-        await updateDoc(
-          doc(collection(db, "tables", tableId, "items"), item.id.toString()),
-          { quantity: item.quantity - selectedItemQuantity }
-        );
-  
-        // Обновление оставшегося количества элементов в newFirebaseData
-        const index = newFirebaseData.findIndex((i) => i.id === item.id);
-        newFirebaseData[index].quantity -= selectedItemQuantity;
-      } else {
-        await deleteDoc(
-          doc(collection(db, "tables", tableId, "items"), item.id.toString())
-        );
-  
-        // Удаление оплаченных элементов из newFirebaseData
-        const index = newFirebaseData.findIndex((i) => i.id === item.id);
-        newFirebaseData.splice(index, 1);
+const handlePaySelectedItems = async () => {
+  const newFirebaseData = [...firebaseData];
+
+  for (const item of splitItems) {
+    const selectedItemQuantity = selectedQuantities[item.id] || item.quantity;
+    if (selectedItemQuantity < item.quantity) {
+      await updateDoc(
+        doc(collection(db, "tables", tableId, "items"), item.id.toString()),
+        { quantity: item.quantity - selectedItemQuantity }
+      );
+
+      // Обновление оставшегося количества элементов в newFirebaseData
+      const index = newFirebaseData.findIndex((i) => i.id === item.id);
+      newFirebaseData[index].quantity -= selectedItemQuantity;
+    } else {
+      await deleteDoc(
+        doc(collection(db, "tables", tableId, "items"), item.id.toString())
+      );
+
+      // Удаление оплаченных элементов из newFirebaseData
+      const index = newFirebaseData.findIndex((i) => i.id === item.id);
+      newFirebaseData.splice(index, 1);
+
+      // Удаление элемента из стола 0, если он там есть
+      const zeroTableItemDoc = doc(collection(db, "tables", "0", "items"), item.id.toString());
+      if ((await getDoc(zeroTableItemDoc)).exists()) {
+        await deleteDoc(zeroTableItemDoc);
       }
     }
-  
-    // Обновление состояния FirebaseData
-    setFirebaseData(newFirebaseData);
-  
-    // Очистка выбранных элементов и выбранных количеств
-    setSplitItems([]);
-    setSelectedQuantities({});
-  };
+  }
+
+  // Обновление состояния FirebaseData
+  setFirebaseData(newFirebaseData);
+
+  // Очистка выбранных элементов и выбранных количеств
+  setSplitItems([]);
+  setSelectedQuantities({});
+};
+
   
   
    
