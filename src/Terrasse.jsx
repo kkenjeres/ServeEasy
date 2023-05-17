@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../src/firebase';
-import tableImg from '../src/assets/tableImg.svg';
+import cafe from '../src/assets/cafe.png';
 import logo from '../src/assets/logo.jpg';
 
 const Terrasse = () => {
@@ -10,12 +10,12 @@ const Terrasse = () => {
     [
       ...Array.from({ length: 21 }, (_, i) => i + 100).map(id => ({
         id,
-        image: tableImg,
+        image: cafe,
         tasks: [],
       })),
       {
         id: 500,
-        image: tableImg,
+        image: cafe,
         tasks:[],
         text:'Getrennt / Zahlen'
       },
@@ -71,7 +71,7 @@ const Terrasse = () => {
           >
             <div className='w-full flex justify-center m-auto'>
               <div className='flex flex-col items-center'>
-                <img src={table.image} alt='' className='w-[50px] flex md:w-[100px]' />
+                <img src={table.image} alt='' className='w-[50px] flex md:w-[100px] py-2' />
                 <p className='text-center'>{'Tisch' + ' ' + '#' + table.id}</p>
                 {table.text && <p className='text-[10px] text-black bg-yellow-300 px-2 rounded-lg'>{table.text}</p>}
               </div>
