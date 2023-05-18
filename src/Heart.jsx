@@ -3,7 +3,7 @@ import { AiOutlineCloseCircle, AiOutlinePlus } from 'react-icons/ai'; // Import 
 import { doc, setDoc, updateDoc, collection } from "firebase/firestore"; // Import necessary Firestore methods
 import { db } from "./firebase"; // Import your Firestore instance
 
-const Heart = ({ setSelectedItemId, setTableData, tableId, handleCloseHeart }) => { // Add handleCloseHeart here
+const Heart = ({ setSelectedItemId, setTableData, tableId, handleCloseHeart, handleCloseButtonClick }) => { // Add handleCloseHeart here
   const heartItems = [
     { id: 1, text: "Verpackung", price: 0.50 },
     { id: 2, text: "Teller", price: 1.00 },
@@ -50,7 +50,13 @@ const Heart = ({ setSelectedItemId, setTableData, tableId, handleCloseHeart }) =
           "items",
           itemToAdd.id.toString()
         );
-        const brankoItemData = { ...itemToAdd, extras: [], originTableId: tableId };
+        const brankoItemData = { 
+          ...itemToAdd, 
+          extras: [], 
+          originTableId: tableId,
+          styles: {color: 'red'}, 
+          background: 'red' // always set to red when adding to table 0
+        };
         await setDoc(brankoDocRef, brankoItemData);
       }
     } catch (error) {
@@ -68,21 +74,19 @@ const Heart = ({ setSelectedItemId, setTableData, tableId, handleCloseHeart }) =
       totalPrice: (parseFloat(priceInputs[item.id] || item.price)).toFixed(2),
       extras: [],
       tableId: tableId,
+      isFromHeart: item.boss ? true : false, // Set isFromHeart property
     };
     addItem(tableId, itemToAdd);
     setTableData((prevTableData) => [...prevTableData, item]);
   };
-  const handleCloseButtonClick = () => {
-    handleCloseHeart(); // Use handleCloseHeart here
-  };
-
+  
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-70 ">
       <div className="rounded-lg w-full md:w-[60%] h-[80%] md:h-[70%] flex flex-col justify-between bg-gradient-to-br from-gray-200 via-gray-300 to-gray-100 shadow-md overflow-y-auto p-2 md:p-4">
         <div className="flex justify-between items-start">
           <button
             className="rounded-lg text-[30px] md:text-[40px] p-2"
-            onClick={handleCloseButtonClick}
+            onClick={handleCloseHeart}
           >
             <AiOutlineCloseCircle />
           </button>
