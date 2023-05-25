@@ -36,7 +36,7 @@ function TableDetails() {
     setShowHeart(false);
   }
   return (
-    <div className="w-full h-screen overflow-y-auto font-bold bg-white flex flex-col">
+    <div className="pb-10 w-full h-screen overflow-y-auto font-bold bg-white flex flex-col">
       <div className="flex w-full border-b border-gray-300 my-2 relative">
         <button
           onClick={handleBack}

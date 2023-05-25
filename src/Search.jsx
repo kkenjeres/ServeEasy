@@ -324,7 +324,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
       if (item.id === id) {
         const updatedQuantity = item.quantity + 1;
         const totalPrice = (item.price * updatedQuantity).toFixed(2);
-        const updatedItem = { ...item, quantity: updatedQuantity, totalPrice, background: item.background };
+        const updatedItem = { ...item, quantity: updatedQuantity, totalPrice};
         updateItem(tableId, id, updatedItem);
   
         if (item.boss) {
@@ -349,7 +349,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
           return null;
         } else {
           const totalPrice = (item.price * updatedQuantity).toFixed(2);
-          const updatedItem = { ...item, quantity: updatedQuantity, totalPrice, background: item.background };
+          const updatedItem = { ...item, quantity: updatedQuantity, totalPrice};
           updateItem(tableId, id, updatedItem);
   
           if (item.boss) {
@@ -494,7 +494,6 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
       setSearchTerm("");
       setSelectedItem(null);
     };
-    console.log(addedItems);
     const handleOrderClick = async (itemId, event) => {
       // Если кликнули по кнопке, то не меняем цвет и не открываем модальное окно
       if (event.target.tagName === 'BUTTON' || event.target.parentElement.tagName === 'BUTTON') return;
