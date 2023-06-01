@@ -281,13 +281,16 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
           ...itemToAdd, 
           extras: [], 
           isReady: false, 
-          originTableId: tableId,
-          styles: {color: 'blue'}, 
-          background: 'red' // always set to blue when adding to table 100
+          originTableId: tableId,  // Здесь мы добавляем поле originTableId
+          styles: {color: 'red'}, 
+          background: 'red' // always set to red when adding to table 100
         };
       
         await setDoc(pizzaDocRef, pizzaItemData);
       }
+      
+      
+        
     } catch (error) {
       console.error("Error adding item to Firestore: ", error);
     }
@@ -615,19 +618,20 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
   {Object.entries(groupedItems).map(([tableId, items]) => (
     <div key={tableId}>
       <div>
-        {tableId === "0" ? null : (
+        {tableId === "0" || tableId === "100" ? null : (
           <span className="bg-black text-white text-[26px] mb-4">
             {`Tisch # ${tableId}`}
           </span>
-            )}
-          </div>
-          <div>
-          {items.map((item, i) => (
-  <div
-  key={item.id}
-  className={`${item.background === "red" ? "bg-red-500" : item.background === "green" ? "bg-green-300" : "bg-transparent"}`}
-  onClick={(event) => handleOrderClick(item.id, event)}
->
+        )}
+      </div>
+      <div>
+        {items.map((item, i) => (
+          <div
+          key={item.id}
+          className={`${item.background === "red" ? "bg-red-500" : item.background === "green" ? "bg-green-300" : "bg-transparent"}`}
+          onClick={(event) => handleOrderClick(item.id, event)}
+        >
+          <span>{`Tisch # ${item.originTableId}`}</span>
 
 
      
@@ -640,7 +644,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
                   )}
                   <ul className="flex justify-between text-left">
                   <li 
-  className={(tableId === "0" && tableId === "100" && item.originTableId !== "0") ? "text-red-500 text-[30px]" : "text-[16px]"} // Увеличиваем размер шрифта и меняем цвет текста для элементов, которые были перемещены на стол "0" с других столов
+  className={(tableId === "0" && tableId === "100" && item.originTableId !== "0" && item.originTableId !== "100") ? "text-red-500 text-[30px]" : "text-[16px]"} // Увеличиваем размер шрифта и меняем цвет текста для элементов, которые были перемещены на стол "0" с других столов
 >
   <div style={{display: 'flex', flexDirection: 'column'}}>
     <span className="md:text-[40px] lg:text-[40px]">{item.text}</span>
