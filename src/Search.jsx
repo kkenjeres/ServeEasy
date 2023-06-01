@@ -39,9 +39,9 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
       { id: 39, text: "Tortelini Alla Panna", price: 11.50, percent: 7, category:'pizza' , boss:true },
       { id: 40, text: "Penne Arabiata", price: 10.80, percent: 7, category:'pizza', boss:true  },
       { id: 41, text: "Bruschetta", price: 6.50, percent: 7, category:'pizza' , boss:true },
-      { id: 44, text: "Caprese Pizza", price: 10.60, percent: 7, category:'pizza', boss:true  },
+      { id: 44, text: "Caprese Pizza", price: 10.60, percent: 7, category:'pizza', boss:true, pizza:true },
       { id: 43, text: "Penne Formaggi", price: 10.90, percent: 7, category:'pizza', boss:true  },
-      { id: 49, text: "Pizzabrot", price: 4.50, percent: 7, category:'pizza', boss:true  },
+      { id: 49, text: "Pizzabrot", price: 4.50, percent: 7, category:'pizza', boss:true, pizza:true   },
       { id: 50, text: "Gnocchi Alla Sorentina", price: 10.80, percent: 7, category:'pizza', boss:true  },
       { id: 51, text: "Lasagne Al Forno", price: 10.40, percent: 7, category:'pizza', boss:true  },
       { id: 52, text: "Penne Al Forno", price: 10.90, percent: 7, category:'pizza', boss:true  },
@@ -213,7 +213,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
 
 
   useEffect(() => {
-    if (tableId === "0") {
+    if (tableId === "0" || tableId === "1000" ) {
       const grouped = addedItems.reduce((acc, item) => {
         if (!acc[item.tableId]) {
           acc[item.tableId] = [item];
@@ -228,6 +228,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
       setGroupedItems({ [tableId]: addedItems });
     }
   }, [addedItems, tableId]);
+  
 
   const addItem = async (tableId, itemToAdd) => {
     try {
@@ -272,7 +273,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
         // Новый код для дублирования в стол 100
         const pizzaDocRef = doc(
           collection(db, "tables"),
-          "100",
+          "1000",
           "items",
           itemToAdd.id.toString()
         );
@@ -338,11 +339,11 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
   
       if (itemToUpdate && itemToUpdate.pizza) {
         // Обновляем элемент в столе 100
-        const pizzaDocRef = doc(collection(db, "tables"), "100", "items", itemId.toString());
+        const pizzaDocRef = doc(collection(db, "tables"), "1000", "items", itemId.toString());
         await updateDoc(pizzaDocRef, dataToUpdate);
   
       // Если элемент был обновлён в столе 100, обновляем его и в оригинальном столе
-      if (tableId === "100" && itemToUpdate.originTableId) {
+      if (tableId === "1000" && itemToUpdate.originTableId) {
         const originTableDocRef = doc(collection(db, "tables"), itemToUpdate.originTableId, "items", itemId.toString());
         await updateDoc(originTableDocRef, dataToUpdate);
       }
@@ -417,7 +418,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
       }
   
       if (itemToDelete && itemToDelete.pizza) { 
-        const pizzaDocRef = doc(collection(db, "tables"), "100", "items", id.toString());
+        const pizzaDocRef = doc(collection(db, "tables"), "1000", "items", id.toString());
         await deleteDoc(pizzaDocRef);
       }
   
@@ -431,7 +432,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
     try {
       const itemToDelete = addedItems.find(item => item.id === itemId);
       if (itemToDelete) {
-        if (tableId === "0" || tableId === "100") {
+        if (tableId === "0" || tableId === "1000") {
           // Обновляем элемент вместо полного удаления
           await updateItem(tableId, itemId, { deletedFromTable0: true, deletedFromTable100: true });
         } else {
@@ -444,7 +445,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
           }
   
           if (itemToDelete.pizza) {
-            const pizzaDocRef = doc(collection(db, "tables"), "100", "items", itemId.toString());
+            const pizzaDocRef = doc(collection(db, "tables"), "1000", "items", itemId.toString());
             await deleteDoc(pizzaDocRef);
           }
         }
@@ -494,7 +495,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
           }
           if (item.pizza) {
             const updatedItemForTable0 = { ...updatedItem, background: 'red' };
-            updateItem("100", itemId, updatedItemForTable0);
+            updateItem("1000", itemId, updatedItemForTable0);
           }
           return updatedItem;
         } else {
@@ -549,7 +550,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
       if (event.target.tagName === 'BUTTON' || event.target.parentElement.tagName === 'BUTTON') return;
     
       // Изменения разрешены для столов 0 и 100
-      if (tableId !== '0' && tableId !== '100') return;
+      if (tableId !== '0' && tableId !== '1000') return;
       
       const itemToUpdate = addedItems.find(item => item.id === itemId);
       
@@ -561,8 +562,8 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
           background = itemToUpdate.background === 'green' ? 'red' : 'green';
         } 
         // Если мы на столе 100, переключаем цвет между синим и зеленым
-        else if (tableId === '100') {
-          background = itemToUpdate.background === 'green' ? 'blue' : 'green';
+        else if (tableId === '1000') {
+          background = itemToUpdate.background === 'green' ? 'red' : 'green';
         }
         
         updateItem(tableId, itemId, { isReady, background }); // update both isReady and background
@@ -618,7 +619,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
   {Object.entries(groupedItems).map(([tableId, items]) => (
     <div key={tableId}>
       <div>
-        {tableId === "0" || tableId === "100" ? null : (
+        {tableId === "0" || tableId === "1000" ? null : (
           <span className="bg-black text-white text-[26px] mb-4">
             {`Tisch # ${tableId}`}
           </span>
@@ -631,7 +632,6 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
           className={`${item.background === "red" ? "bg-red-500" : item.background === "green" ? "bg-green-300" : "bg-transparent"}`}
           onClick={(event) => handleOrderClick(item.id, event)}
         >
-          <span>{`Tisch # ${item.originTableId}`}</span>
 
 
      
@@ -644,7 +644,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
                   )}
                   <ul className="flex justify-between text-left">
                   <li 
-  className={(tableId === "0" && tableId === "100" && item.originTableId !== "0" && item.originTableId !== "100") ? "text-red-500 text-[30px]" : "text-[16px]"} // Увеличиваем размер шрифта и меняем цвет текста для элементов, которые были перемещены на стол "0" с других столов
+  className={(tableId === "0" && tableId === "1000" && item.originTableId !== "0" && item.originTableId !== "1000") ? "text-red-500 text-[30px]" : "text-[16px]"} // Увеличиваем размер шрифта и меняем цвет текста для элементов, которые были перемещены на стол "0" с других столов
 >
   <div style={{display: 'flex', flexDirection: 'column'}}>
     <span className="md:text-[40px] lg:text-[40px]">{item.text}</span>

@@ -81,7 +81,7 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
         }
         if (item.pizza) {
           const newItem = { ...item, deletedFromTable100: true };
-          await setDoc(doc(collection(db, "tables", '100', "items"), item.id), newItem);
+          await setDoc(doc(collection(db, "tables", '1000', "items"), item.id), newItem);
         }
       }
     
@@ -89,7 +89,7 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
       const tableZeroItemsSnapshot = await getDocs(tableZeroItemsRef);
       const tableZeroItems = tableZeroItemsSnapshot.docs.map(doc => doc.data());
   
-      const tableHundredItemsRef = collection(db, "tables", '100', "items");
+      const tableHundredItemsRef = collection(db, "tables", '1000', "items");
       const tableHundredItemsSnapshot = await getDocs(tableHundredItemsRef);
       const tableHundredItems = tableHundredItemsSnapshot.docs.map(doc => doc.data());
     
@@ -102,7 +102,7 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
       
       for (let item of tableHundredItems) {
         if (currentTableItems.some(currentItem => currentItem.id === item.id)) {
-          await deleteDoc(doc(collection(db, "tables", '100', "items"), item.id));
+          await deleteDoc(doc(collection(db, "tables", '1000', "items"), item.id));
         }
       }
       
@@ -160,7 +160,7 @@ const handlePaySelectedItems = async () => {
       if ((await getDoc(zeroTableItemDoc)).exists()) {
         await deleteDoc(zeroTableItemDoc);
       }
-      const hundredTableItemDoc = doc(collection(db, "tables", "100", "items"), item.id.toString());
+      const hundredTableItemDoc = doc(collection(db, "tables", "1000", "items"), item.id.toString());
 if ((await getDoc(hundredTableItemDoc)).exists()) {
   await deleteDoc(hundredTableItemDoc);
 }

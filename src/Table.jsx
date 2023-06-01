@@ -165,7 +165,7 @@ const Table = () => {
         text:'KÜCHE'
       },
       {
-        id: 100,
+        id: 1000,
         image: pizza,
         tasks:[],
         text:'PIZZA'
