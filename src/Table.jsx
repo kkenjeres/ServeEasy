@@ -184,7 +184,7 @@ const Table = () => {
             const hasItems = !querySnapshot.empty;
             return {
               ...table,
-              color: hasItems ? 'bg-green-50' : 'bg-white',
+              color: hasItems ? 'bg-green-500' : 'bg-white',
             };
           })
         );
