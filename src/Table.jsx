@@ -9,6 +9,7 @@ import {FiLogOut} from 'react-icons/fi'
 import PrintComponent from './PrintComponent';
 import boss from '../src/assets/boss.png'
 import chef from '../src/assets/chef.png'
+import pizza from '../src/assets/pizza.png'
 const Table = () => {
   const [userEmail, setUserEmail] = useState(null);
   useEffect(() => {
@@ -161,7 +162,13 @@ const Table = () => {
         id: 0,
         image: chef,
         tasks:[],
-        text:'BOSS 😎'
+        text:'KÜCHE'
+      },
+      {
+        id: 100,
+        image: pizza,
+        tasks:[],
+        text:'PIZZA'
       },
       
     ]);
@@ -177,7 +184,7 @@ const Table = () => {
             const hasItems = !querySnapshot.empty;
             return {
               ...table,
-              color: hasItems ? 'bg-green-500' : 'bg-white',
+              color: hasItems ? 'bg-green-50' : 'bg-white',
             };
           })
         );

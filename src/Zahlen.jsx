@@ -71,40 +71,48 @@ const Zahlen = ({ id, setTableData, tableId, onClose }) => {
       const tableItemsSnapshot = await getDocs(tableItemsRef);
       const currentTableItems = tableItemsSnapshot.docs.map(doc => doc.data());
   
-      // Remove all items from the current table and move items with boss: true to table 0
+      // Remove all items from the current table and move items with boss: true to table 0 and items with pizza: true to table 100
       for (let item of currentTableItems) {
         await deleteDoc(doc(collection(db, "tables", tableId, "items"), item.id));
-  
+    
         if (item.boss) {
           const newItem = { ...item, deletedFromTable0: true };
           await setDoc(doc(collection(db, "tables", '0', "items"), item.id), newItem);
         }
+        if (item.pizza) {
+          const newItem = { ...item, deletedFromTable100: true };
+          await setDoc(doc(collection(db, "tables", '100', "items"), item.id), newItem);
+        }
       }
-  
+    
       const tableZeroItemsRef = collection(db, "tables", '0', "items");
       const tableZeroItemsSnapshot = await getDocs(tableZeroItemsRef);
       const tableZeroItems = tableZeroItemsSnapshot.docs.map(doc => doc.data());
   
-      // Remove items from table 0 that were present on the current table
+      const tableHundredItemsRef = collection(db, "tables", '100', "items");
+      const tableHundredItemsSnapshot = await getDocs(tableHundredItemsRef);
+      const tableHundredItems = tableHundredItemsSnapshot.docs.map(doc => doc.data());
+    
+      // Remove items from table 0 and table 100 that were present on the current table
       for (let item of tableZeroItems) {
         if (currentTableItems.some(currentItem => currentItem.id === item.id)) {
           await deleteDoc(doc(collection(db, "tables", '0', "items"), item.id));
         }
       }
-  
+      
+      for (let item of tableHundredItems) {
+        if (currentTableItems.some(currentItem => currentItem.id === item.id)) {
+          await deleteDoc(doc(collection(db, "tables", '100', "items"), item.id));
+        }
+      }
+      
+    
       setTableData([]);
       onClose();
     } catch (error) {
       console.error("Error clearing table in Firestore: ", error);
     }
   };
-  
-  
-
-  
-  
-  
-  
 
   const handleBackClick = () => {
     onClose();
@@ -152,6 +160,11 @@ const handlePaySelectedItems = async () => {
       if ((await getDoc(zeroTableItemDoc)).exists()) {
         await deleteDoc(zeroTableItemDoc);
       }
+      const hundredTableItemDoc = doc(collection(db, "tables", "100", "items"), item.id.toString());
+if ((await getDoc(hundredTableItemDoc)).exists()) {
+  await deleteDoc(hundredTableItemDoc);
+}
+
     }
   }
 

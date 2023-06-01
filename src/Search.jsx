@@ -61,25 +61,25 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
       { id: 76, text: "Insalata di pomodoro con tonno e cipolla", price: 6.90, percent: 7, category:'pizza' , boss:true },
       { id: 77, text: "Insalata mista con tonno", price: 8.20, percent: 7, category:'pizza' , boss:true },
       { id: 78, text: "Insalata della casa", price: 13.40, percent: 7, category:'pizza' , boss:true },
-      { id: 79, text: "Piiza Hawai", price: 10.90, percent: 7, category:'pizza', boss:true  },
-      { id: 80, text: "Pizza Margherita", price: 8.90, percent: 7, category:'pizza' , boss:true },
-      { id: 81, text: "Pizza della Casa", price: 13.50, percent: 7, category:'pizza', boss:true  },
-      { id: 82, text: "Pizza Prosciutto", price: 9.40, percent: 7, category:'pizza', boss:true  },
-      { id: 83, text: "Pizza Don Padrino", price: 13.50, percent: 7, category:'pizza', boss:true  },
-      { id: 84, text: "Pizza Bianca", price: 10.90, percent: 7, category:'pizza', boss:true  },
-      { id: 85, text: "Pizza Funghi", price: 9.40, percent: 7, category:'pizza', boss:true  },
-      { id: 86, text: "Pizza Salami", price: 9.40, percent: 7, category:'pizza', boss:true  },
-      { id: 87, text: "Pizza Sardele", price: 9.4, percent: 7, category:'pizza', boss:true  },
-      { id: 88, text: "Pizza Tonno", price: 10.60, percent: 7, category:'pizza', boss:true  },
-      { id: 89, text: "Pizza Pesto", price: 9.40, percent: 7, category:'pizza', boss:true  },
-      { id: 90, text: "Pizza Capricciosa", price: 10.70, percent: 7, category:'pizza', boss:true  },
-      { id: 91, text: "Pizza Gorgonzola e Spinaci", price: 10.50, percent: 7, category:'pizza', boss:true  },
-      { id: 93, text: "Pizza Siciliana", price: 11.20, percent: 7, category:'pizza', boss:true  },
-      { id: 94, text: "Pizza Frutti di Mare", price: 13.90, percent: 7, category:'pizza', boss:true  },
-      { id: 96, text: "Pizza Quattro Stagioni", price: 10.90, percent: 7, category:'pizza', boss:true  },
-      { id: 97, text: "Pizza Vegetariana", price: 11.20, percent: 7, category:'pizza', boss:true  },
-      { id: 98, text: "Pizza Diavolo", price: 10.80, percent: 7, category:'pizza', boss:true  },
-      { id: 99, text: "Pizza Calzone", price: 11.30, percent: 7, category:'pizza', boss:true  },
+      { id: 79, text: "Piiza Hawai", price: 10.90, percent: 7, category:'pizza', boss:true, pizza:true  },
+      { id: 80, text: "Pizza Margherita", price: 8.90, percent: 7, category:'pizza' , boss:true , pizza:true},
+      { id: 81, text: "Pizza della Casa", price: 13.50, percent: 7, category:'pizza', boss:true , pizza:true },
+      { id: 82, text: "Pizza Prosciutto", price: 9.40, percent: 7, category:'pizza', boss:true, pizza:true  },
+      { id: 83, text: "Pizza Don Padrino", price: 13.50, percent: 7, category:'pizza', boss:true, pizza:true  },
+      { id: 84, text: "Pizza Bianca", price: 10.90, percent: 7, category:'pizza', boss:true, pizza:true  },
+      { id: 85, text: "Pizza Funghi", price: 9.40, percent: 7, category:'pizza', boss:true, pizza:true  },
+      { id: 86, text: "Pizza Salami", price: 9.40, percent: 7, category:'pizza', boss:true , pizza:true },
+      { id: 87, text: "Pizza Sardele", price: 9.4, percent: 7, category:'pizza', boss:true, pizza:true  },
+      { id: 88, text: "Pizza Tonno", price: 10.60, percent: 7, category:'pizza', boss:true, pizza:true  },
+      { id: 89, text: "Pizza Pesto", price: 9.40, percent: 7, category:'pizza', boss:true, pizza:true  },
+      { id: 90, text: "Pizza Capricciosa", price: 10.70, percent: 7, category:'pizza', boss:true, pizza:true  },
+      { id: 91, text: "Pizza Gorgonzola e Spinaci", price: 10.50, percent: 7, category:'pizza', boss:true, pizza:true  },
+      { id: 93, text: "Pizza Siciliana", price: 11.20, percent: 7, category:'pizza', boss:true, pizza:true  },
+      { id: 94, text: "Pizza Frutti di Mare", price: 13.90, percent: 7, category:'pizza', boss:true, pizza:true  },
+      { id: 96, text: "Pizza Quattro Stagioni", price: 10.90, percent: 7, category:'pizza', boss:true , pizza:true },
+      { id: 97, text: "Pizza Vegetariana", price: 11.20, percent: 7, category:'pizza', boss:true, pizza:true  },
+      { id: 98, text: "Pizza Diavolo", price: 10.80, percent: 7, category:'pizza', boss:true, pizza:true  },
+      { id: 99, text: "Pizza Calzone", price: 11.30, percent: 7, category:'pizza', boss:true, pizza:true},
       { id: 100, text: "Coca 0.3", price: 3.30, percent: 19 },
       { id: 101, text: "Fanta 0.3", price: 3.30, percent: 19 },
       { id: 102, text: "Spezi 0.3", price: 3.30, percent: 19 },
@@ -233,9 +233,9 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
     try {
       const docRef = doc(
         collection(db, "tables"),
-        tableId,
-        "items",
-        itemToAdd.id.toString()
+          tableId,
+          "items",
+          itemToAdd.id.toString()
       );
   
       const itemData = { 
@@ -244,10 +244,11 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
         isReady: false,
         background: 'transparent', // always set to transparent when adding to original table
       };
-      
+  
       await setDoc(docRef, itemData);
   
       if (itemToAdd.boss) {
+        // Старый код для дублирования в стол 0
         const brankoDocRef = doc(
           collection(db, "tables"),
           "0",
@@ -266,12 +267,31 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
   
         await setDoc(brankoDocRef, brankoItemData);
       }
-        
+  
+      if (itemToAdd.pizza) {
+        // Новый код для дублирования в стол 100
+        const pizzaDocRef = doc(
+          collection(db, "tables"),
+          "100",
+          "items",
+          itemToAdd.id.toString()
+        );
+      
+        const pizzaItemData = { 
+          ...itemToAdd, 
+          extras: [], 
+          isReady: false, 
+          originTableId: tableId,
+          styles: {color: 'blue'}, 
+          background: 'red' // always set to blue when adding to table 100
+        };
+      
+        await setDoc(pizzaDocRef, pizzaItemData);
+      }
     } catch (error) {
       console.error("Error adding item to Firestore: ", error);
     }
   };
-  
   
   
   
@@ -299,23 +319,35 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
     try {
       const docRef = doc(collection(db, "tables", tableId, "items"), itemId.toString());
       await updateDoc(docRef, dataToUpdate);
-
+  
       const itemToUpdate = addedItems.find(item => item.id === itemId);
       if (itemToUpdate && itemToUpdate.boss) {
         // Обновляем элемент в столе 0
         const brankoDocRef = doc(collection(db, "tables"), "0", "items", itemId.toString());
         await updateDoc(brankoDocRef, dataToUpdate);
-
+  
         // Если элемент был обновлён в столе 0, обновляем его и в оригинальном столе
         if (tableId === "0" && itemToUpdate.originTableId) {
           const originTableDocRef = doc(collection(db, "tables"), itemToUpdate.originTableId, "items", itemId.toString());
           await updateDoc(originTableDocRef, dataToUpdate);
         }
       }
-    } catch (error) {
-      console.error("Error updating item in Firestore: ", error);
+  
+      if (itemToUpdate && itemToUpdate.pizza) {
+        // Обновляем элемент в столе 100
+        const pizzaDocRef = doc(collection(db, "tables"), "100", "items", itemId.toString());
+        await updateDoc(pizzaDocRef, dataToUpdate);
+  
+      // Если элемент был обновлён в столе 100, обновляем его и в оригинальном столе
+      if (tableId === "100" && itemToUpdate.originTableId) {
+        const originTableDocRef = doc(collection(db, "tables"), itemToUpdate.originTableId, "items", itemId.toString());
+        await updateDoc(originTableDocRef, dataToUpdate);
+      }
     }
-  };
+  } catch (error) {
+    console.error("Error updating item in Firestore: ", error);
+  }
+};
 
 
     
@@ -368,46 +400,57 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
   
   
   
-    const handleDeleteButtonClick = async (id) => {
-      try {
-        const docRef = doc(collection(db, "tables", tableId, "items"), id.toString());
-        await deleteDoc(docRef);
-        setAddedItems(addedItems.filter((item) => item.id !== id));
-    
-        const itemToDelete = addedItems.find(item => item.id === id);
-    
-        if (itemToDelete && itemToDelete.boss) { 
-          const brankoDocRef = doc(collection(db, "tables"), "0", "items", id.toString());
-          await deleteDoc(brankoDocRef);
-        }
-      } catch (error) {
-        console.error("Error deleting item from Firestore: ", error);
+  const handleDeleteButtonClick = async (id) => {
+    try {
+      const docRef = doc(collection(db, "tables", tableId, "items"), id.toString());
+      await deleteDoc(docRef);
+      setAddedItems(addedItems.filter((item) => item.id !== id));
+  
+      const itemToDelete = addedItems.find(item => item.id === id);
+  
+      if (itemToDelete && itemToDelete.boss) { 
+        const brankoDocRef = doc(collection(db, "tables"), "0", "items", id.toString());
+        await deleteDoc(brankoDocRef);
       }
-    };
-    
-    
-    const deleteItem = async (tableId, itemId) => {
-      try {
-        const itemToDelete = addedItems.find(item => item.id === itemId);
-        if (itemToDelete) {
-          if (tableId === "0") {
-            // Обновляем элемент вместо полного удаления
-            await updateItem(tableId, itemId, { deletedFromTable0: true });
-          } else {
-            const docRef = doc(collection(db, "tables", tableId, "items"), itemId.toString());
-            await deleteDoc(docRef);
-    
-            if (itemToDelete.boss) {
-              const brankoDocRef = doc(collection(db, "tables"), "0", "items", itemId.toString());
-              await deleteDoc(brankoDocRef);
-            }
+  
+      if (itemToDelete && itemToDelete.pizza) { 
+        const pizzaDocRef = doc(collection(db, "tables"), "100", "items", id.toString());
+        await deleteDoc(pizzaDocRef);
+      }
+  
+    } catch (error) {
+      console.error("Error deleting item from Firestore: ", error);
+    }
+  };
+  
+  
+  const deleteItem = async (tableId, itemId) => {
+    try {
+      const itemToDelete = addedItems.find(item => item.id === itemId);
+      if (itemToDelete) {
+        if (tableId === "0" || tableId === "100") {
+          // Обновляем элемент вместо полного удаления
+          await updateItem(tableId, itemId, { deletedFromTable0: true, deletedFromTable100: true });
+        } else {
+          const docRef = doc(collection(db, "tables", tableId, "items"), itemId.toString());
+          await deleteDoc(docRef);
+  
+          if (itemToDelete.boss) {
+            const brankoDocRef = doc(collection(db, "tables"), "0", "items", itemId.toString());
+            await deleteDoc(brankoDocRef);
+          }
+  
+          if (itemToDelete.pizza) {
+            const pizzaDocRef = doc(collection(db, "tables"), "100", "items", itemId.toString());
+            await deleteDoc(pizzaDocRef);
           }
         }
-      } catch (error) {
-        console.error("Error deleting item from Firestore: ", error);
       }
-    };
-    
+    } catch (error) {
+      console.error("Error deleting item from Firestore: ", error);
+    }
+  };
+  
     
     
     const [showExtra, setShowExtra] = useState(false); // Добавьте состояние для отображения компонента Extra
@@ -446,7 +489,10 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
             const updatedItemForTable0 = { ...updatedItem, background: 'red' };
             updateItem("0", itemId, updatedItemForTable0);
           }
-    
+          if (item.pizza) {
+            const updatedItemForTable0 = { ...updatedItem, background: 'red' };
+            updateItem("100", itemId, updatedItemForTable0);
+          }
           return updatedItem;
         } else {
           return item;
@@ -494,18 +540,32 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
       setSearchTerm("");
       setSelectedItem(null);
     };
+    console.log(addedItems);
     const handleOrderClick = async (itemId, event) => {
       // Если кликнули по кнопке, то не меняем цвет и не открываем модальное окно
       if (event.target.tagName === 'BUTTON' || event.target.parentElement.tagName === 'BUTTON') return;
     
-      if (tableId !== '0') return; // Запрещаем изменения на столах, отличных от стола 0
+      // Изменения разрешены для столов 0 и 100
+      if (tableId !== '0' && tableId !== '100') return;
+      
       const itemToUpdate = addedItems.find(item => item.id === itemId);
+      
       if (itemToUpdate) {
         const isReady = !itemToUpdate.isReady;
-        const background = itemToUpdate.background === 'green' ? 'red' : 'green'; // toggle the background color
+        let background;
+        // Если мы на столе 0, переключаем цвет между красным и зеленым
+        if (tableId === '0') {
+          background = itemToUpdate.background === 'green' ? 'red' : 'green';
+        } 
+        // Если мы на столе 100, переключаем цвет между синим и зеленым
+        else if (tableId === '100') {
+          background = itemToUpdate.background === 'green' ? 'blue' : 'green';
+        }
+        
         updateItem(tableId, itemId, { isReady, background }); // update both isReady and background
       }
     };
+    
     
     
     
@@ -580,7 +640,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
                   )}
                   <ul className="flex justify-between text-left">
                   <li 
-  className={(tableId === "0" && item.originTableId !== "0") ? "text-red-500 text-[30px]" : "text-[16px]"} // Увеличиваем размер шрифта и меняем цвет текста для элементов, которые были перемещены на стол "0" с других столов
+  className={(tableId === "0" && tableId === "100" && item.originTableId !== "0") ? "text-red-500 text-[30px]" : "text-[16px]"} // Увеличиваем размер шрифта и меняем цвет текста для элементов, которые были перемещены на стол "0" с других столов
 >
   <div style={{display: 'flex', flexDirection: 'column'}}>
     <span className="md:text-[40px] lg:text-[40px]">{item.text}</span>
@@ -636,7 +696,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
                       <button onClick={() => handleExtraMinusButtonClick(item.id)} className="md:hidden lg:block">Extra-</button>
                     </div>
                   )}
-                  {tableId !== "0" && ( // Скрываем кнопку "Löschen" для tableId === "0"
+                  {tableId !== "0" &&  ( // Скрываем кнопку "Löschen" для tableId === "0"
                     <button onClick={() => handleDeleteButtonClick(item.id)} className="md:hidden lg:block">
                       Löschen
                     </button>
