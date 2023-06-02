@@ -174,6 +174,12 @@ const Table = () => {
     ]);
     const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const sortedData = [...tableData].sort((a, b) => {
+    if (a.id === 0 || a.id === 1000) return -1;
+    if (b.id === 0 || b.id === 1000) return 1;
+    return 0;
+  });
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -214,14 +220,13 @@ const Table = () => {
   return (
     <div className='bg-[#edf5ff]'>
       <div className='gap-2 grid grid-cols-2 md:space-y-0 pt-10 w-[80%] m-auto pb-20 font-bold' >
-        {tableData.map((table) => {
-          if (table.id === 0) {
-            return (
-              <article
-                key={table.id}
-                onClick={() => handleClick(table)}
-                className={`cursor-pointer cover flex items-center h-[90px] md:items-start md:h-[200px] cursor-pointer rounded-lg ${table.color}`}
-              >
+      {sortedData.map((table) => {
+          return (
+            <article
+              key={table.id}
+              onClick={() => handleClick(table)}
+              className={`cursor-pointer cover flex items-center h-[90px] md:items-start md:h-[200px] cursor-pointer rounded-lg ${table.color}`}
+            >
                 <div className='w-full flex justify-center m-auto'>
                   <div className='flex flex-col items-center'>
                     <img src={table.image} alt='' className='w-[50px] flex md:w-[100px]' />
@@ -239,7 +244,6 @@ const Table = () => {
                 </div>
               </article>
             );
-          }
 
           return (
             <article
