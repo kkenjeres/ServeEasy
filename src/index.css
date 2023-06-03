@@ -31,3 +31,7 @@ code {
 .zahlen-modal--open {
   bottom: 0;
 }
+
+.hidden {
+  display: none;
+}

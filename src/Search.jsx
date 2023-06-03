@@ -54,7 +54,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
       { id: 59, text: "Ravioli Ripieni al Porcini", price: 11.90, percent: 7, category:'pizza' , boss:true },
       { id: 60, text: "Tris di Pasta", price: 11.90, percent: 7, category:'pizza', boss:true },
       { id: 62, text: "Tagliatelle al pesto", price: 12.40, percent: 7, category:'pizza', boss:true  },
-      { id: 63, text: "Tonno mit Zwiebel", price: 11.10, percent: 7, category:'pizza', boss:true  },
+      { id: 63, text: "Tonno mit Zwiebel", price: 11.10, percent: 7, category:'pizza', boss:true, pizza:true  },
       { id: 72, text: "Insalata verde", price: 5.60, percent: 7, category:'pizza', boss:true  },
       { id: 73, text: "Insalata di pomodoro", price: 5.40, percent: 7, category:'pizza' , boss:true },
       { id: 74, text: "Insalata mista", price: 6.90, percent: 7, category:'pizza' , boss:true },
@@ -311,13 +311,15 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
         addedItemsData.forEach((item) => {
           setReadyItems((prev) => ({
             ...prev,
-            [item.id]: item.isReady, // устанавливаем значение isGreen для каждого элемента
+            [item.id]: item.isReady,
           }));
         });
       }
     );
     return () => unsubscribe();
   }, [tableId]);
+  
+  
 
   const updateItem = async (tableId, itemId, dataToUpdate) => {
     try {
@@ -670,13 +672,13 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
 {tableId !== "0" && (
             <div className="flex justify-between mt-5 items-center">
               <div className="flex flex-col w-full">
-                <div className="bg-[#6E7780] md:bg-white lg:bg-[#6E7780] md:text-black px-2 py-1 rounded-full items-center flex justify-between gap-5 w-[40%] text-white md:justify-center lg:justify-between md:text-[30px]">
+                <div className="bg-[#6E7780]  lg:bg-[#6E7780] md:text-black px-2 py-1 rounded-full items-center flex justify-between gap-5 w-[40%] text-white  lg:justify-between md:text-[30px]">
                 <button
   onClick={(event) => {
     event.stopPropagation();
     handleMinusButtonClick(item.id);
   }}
-  className="text-[20px] md:hidden lg:block"
+  className="text-[20px]  lg:block"
 >
   <AiOutlineMinus />
 </button>
@@ -688,7 +690,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
     event.stopPropagation();
     handlePlusButtonClick(item.id);
   }}
-  className="text-[20px] md:hidden lg:block"
+  className="text-[20px]  lg:block"
 >
   <AiOutlinePlus />
 </button>
@@ -696,12 +698,12 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
                         <div className="flex justify-between mt-4">
                   {item.category === 'pizza' && tableId !== "0" && ( // Скрываем кнопки для tableId === "0"
                     <div className='flex gap-4'>
-                      <button onClick={() => handleExtraButtonClick(item.id)} className="md:hidden lg:block">Extra+</button>
-                      <button onClick={() => handleExtraMinusButtonClick(item.id)} className="md:hidden lg:block">Extra-</button>
+                      <button onClick={() => handleExtraButtonClick(item.id)} className="lg:block">Extra+</button>
+                      <button onClick={() => handleExtraMinusButtonClick(item.id)} className=" lg:block">Extra-</button>
                     </div>
                   )}
                   {tableId !== "0" &&  ( // Скрываем кнопку "Löschen" для tableId === "0"
-                    <button onClick={() => handleDeleteButtonClick(item.id)} className="md:hidden lg:block">
+                    <button onClick={() => handleDeleteButtonClick(item.id)} className=" lg:block">
                       Löschen
                     </button>
                   )}
