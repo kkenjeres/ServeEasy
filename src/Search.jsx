@@ -38,7 +38,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
       { id: 38, text: "Penne Brocolli", price: 12.5, percent: 7, category:'pizza', boss:true  },
       { id: 39, text: "Tortelini Alla Panna", price: 11.50, percent: 7, category:'pizza' , boss:true },
       { id: 40, text: "Penne Arabiata", price: 10.80, percent: 7, category:'pizza', boss:true  },
-      { id: 41, text: "Bruschetta", price: 6.50, percent: 7, category:'pizza' , boss:true },
+      { id: 41, text: "Bruschetta", price: 6.50, percent: 7, category:'pizza' , boss:true, pizza:true },
       { id: 44, text: "Caprese Pizza", price: 10.60, percent: 7, category:'pizza', boss:true, pizza:true },
       { id: 43, text: "Penne Formaggi", price: 10.90, percent: 7, category:'pizza', boss:true  },
       { id: 49, text: "Pizzabrot", price: 4.50, percent: 7, category:'pizza', boss:true, pizza:true   },
