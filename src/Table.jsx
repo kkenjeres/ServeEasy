@@ -226,7 +226,7 @@ const Table = () => {
         <article
             key={table.id}
             onClick={() => handleClick(table)}
-            className={`cursor-pointer cover flex items-center h-[90px] ${isLargeTable ? 'md:col-span-2 h-[300px] mb-10' : 'h-[100px]'} shadow-lg cursor-pointer rounded-lg ${table.color}`}
+            className={`cursor-pointer cover flex items-center  ${isLargeTable ? 'md:col-span-2 h-[300px] mb-10' : 'h-[100px]'} shadow-lg cursor-pointer rounded-lg ${table.color}`}
         >
             <div className='w-full flex justify-center m-auto'>
                 <div className='flex flex-col items-center'>
