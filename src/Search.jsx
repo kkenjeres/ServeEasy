@@ -587,16 +587,16 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
         value={searchTerm}
         onChange={handleInputChange}
         placeholder="Suchen"
-        className="w-full px-2 py-1 mt-10 placeholder:text-black font-[400] shadow-xl rounded-[40px] bg-white border border-black focus:ring-2  focus:outline-none"
+        className="w-full px-2 py-1 mt-4 placeholder:text-black font-[400] shadow-xl rounded-[40px] bg-white border border-gray-300 focus:ring-2  focus:outline-none"
       />
   
       {searchTerm !== "" && (
-        <div className="bg-white mt-2 rounded-lg">
+        <div className="bg-white mt-2 rounded-[40px]">
           <ul className="rounded-lg">
             {filteredItems.map((item) => (
               <div
                 key={item.id}
-                className={`w-full p-2 shadow-xl rounded-xl ${item.options ? "flex flex-col" : "flex justify-between"}`}
+                className={`w-full p-2 shadow-xl rounded-[40px] ${item.options ? "flex flex-col" : "flex justify-between"}`}
                 onClick={() => handleAddButtonClick(item)}
               >
                 <span>{item.text}{" "}</span>
@@ -666,7 +666,7 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
 {tableId !== "0" && (
             <div className="flex justify-between mt-5 items-center">
               <div className="flex flex-col w-full">
-                <div className="bg-[#6E7780]  lg:bg-[#6E7780] md:text-black px-2 py-1 rounded-full items-center flex justify-between gap-5 w-[40%] text-white  lg:justify-between md:text-[30px]">
+                <div className="bg-black  lg:bg-[#6E7780] md:text-black px-2 py-1 rounded-full items-center flex justify-between gap-5 w-[40%] text-white  lg:justify-between md:text-[30px]">
                 <button
   onClick={(event) => {
     event.stopPropagation();
@@ -689,15 +689,15 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
   <AiOutlinePlus />
 </button>
                         </div>
-                        <div className="flex justify-between mt-4">
+                        <div className="flex justify-between mt-8">
                   {item.category === 'pizza' && tableId !== "0" && ( // Скрываем кнопки для tableId === "0"
-                    <div className='flex gap-4'>
-                      <button onClick={() => handleExtraButtonClick(item.id)} className="lg:block">Extra+</button>
-                      <button onClick={() => handleExtraMinusButtonClick(item.id)} className=" lg:block">Extra-</button>
+                    <div className='flex gap-4 '>
+                      <button onClick={() => handleExtraButtonClick(item.id)} className="lg:block bg-white rounded-[40px] px-2 border border-black">Extra+</button>
+                      <button onClick={() => handleExtraMinusButtonClick(item.id)} className=" lg:block bg-white rounded-[40px] px-2 border border-black">Extra-</button>
                     </div>
                   )}
                   {tableId !== "0" &&  ( // Скрываем кнопку "Löschen" для tableId === "0"
-                    <button onClick={() => handleDeleteButtonClick(item.id)} className=" lg:block">
+                    <button onClick={() => handleDeleteButtonClick(item.id)} className=" lg:block flex justify-end w-full underline">
                       Löschen
                     </button>
                   )}

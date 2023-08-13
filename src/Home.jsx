@@ -27,19 +27,29 @@ const Home = () => {
     <div>
         <UserAuth/>
         <div className='bg-gray-100 pt-20'>
-  <div className='w-[80%] m-auto'>
-    <ul className='flex gap-4 justify-center text-xl'>
+        <div className='w-[90%] m-auto bg-white rounded-[40px]'>
+    <ul className='flex justify-center text-xl'>
       {slideNames.map((name, index) => (
         <li
           key={index}
-          className={`py-2 px-4 rounded ${index === activeIndex ? 'bg-blue-500 text-white' : 'cursor-pointer '}`}
+          className={`
+            py-2 
+            w-full  
+            text-center 
+            ${index === activeIndex ? 'bg-black text-white' : 'cursor-pointer'}
+            ${index === 0 ? 'rounded-l-[40px]' : 'border-l border-black'}  // Apply left border for all items except the first
+            ${index === slideNames.length - 1 ? 'rounded-r-[40px]' : 'border-r border-black'}  // Apply right border for all items except the last
+          `}
           onClick={() => handleItemClick(index)}
         >
           {name}
         </li>
       ))}
     </ul>
-  </div>
+</div>
+
+
+
 </div>
 
       <Swiper

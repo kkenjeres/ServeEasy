@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import bg from '../src/assets/BG.svg';
 import Search from './Search';
 import Zahlen from './Zahlen';
-import {AiOutlineLeft} from 'react-icons/ai'
+import {BsArrowLeft} from 'react-icons/bs'
 import { useHistory } from "react-router-dom"; // Добавьте этот импорт
 import {AiFillHeart} from 'react-icons/ai'
 import Heart from './Heart';
@@ -36,21 +36,22 @@ function TableDetails() {
     setShowHeart(false);
   }
   return (
-    <div className="pb-10 w-full h-screen bg-gray-100 overflow-y-auto font-bold  flex flex-col">
-      <div className="flex w-full border-b border-gray-300 my-2 relative">
-        <button
-          onClick={handleBack}
-          className="text-[25px] absolute m-auto top-0 bottom-0"
-        >
-          <AiOutlineLeft />
-        </button>
-        <h1 className="text-center text-black font-normal border-black border-b text-[25px] w-full ">
-          Tisch #{id}
-        </h1>
+    <div className="pb-10 w-full h-screen bg-gray-100 overflow-y-auto font-bold flex flex-col">
+      <div className="flex relative w-[90%] m-auto pt-4">
+          <button
+            onClick={handleBack}
+            className="text-[16px] bg-white border border-black rounded-[40px] px-4 py-2 flex items-center"
+          >
+            <BsArrowLeft className='text-[20px]'/>
+            <span className='pl-2'>
+              zurück
+            </span>
+          </button>
+
       </div>
       {tableId !== 0 && (
-      <div className='flex justify-end px-10 mt-10'> 
-        <AiFillHeart onClick={handleHeartClick} className='w-[50px] h-[50px]'/> {/* Modify this line */}
+      <div className='flex justify-end px-10 mt-4'> 
+        <AiFillHeart onClick={handleHeartClick} className='w-[40px] h-[40px]'/> {/* Modify this line */}
       </div>
       )}
       <div className="w-[90%] mx-auto flex-grow flex flex-col justify-between">
