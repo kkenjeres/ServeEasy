@@ -581,13 +581,13 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
     
   
   return (
-    <div>
+    <div >
       <input
         type="text"
         value={searchTerm}
         onChange={handleInputChange}
         placeholder="Suchen"
-        className="w-full px-2 py-1 mt-10 placeholder:text-white font-[400] rounded-lg bg-[#6E7780] focus:ring-2  focus:outline-none"
+        className="w-full px-2 py-1 mt-10 placeholder:text-black font-[400] shadow-xl rounded-[40px] bg-white border border-black focus:ring-2  focus:outline-none"
       />
   
       {searchTerm !== "" && (
@@ -620,9 +620,9 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
   <div className="bg-white rounded-lg mt-10">
   {Object.entries(groupedItems).map(([tableId, items]) => (
     <div key={tableId}>
-      <div>
+      <div className="bg-gray-100">
         {tableId === "0" || tableId === "1000" ? null : (
-          <span className="bg-black text-white text-[26px] mb-4">
+          <span className="bg-white text-black rounded-[40px] shadow-xl px-8 text-[26px] mb-4">
             {`Tisch # ${tableId}`}
           </span>
         )}

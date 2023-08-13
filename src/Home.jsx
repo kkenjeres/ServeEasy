@@ -26,7 +26,7 @@ const Home = () => {
   return (
     <div>
         <UserAuth/>
-        <div className='bg-[#edf5ff] pt-20'>
+        <div className='bg-gray-100 pt-20'>
   <div className='w-[80%] m-auto'>
     <ul className='flex gap-4 justify-center text-xl'>
       {slideNames.map((name, index) => (

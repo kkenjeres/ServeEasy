@@ -36,7 +36,7 @@ function TableDetails() {
     setShowHeart(false);
   }
   return (
-    <div className="pb-10 w-full h-screen overflow-y-auto font-bold bg-white flex flex-col">
+    <div className="pb-10 w-full h-screen bg-gray-100 overflow-y-auto font-bold  flex flex-col">
       <div className="flex w-full border-b border-gray-300 my-2 relative">
         <button
           onClick={handleBack}
@@ -44,7 +44,7 @@ function TableDetails() {
         >
           <AiOutlineLeft />
         </button>
-        <h1 className="text-center text-black font-normal text-[25px] w-full">
+        <h1 className="text-center text-black font-normal border-black border-b text-[25px] w-full ">
           Tisch #{id}
         </h1>
       </div>
@@ -67,7 +67,7 @@ function TableDetails() {
           <div className="w-full my-4 text-center ">
             <button
               onClick={handleZahlenClick}
-              className="py-2 bg-black text-white w-[90%] rounded-lg"
+              className="py-2 bg-black text-white w-full rounded-[40px]"
             >
               Zahlen
             </button>

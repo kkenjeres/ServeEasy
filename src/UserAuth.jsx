@@ -31,7 +31,7 @@ const UserAuth = () => {
   };
 
   return (
-    <div className="text-left pt-5 font-bold flex justify-between px-2 items-center bg-[#edf5ff]">
+    <div className="text-left pt-5 font-bold flex justify-between px-2 items-center bg-gray-100">
       <div className='flex flex-col'>
         <span>Hallo 👋</span>
         <span>{userEmail ? ` ${userEmail}` : 'Not logged in'}</span>

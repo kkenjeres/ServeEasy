@@ -218,22 +218,23 @@ const Table = () => {
   }
 
   return (
-    <div className='bg-[#edf5ff]'>
-      <div className='gap-2 grid grid-cols-2 md:space-y-0 pt-10 w-[80%] m-auto pb-20 font-bold' >
-      {sortedData.map((table) => {
-          return (
-            <article
-              key={table.id}
-              onClick={() => handleClick(table)}
-              className={`cursor-pointer cover flex items-center h-[90px] md:items-start md:h-[200px] cursor-pointer rounded-lg ${table.color}`}
-            >
-                <div className='w-full flex justify-center m-auto'>
-                  <div className='flex flex-col items-center'>
-                    <img src={table.image} alt='' className='w-[50px] flex md:w-[100px]' />
-                    <p className='text-center'>{'Tisch' + ' ' + '#' + table.id}</p>
+    <div className='bg-gray-100'>
+<div className='gap-2 grid grid-cols-2 md:grid-cols-4 md:space-y-0 pt-10 w-[90%] m-auto pb-20 font-bold'>
+{sortedData.map((table, index) => {
+    const isLargeTable = index < 2;
+    return (
+        <article
+            key={table.id}
+            onClick={() => handleClick(table)}
+            className={`cursor-pointer cover flex items-center h-[90px] ${isLargeTable ? 'md:col-span-2 h-[300px] mb-10' : 'h-[100px]'} shadow-lg cursor-pointer rounded-lg ${table.color}`}
+        >
+            <div className='w-full flex justify-center m-auto'>
+                <div className='flex flex-col items-center'>
+                    <img src={table.image} alt='' className={`w-[50px] flex ${isLargeTable ? 'md:w-[200px]' : 'md:w-[100px]'}`} />
+                    <p className='text-center text-[16px]'>{'Tisch' + ' ' + '#' + table.id}</p>
                     <p className='text-[10px] text-black bg-yellow-300 px-2 rounded-lg'>{table.text}</p>
-                  </div>
-                  <div>
+                </div>
+                <div>
                     {/* Место для отображения заказов стола 0 */}
                     {table.tasks.map((item) => (
                       <div key={item.id}>

@@ -540,7 +540,6 @@ return (
 
             <p>Wir wünsche Ihnen einen schönen Tag </p>
             <button onClick={handlePaySelectedItems} className='px-4 py-2 rounded-full bg-black mt-10 text-white'>Getrennt Zahlen</button>
-<button className='your-button-styles' onClick={handlePrint}>Drucken</button>
 
             <button onClick={handleClearTableClick} className='px-4 py-2 rounded-full bg-black mt-10 text-white'>Zahlen</button>
             <button onClick={handleBackClick} className='px-4 py-2 rounded-full bg-white border border-black mt-10 text-black'>Zurück</button>

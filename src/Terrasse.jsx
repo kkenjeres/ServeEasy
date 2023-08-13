@@ -61,13 +61,13 @@ const Terrasse = () => {
   }
 
   return (
-    <div className='bg-[#21272a]'>
-      <div className='gap-2 grid grid-cols-2 md:space-y-0 pt-10 w-[80%] m-auto pb-20 font-bold' >
+    <div className='bg-gray-100'>
+      <div className='gap-2 grid grid-cols-2 md:space-y-0 pt-10 w-[90%] m-auto pb-20 font-bold' >
         {tableData.map((table) => (
           <article
             key={table.id}
             onClick={() => handleClick(table)}
-            className={`cursor-pointer cover flex items-center h-[90px] md:items-start md:h-[200px] cursor-pointer rounded-lg ${table.color}`}
+            className={`cursor-pointer cover flex items-center h-[100px] md:items-start md:h-[200px] shadow-lg cursor-pointer rounded-lg ${table.color}`}
           >
             <div className='w-full flex justify-center m-auto'>
               <div className='flex flex-col items-center'>
