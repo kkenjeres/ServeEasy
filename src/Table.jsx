@@ -226,11 +226,11 @@ const Table = () => {
         <article
             key={table.id}
             onClick={() => handleClick(table)}
-            className={`cursor-pointer cover flex items-center  ${isLargeTable ? 'md:col-span-2 h-[300px] mb-10' : 'h-[100px]'} shadow-lg cursor-pointer rounded-lg ${table.color}`}
+            className={`cursor-pointer cover flex items-center  ${isLargeTable ? 'md:col-span-2 h-[300px] mb-10' : 'h-[150px]'} shadow-lg cursor-pointer rounded-lg ${table.color}`}
         >
             <div className='w-full flex justify-center m-auto'>
                 <div className='flex flex-col items-center'>
-                    <img src={table.image} alt='' className={`w-[50px] flex ${isLargeTable ? 'md:w-[200px]' : 'md:w-[100px]'}`} />
+                    <img src={table.image} alt='' className={`w-[50px] flex ${isLargeTable ? 'md:w-[200px] ' : 'md:w-[100px]'}`} />
                     <p className='text-center text-[16px]'>{'Tisch' + ' ' + '#' + table.id}</p>
                     <p className='text-[10px] text-black bg-yellow-300 px-2 rounded-lg'>{table.text}</p>
                 </div>
@@ -245,22 +245,6 @@ const Table = () => {
                 </div>
               </article>
             );
-
-          return (
-            <article
-              key={table.id}
-              onClick={() => handleClick(table)}
-              className={`cursor-pointer cover flex items-center h-[90px] md:items-start md:h-[200px] cursor-pointer rounded-lg ${table.color}`}
-            >
-              <div className='w-full flex justify-center m-auto'>
-                <div className='flex flex-col items-center'>
-                  <img src={table.image} alt='' className='w-[50px] flex md:w-[100px]' />
-                  <p className='text-center'>{'Tisch' + ' ' + '#' + table.id}</p>
-                  <p className='text-[10px] text-black bg-yellow-300 px-2 rounded-lg'>{table.text}</p>
-                </div>
-              </div>
-            </article>
-          );
         })}
       </div>
     </div>

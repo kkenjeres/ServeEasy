@@ -672,19 +672,19 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
     event.stopPropagation();
     handleMinusButtonClick(item.id);
   }}
-  className="text-[20px]  lg:block"
+  className="text-[20px] text-white  lg:block"
 >
   <AiOutlineMinus />
 </button>
 
 
-                            <span>{item.quantity}</span>
+                            <span className="text-white">{item.quantity}</span>
                             <button
   onClick={(event) => {
     event.stopPropagation();
     handlePlusButtonClick(item.id);
   }}
-  className="text-[20px]  lg:block"
+  className="text-[20px] text-white lg:block"
 >
   <AiOutlinePlus />
 </button>
