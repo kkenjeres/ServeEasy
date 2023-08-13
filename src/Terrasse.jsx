@@ -67,7 +67,7 @@ const Terrasse = () => {
           <article
             key={table.id}
             onClick={() => handleClick(table)}
-            className={`cursor-pointer cover flex items-center h-[150px] md:items-start md:h-[200px] shadow-lg cursor-pointer rounded-lg ${table.color}`}
+            className={`cursor-pointer cover flex items-center h-[150px] md:items-start md:h-[150px] shadow-lg cursor-pointer rounded-lg ${table.color}`}
           >
             <div className='w-full flex justify-center m-auto'>
               <div className='flex flex-col items-center'>
