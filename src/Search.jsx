@@ -617,29 +617,23 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
         </div>
       )}
   
-  <div className="bg-white rounded-lg mt-10">
+  <div className="bg-transparent mt-10">
   {Object.entries(groupedItems).map(([tableId, items]) => (
     <div key={tableId}>
-      <div className="bg-gray-100">
+      <div className=" my-4">
         {tableId === "0" || tableId === "1000" ? null : (
-          <span className="bg-white text-black rounded-[40px] shadow-xl px-8 text-[26px] mb-4">
+          <span className="bg-white text-black rounded-[40px] shadow-xl px-8 text-[26px] ">
             {`Tisch # ${tableId}`}
           </span>
         )}
       </div>
-      <div>
+      <div className="bg-transaprent">
         {items.map((item, i) => (
           <div
           key={item.id}
-          className={`${item.background === "red" ? "bg-red-500" : item.background === "green" ? "bg-green-300" : "bg-transparent"}`}
+          className={`${item.background === "red" ? "bg-red-500" : item.background === "green" ? "bg-green-300" : "bg-transparent"} mb-2 rounded-xl gap-4 shadow-xl p-2`}
           onClick={(event) => handleOrderClick(item.id, event)}
         >
-
-
-     
-      
-      
-      
                 <div className="p-2 font-medium">
                   {item.extras && (
                     <ul className="mt-2"></ul>
