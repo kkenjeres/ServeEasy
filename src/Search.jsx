@@ -643,25 +643,28 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
   className={(tableId === "0" && tableId === "1000" && item.originTableId !== "0" && item.originTableId !== "1000") ? "text-red-500 text-[30px]" : "text-[16px]"} // Увеличиваем размер шрифта и меняем цвет текста для элементов, которые были перемещены на стол "0" с других столов
 >
   <div style={{display: 'flex', flexDirection: 'column'}}>
-    <span className="md:text-[40px] lg:text-[40px]">{item.text}</span>
+    <span className="md:text-[40px] text-[24px] lg:text-[40px]">{item.text}</span>
   </div>
 </li>
 
                     {tableId !== "0" && (
-                      <li className="text-[16px]">
+                      <li className="md:text-[40px] text-[24px]">
                         {calculateTotalPriceWithExtras(item) + "€"}
                       </li>
                     )}
                   </ul>
 
-                  {item.extras.map((extra) => (
-                    <li
-                      key={extra.id}
-                      className="text-sm text-gray-600 flex justify-between md:text-[30px] md:text-black md:mt-4"
-                    >
-                      {extra.isExtraMinus ? '-' : '+'} {extra.text}
-                    </li>
-                  ))}
+                  <div className={`bg-white px-2 rounded-xl mt-4 ${item.extras.length > 0 ? 'border border-black' : ''}`}>
+    {item.extras.map((extra) => (
+        <li
+            key={extra.id}
+            className="text-[16px] text-gray-900 flex justify-between md:text-[30px] md:text-black md:mt-4"
+        >
+            {extra.isExtraMinus ? '-' : '+'} {extra.text}
+        </li>
+    ))}
+</div>
+
 
 {tableId !== "0" && (
             <div className="flex justify-between mt-5 items-center">
