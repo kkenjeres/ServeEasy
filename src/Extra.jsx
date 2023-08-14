@@ -125,7 +125,7 @@ const Extra = ({ itemId, onExtraItemSelected, setSelectedItemId, selectedExtras,
           {paginatedItems.map((item) => (
             <div
               className={`w-full flex flex-col py-2 px-4 text-white rounded-xl ${
-                clickedItemId === item.id ? 'bg-green-500' : 'bg-blue-500'
+                clickedItemId === item.id ? 'bg-green-500' : 'bg-white shadow-xl'
               }`}
               key={item.id}
               onClick={() => {
@@ -136,8 +136,8 @@ const Extra = ({ itemId, onExtraItemSelected, setSelectedItemId, selectedExtras,
                 }, 100);
               }}
             >
-              <li>{item.text}</li>
-              <li>{item.price.toFixed(2)} c</li>
+              <li className='text-black'>{item.text}</li>
+              <li className='text-black'>{item.price.toFixed(2)} c</li>
             </div>
           ))}
         </ul>

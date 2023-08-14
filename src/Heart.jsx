@@ -7,7 +7,7 @@ const Heart = ({ setSelectedItemId, setTableData, tableId, handleCloseHeart, han
   const heartItems = [
     { id: 1, text: "Verpackung", price: 0.50 },
     { id: 2, text: "Teller", price: 1.00 },
-    { id: 3, text: "Pizza", price: 0.0, boss:true  },
+    { id: 3, text: "Pizza", price: 0.0, boss:true, pizza:true  },
     { id: 4, text: "Nudeln", price: 0.0 , boss:true },
     { id: 5, text: "Fleish", price: 0.0, boss:true  },
     { id: 6, text: "Fish", price: 0.0, boss:true },
@@ -95,17 +95,17 @@ const Heart = ({ setSelectedItemId, setTableData, tableId, handleCloseHeart, han
           {heartItems.map((item) => (
             <div
               className={`w-full flex flex-col items-center py-2 px-4 text-white rounded-xl ${
-                item.id === clickedItemId ? 'bg-green-500' : 'bg-blue-500'
+                item.id === clickedItemId ? 'bg-green-500' : 'bg-white shadow-xl'
               }`}
               key={item.id}
             >
-              <li className="text-lg md:text-xl">{item.text}</li>
+              <li className="text-lg md:text-xl text-black">{item.text}</li>
               {item.text !== "Verpackung" && item.text !== "Teller" && (
   <input
     type="number"
     value={priceInputs[item.id] || ""}
     onChange={(e) => handlePriceInputChange(item.id, e.target.value)}
-    className="w-full mt-2 mb-4 text-center text-black text-lg md:text-xl"
+    className="w-full mt-2 mb-4 text-center text-black text-[16px] rounded-[40px] border border-black"
     placeholder="Price"
   />
 )}
@@ -121,7 +121,7 @@ const Heart = ({ setSelectedItemId, setTableData, tableId, handleCloseHeart, han
                   handleCloseHeart();
                 }}
               >
-                <AiOutlinePlus />
+                <AiOutlinePlus className='text-black'/>
               </button>
             </div>
           ))}

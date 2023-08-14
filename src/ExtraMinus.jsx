@@ -93,7 +93,7 @@ const ExtraMinus = ({ itemId, onExtraItemSelected, setSelectedItemId, setSelecte
         <ul className="gap-2 grid grid-cols-2 px-2">
           {paginatedItems.map((item) => (
             <div className={`w-full flex flex-col py-2 px-4 text-white rounded-xl ${
-              clickedItemId === item.id ? 'bg-green-500' : 'bg-blue-500'
+              clickedItemId === item.id ? 'bg-green-500' : 'bg-white shadow-xl'
             }`} 
             key={item.id} 
             onClick={() => {
@@ -103,10 +103,10 @@ const ExtraMinus = ({ itemId, onExtraItemSelected, setSelectedItemId, setSelecte
                 setClickedItemId(null);
               }, 100);
             }}>
-              <li>
+              <li className='text-black'>
                 {item.text}
               </li>
-              <li>
+              <li className='text-black'>
                 {item.price.toFixed(2)} c
               </li>
             </div>
