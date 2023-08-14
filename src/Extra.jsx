@@ -46,6 +46,12 @@ const Extra = ({ itemId, onExtraItemSelected, setSelectedItemId, selectedExtras,
     { id: 41, text: "Nudeln", price: 4.00, category:"Beilage" },
     { id: 42, text: "Salat", price: 4.00, category:"Beilage" },
     { id: 43, text: "Gemuse", price: 4.00, category:"Beilage" },
+    { id: 44, text: "Tomaten soße", price: 0.00 },
+    { id: 45, text: "Rost. zwibel", price: 0.00 },
+    { id: 46, text: "Kerne", price: 0.00 },
+    { id: 47, text: "Bohnen", price: 0.00 },
+    { id: 48, text: "Gurken", price: 0.00 },
+    { id: 49, text: "Karotte", price: 0.00 },
   ].sort((a, b) => a.text.localeCompare(b.text));
 
   const beilageItems = extraItem.filter((item) => item.category === 'Beilage');

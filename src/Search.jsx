@@ -700,8 +700,10 @@ function Search({ tableId, setTableData, setSelectedItemId, selectedItemId }) {
                     </div>
                   )}
                   {tableId !== "0" &&  ( // Скрываем кнопку "Löschen" для tableId === "0"
-                    <button onClick={() => handleDeleteButtonClick(item.id)} className=" lg:block flex justify-end w-full underline">
-                      Löschen
+                    <button onClick={() => handleDeleteButtonClick(item.id)} className=" lg:block flex justify-end w-full underline  md:text-[40px] md:uppercase">
+                      <span className="md:bg-black md:text-white px-2 ">
+                        Löschen
+                      </span>
                     </button>
                   )}
                 </div>

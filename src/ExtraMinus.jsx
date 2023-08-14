@@ -38,6 +38,12 @@ const ExtraMinus = ({ itemId, onExtraItemSelected, setSelectedItemId, setSelecte
     { id: 34, text: "Shrimps", price: 0.00 },
     { id: 35, text: "Tomaten", price: 0.00 },
     { id: 33, text: "Zwiebel", price: 0.00 },
+    { id: 34, text: "Tomaten soße", price: 0.00 },
+    { id: 35, text: "Rost. zwibel", price: 0.00 },
+    { id: 36, text: "Kerne", price: 0.00 },
+    { id: 37, text: "Bohnen", price: 0.00 },
+    { id: 38, text: "Gurken", price: 0.00 },
+    { id: 39, text: "Karotte", price: 0.00 },
   ].sort((a, b) => a.text.localeCompare(b.text));
   ;
 
