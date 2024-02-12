@@ -1,17 +1,25 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, onAuthStateChanged, signOut  } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBtFNeA9fKxOxBGvnsn4wZMrkeDaFr5d9o",
-  authDomain: "branko-1a7dd.firebaseapp.com",
-  projectId: "branko-1a7dd",
-  storageBucket: "branko-1a7dd.appspot.com",
-  messagingSenderId: "720327257363",
-  appId: "1:720327257363:web:4d87e40c3028b752d3fee6"
+  apiKey: "AIzaSyBb-pUewYFtzUvn4JMABG4U4h6Fw9n3fmw",
+  authDomain: "serveeasy-3b112.firebaseapp.com",
+  projectId: "serveeasy-3b112",
+  storageBucket: "serveeasy-3b112.appspot.com",
+  messagingSenderId: "386316575585",
+  appId: "1:386316575585:web:f327fe15c4f49509a85b20",
+  measurementId: "G-1KHK4FNM89",
 };
 
-const app = initializeApp(firebaseConfig);
+// Изменения здесь
+let app;
+if (getApps().length === 0) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApp(); // Получаем уже инициализированное приложение, если оно есть
+}
+
 const auth = getAuth(app);
 const db = getFirestore(app);
 
