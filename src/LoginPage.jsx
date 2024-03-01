@@ -1,37 +1,39 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+} from "firebase/auth";
 import bg from "../src/assets/BG.svg";
-import { BsPersonCircle, BsPersonFill } from "react-icons/bs";
-
-const loginUser = async (email, password) => {
-  try {
-    const userCredential = await signInWithEmailAndPassword(email, password);
-    const user = userCredential.user;
-    localStorage.setItem("user", user.uid); // store user ID in local storage
-    return user;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-};
-
+import "./firebase";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const [error, setError] = useState("");
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    try {
-      const user = await loginUser(email, password);
+  const navigate = useNavigate();
+  const auth = getAuth();
+
+  useEffect(() => {
+    // Проверяем состояние аутентификации при монтировании компонента
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         navigate("/");
       }
+      // В этом случае нам не нужно отписываться, так как переходим на другую страницу
+    });
+    return unsubscribe; // Отписываемся при размонтировании компонента
+  }, [navigate, auth]);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      // setError(""); Необязательно здесь очищать ошибку, так как мы перенаправляем пользователя
     } catch (error) {
-      console.error(error);
+      setError("Failed to login: " + error.message);
+      console.error("Login error: ", error.message);
     }
   };
 
@@ -43,37 +45,40 @@ const LoginPage = () => {
       <div className="bg-white p-2 rounded-lg w-[90%] text-center py-10">
         <h1 className="font-bold text-[40px]">Login</h1>
         <form onSubmit={handleLogin} className="mt-10 w-[80%] m-auto">
-          <div className="flex-col flex justify-start w-full">
-            <label className="flex mb-2" htmlFor="name">
+          <div className="flex flex-col justify-start w-full">
+            <label htmlFor="email" className="mb-2">
               Email
             </label>
             <input
+              id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="border-none border-b-2 border-black rounded-none py-2 px-3"
+              className="border-b-2 border-black py-2 px-3"
               placeholder="Email"
             />
           </div>
-          <div className="flex-col flex justify-start w-full mt-4">
-            <label className="flex mb-2" htmlFor="name">
+          <div className="flex flex-col justify-start w-full mt-4">
+            <label htmlFor="password" className="mb-2">
               Password
             </label>
             <input
+              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="border-none border-b-2 border-black rounded-none py-2 px-3"
+              className="border-b-2 border-black py-2 px-3"
               placeholder="Password"
             />
           </div>
           <button
             type="submit"
-            className="px-4 py-2 rounded-full bg-black mt-10 text-white w-full"
+            className="mt-10 w-full px-4 py-2 rounded-full bg-black text-white"
           >
             Login
           </button>
         </form>
+        {error && <p className="text-red-500">{error}</p>}
       </div>
     </div>
   );

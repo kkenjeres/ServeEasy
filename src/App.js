@@ -1,10 +1,15 @@
-import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { auth } from './firebase.js';
-import Table from '../src/Table';
-import TableDetails from '../src/TableDetails';
-import LoginPage from '../src/LoginPage'
-import Home from '../src/Home.jsx'
+import { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { auth } from "./firebase.js";
+import Table from "../src/Table";
+import TableDetails from "../src/TableDetails";
+import LoginPage from "../src/LoginPage";
+import Home from "../src/Home.jsx";
 function App() {
   const [user, setUser] = useState(null);
 
@@ -17,7 +22,7 @@ function App() {
   return (
     <Router>
       <Routes>
-      {user ? (
+        {user ? (
           <Route path="/" element={<Home />} />
         ) : (
           <Route path="/" element={<Navigate to="/login" />} />
